@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AuthProvider } from "@/auth/AuthProvider";
 import { BootScreen } from "@/game/shell/BootScreen";
 import { Desktop } from "@/game/shell/Desktop";
 import { usePhase } from "@/game/system/session";
@@ -25,6 +26,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  return (
+    <AuthProvider>
+      <Game />
+    </AuthProvider>
+  );
+}
+
+function Game() {
   const phase = usePhase();
   return phase === "desktop" ? <Desktop /> : <BootScreen />;
 }
