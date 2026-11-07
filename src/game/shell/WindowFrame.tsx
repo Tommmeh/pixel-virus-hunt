@@ -61,7 +61,7 @@ export function WindowFrame({ win, active, dialog, children }: Props) {
 
   return (
     <div
-      className={`xp-win ${active ? "is-active" : "is-inactive"} ${win.max ? "is-max" : ""} ${
+      className={`os-win ${active ? "is-active" : "is-inactive"} ${win.max ? "is-max" : ""} ${
         shaking ? "is-shaking" : ""
       } ${dialog ? "is-dialog" : ""}`}
       style={style}
@@ -70,24 +70,24 @@ export function WindowFrame({ win, active, dialog, children }: Props) {
       aria-label={win.title}
     >
       <div
-        className="xp-title"
+        className="os-title"
         onPointerDown={startDrag}
         onDoubleClick={() => !dialog && wm.toggleMax(win.key)}
       >
         <PixelIcon name={win.icon} size={16} />
-        <span className="xp-title-text">{win.title}</span>
-        <span className="xp-ctrls">
+        <span className="os-title-text">{win.title}</span>
+        <span className="os-ctrls">
           {!dialog && (
             <>
               <button
-                className="xp-ctrl"
+                className="os-ctrl"
                 aria-label="Minimize"
                 onClick={() => wm.minimize(win.key)}
               >
                 <span className="glyph-min" />
               </button>
               <button
-                className="xp-ctrl"
+                className="os-ctrl"
                 aria-label={win.max ? "Restore" : "Maximize"}
                 onClick={() => wm.toggleMax(win.key)}
               >
@@ -95,13 +95,13 @@ export function WindowFrame({ win, active, dialog, children }: Props) {
               </button>
             </>
           )}
-          <button className="xp-ctrl is-close" aria-label="Close" onClick={() => wm.close(win.key)}>
+          <button className="os-ctrl is-close" aria-label="Close" onClick={() => wm.close(win.key)}>
             <span className="glyph-close" />
           </button>
         </span>
       </div>
-      <div className="xp-win-body">{children}</div>
-      {!dialog && !win.max && <div className="xp-grip" onPointerDown={startResize} aria-hidden />}
+      <div className="os-win-body">{children}</div>
+      {!dialog && !win.max && <div className="os-grip" onPointerDown={startResize} aria-hidden />}
     </div>
   );
 }

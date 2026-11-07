@@ -2,7 +2,7 @@
 
 @AGENTS.md
 
-HackCamp 2026 project (team of 4). A browser game that simulates a retro 2004-style PC ("PaneOS", XP-style)
+HackCamp 2026 project (team of 4). A browser game that simulates a retro 2004-style PC ("PaneOS": a Windows-style desktop drawn in NES.css pixel style)
 so people can **experience scams and malware safely instead of on their real machine**.
 
 ## Roadmap (4 stages)
@@ -30,8 +30,8 @@ bun is the project's package manager (`bun.lock`). Without bun, use npm but don'
 ## Stack
 
 React 19 + TypeScript, TanStack Start/Router (**SSR**: guard `window`/`localStorage`/`Audio`), Tailwind v4
-(config in `src/styles.css`). The PaneOS look is plain CSS in `src/styles.css` (`.xp-*`, `.os`, per-site
-classes), **not** NES.css. `src/components/ui/` is unused shadcn boilerplate. Path alias `@/` → `src/`.
+(config in `src/styles.css`), **NES.css** for the pixel look (imported in `src/styles.css`; fonts "Press Start 2P" +
+"VT323" loaded in `src/routes/__root.tsx`). `src/components/ui/` is unused shadcn boilerplate. Path alias `@/` → `src/`.
 
 ## Architecture (`src/game/`)
 
@@ -85,8 +85,18 @@ session-only. Settings → Reset clears everything (`resetAllStores()`).
 
 - **Fictional brands only:** PaneOS, WebVoyager, PingMe, Searchly, HotPost, Copperleaf Bank, FriendSpace, The
   Daily Byte. No real companies, logos, phone numbers or links that leave the game. Nothing is ever fetched.
-- Themes are CSS variables on `.os[data-theme]` (`luna-blue`, `luna-olive`, `luna-silver`, `classic`). Use the
-  tokens (`--face`, `--sel`, `--title-a`…) and the `.xp-btn`/`.xp-input`/`.xp-table` classes so every theme works.
+- **Look = NES.css** (https://nostalgic-css.github.io/NES.css/). Use its classes for controls: `nes-btn`
+  (+ `is-small`, `is-primary`/`is-success`/`is-warning`/`is-error`), `nes-input`, `nes-textarea`,
+  `nes-table is-bordered`, `nes-progress`, `nes-balloon`, `nes-container`. Helpers in `components/ui.tsx`:
+  `Tabs`, `GroupBox`, `Select`, `Check` (checkbox/radio). Structural shell classes are `os-*` (`os-win`, `os-title`,
+  `os-toolbar`, `os-status`…). Sizes are compacted under `.os` in `styles.css`.
+- **Fonts:** "Press Start 2P" (`--font-sans`) for UI chrome — titles, buttons, menus, headings; "VT323"
+  (`--font-body`) for reading text — emails, chats, Notepad, web page text, inputs.
+- **Themes** are NES palettes as CSS variables on `.os[data-theme]`: `classic` (default), `night`, `pocket`, `retro`.
+  Use the tokens (`--face`, `--text`, `--border`, `--sel`, `--title-a`…) so every theme works; old saved ids fall back
+  via `resolveTheme()`. Wallpapers are pixel art generated in `shell/wallpaper.ts`.
+- **Never use NES.css's character/brand sprites** (`nes-mario`, `nes-kirby`, `nes-ash`, Pokémon, `nes-octocat`,
+  `nes-logo`…) — they're other companies' characters. Use `PixelIcon` instead.
 - Window chrome is shared: never draw your own title bar. Use `wm.alert()` for message boxes.
 - Update/add tests next to the code (`*.test.ts`) when changing system logic or data.
 

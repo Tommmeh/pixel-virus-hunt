@@ -66,18 +66,20 @@ export function Taskbar({ startOpen, onStart }: { startOpen: boolean; onStart: (
   return (
     <div className="taskbar">
       <button
-        className={`start-btn ${startOpen ? "is-open" : ""}`}
+        className={`nes-btn is-success start-btn ${startOpen ? "is-open" : ""}`}
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onStart}
       >
         <PixelIcon name="logo" size={18} />
-        <span>start</span>
+        <span>START</span>
       </button>
       <div className="task-list">
         {state.wins.map((w) => (
           <button
             key={w.key}
-            className={`task-btn ${active === w.key ? "is-active" : ""} ${w.flash ? "is-flash" : ""}`}
+            className={`nes-btn is-small task-btn ${active === w.key ? "is-active is-primary" : ""} ${
+              w.flash ? "is-flash is-warning" : ""
+            }`}
             onClick={() => wm.taskbarClick(w.key)}
             title={w.title}
           >

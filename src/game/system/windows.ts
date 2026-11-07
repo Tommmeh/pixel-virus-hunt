@@ -54,7 +54,7 @@ export type WmAction =
   | { type: "CLOSE_APP"; app: string }
   | { type: "CLOSE_ALL" };
 
-export const TASKBAR_H = 30;
+export const TASKBAR_H = 40;
 export const MIN_W = 220;
 export const MIN_H = 140;
 

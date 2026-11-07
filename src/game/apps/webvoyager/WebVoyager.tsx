@@ -59,30 +59,30 @@ export function WebVoyager({ win }: { win: Win }) {
 
   return (
     <div className="webvoyager">
-      <div className="xp-toolbar">
+      <div className="os-toolbar">
         <button
-          className="tool-btn"
+          className="nes-btn is-small tool-btn"
           disabled={hist.i === 0}
           onClick={() => setHist((h) => ({ ...h, i: h.i - 1 }))}
         >
           ◀ Back
         </button>
         <button
-          className="tool-btn"
+          className="nes-btn is-small tool-btn"
           disabled={hist.i >= hist.stack.length - 1}
           onClick={() => setHist((h) => ({ ...h, i: h.i + 1 }))}
         >
           Forward ▶
         </button>
-        <button className="tool-btn" onClick={() => setReloads((r) => r + 1)}>
+        <button className="nes-btn is-small tool-btn" onClick={() => setReloads((r) => r + 1)}>
           ⟳ Refresh
         </button>
-        <button className="tool-btn" onClick={() => navigate(HOME_URL)}>
+        <button className="nes-btn is-small tool-btn" onClick={() => navigate(HOME_URL)}>
           ⌂ Home
         </button>
       </div>
       <form
-        className="xp-address"
+        className="os-address"
         onSubmit={(e) => {
           e.preventDefault();
           navigate(typed);
@@ -90,13 +90,13 @@ export function WebVoyager({ win }: { win: Win }) {
       >
         <span>Address</span>
         <input
-          className="xp-input"
+          className="nes-input"
           value={typed}
           onChange={(e) => setTyped(e.target.value)}
           onFocus={(e) => e.target.select()}
           aria-label="Address"
         />
-        <button className="xp-btn is-small" type="submit">
+        <button className="nes-btn is-small" type="submit">
           Go
         </button>
       </form>
@@ -125,7 +125,7 @@ export function WebVoyager({ win }: { win: Win }) {
           </BrowserContext.Provider>
         )}
       </div>
-      <div className="xp-status">
+      <div className="os-status">
         <span>{loading ? "Opening page..." : "Done"}</span>
         <span className="wv-zone">
           {url?.secure && (

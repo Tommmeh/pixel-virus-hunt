@@ -77,9 +77,9 @@ export function Explorer({ win }: { win: Win }) {
 
   return (
     <div className="explorer">
-      <div className="xp-toolbar">
+      <div className="os-toolbar">
         <button
-          className="tool-btn"
+          className="nes-btn is-small tool-btn"
           disabled={back.length === 0}
           onClick={() => {
             const prev = back[back.length - 1];
@@ -91,7 +91,7 @@ export function Explorer({ win }: { win: Win }) {
           ◀ Back
         </button>
         <button
-          className="tool-btn"
+          className="nes-btn is-small tool-btn"
           disabled={path === MY_COMPUTER}
           onClick={() => go(parentPath(path))}
         >
@@ -99,7 +99,7 @@ export function Explorer({ win }: { win: Win }) {
         </button>
       </div>
       <form
-        className="xp-address"
+        className="os-address"
         onSubmit={(e) => {
           e.preventDefault();
           go(typed === "My Computer" ? MY_COMPUTER : typed);
@@ -107,12 +107,12 @@ export function Explorer({ win }: { win: Win }) {
       >
         <span>Address</span>
         <input
-          className="xp-input"
+          className="nes-input"
           value={typed}
           onChange={(e) => setTyped(e.target.value)}
           aria-label="Address"
         />
-        <button className="xp-btn is-small" type="submit">
+        <button className="nes-btn is-small" type="submit">
           Go
         </button>
       </form>
@@ -168,9 +168,11 @@ export function Explorer({ win }: { win: Win }) {
                           <span>
                             {d.label} ({d.letter})
                           </span>
-                          <span className="drive-bar">
-                            <span style={{ width: `${d.used * 100}%` }} />
-                          </span>
+                          <progress
+                            className="nes-progress is-primary drive-bar"
+                            value={Math.round(d.used * 100)}
+                            max={100}
+                          />
                           <small>
                             {d.free} free of {d.total}
                           </small>
@@ -202,7 +204,7 @@ export function Explorer({ win }: { win: Win }) {
           )}
         </div>
       </div>
-      <div className="xp-status">
+      <div className="os-status">
         {path === MY_COMPUTER ? `${DRIVES.length} drives` : `${items.length} object(s)`}
         {getDrive(path) && <span>Free space: {getDrive(path)!.free}</span>}
       </div>

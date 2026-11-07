@@ -77,22 +77,22 @@ export function StartMenu({ onClose }: { onClose: () => void }) {
       </div>
       <div className="sm-foot">
         <button
-          className="sm-power"
+          className="nes-btn is-small is-warning sm-power"
           onClick={() => {
             onClose();
             logOff();
           }}
         >
-          <span className="sm-power-icon is-logoff">⇦</span> Log Off
+          Log Off
         </button>
         <button
-          className="sm-power"
+          className="nes-btn is-small is-error sm-power"
           onClick={() => {
             onClose();
             turnOff();
           }}
         >
-          <span className="sm-power-icon is-off">⏻</span> Turn Off Computer
+          Turn Off Computer
         </button>
       </div>
     </div>

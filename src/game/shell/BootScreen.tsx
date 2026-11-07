@@ -1,5 +1,5 @@
-// Boot → Welcome (log in) → Desktop; Turn Off → shutting down → "safe to turn off".
-import { useEffect } from "react";
+// Boot → Welcome (log in) → Desktop; Turn Off → shutting down → "safe to turn off". NES.css style.
+import { useEffect, useState } from "react";
 import { PixelIcon } from "../components/PixelIcon";
 import { playShutdown, playStartup } from "../components/sound";
 import { logIn, setPhase, usePhase } from "../system/session";
@@ -8,31 +8,35 @@ import { useSettings } from "../system/settings";
 function Logo({ size = 48 }: { size?: number }) {
   return (
     <div className="os-logo">
-      <span className="os-logo-mark">
-        <PixelIcon name="logo" size={size} />
-      </span>
+      <PixelIcon name="logo" size={size} />
       <span className="os-logo-text">
-        Pane<b>OS</b>
-        <sup>XP</sup>
+        PANE<b>OS</b>
       </span>
     </div>
   );
 }
 
 function Boot() {
+  const [pct, setPct] = useState(0);
   useEffect(() => {
-    const t = setTimeout(() => setPhase("welcome"), 2400);
-    return () => clearTimeout(t);
+    const t = setInterval(() => setPct((p) => Math.min(100, p + 10)), 200);
+    const done = setTimeout(() => setPhase("welcome"), 2400);
+    return () => {
+      clearInterval(t);
+      clearTimeout(done);
+    };
   }, []);
   return (
     <div className="boot-screen" onClick={() => setPhase("welcome")}>
-      <Logo size={56} />
-      <div className="boot-bar" aria-label="Loading">
-        <span />
-        <span />
-        <span />
-      </div>
-      <p className="boot-foot">Virus Hunt · HackCamp 2026</p>
+      <Logo size={64} />
+      <progress
+        className="nes-progress is-primary boot-bar"
+        value={pct}
+        max={100}
+        aria-label="Loading"
+      />
+      <p className="boot-blink">LOADING...</p>
+      <p className="boot-foot">VIRUS HUNT · HACKCAMP 2026</p>
     </div>
   );
 }
@@ -41,14 +45,11 @@ function Welcome() {
   const s = useSettings();
   return (
     <div className="welcome-screen">
-      <div className="welcome-top" />
       <div className="welcome-mid">
-        <div className="welcome-left">
-          <Logo />
-          <p>To begin, click your user name</p>
-        </div>
-        <div className="welcome-divider" />
-        <div className="welcome-right">
+        <Logo />
+        <div className="nes-container is-dark is-rounded with-title welcome-box">
+          <p className="title">WELCOME</p>
+          <p className="welcome-hint">CLICK YOUR NAME TO START</p>
           <button
             className="user-tile"
             onClick={() => {
@@ -58,18 +59,19 @@ function Welcome() {
           >
             <span className="user-tile-pic">{s.avatar}</span>
             <span className="user-tile-name">{s.userName}</span>
+            <span className="user-tile-arrow">▶</span>
           </button>
         </div>
       </div>
       <div className="welcome-bottom">
         <button
-          className="welcome-off"
+          className="nes-btn is-error"
           onClick={() => {
             playShutdown();
             setPhase("shutdown");
           }}
         >
-          <span className="welcome-off-icon">⏻</span> Turn off computer
+          Turn off computer
         </button>
         <span className="welcome-note">Virus Hunt — a safe practice PC. Nothing here is real.</span>
       </div>
@@ -85,12 +87,10 @@ function ShuttingDown() {
   }, []);
   return (
     <div className="welcome-screen">
-      <div className="welcome-top" />
-      <div className="welcome-mid is-center">
+      <div className="welcome-mid">
         <Logo />
-        <p className="shutdown-text">PaneOS is shutting down...</p>
+        <p className="shutdown-text">SAVING YOUR SETTINGS...</p>
       </div>
-      <div className="welcome-bottom" />
     </div>
   );
 }
@@ -98,9 +98,9 @@ function ShuttingDown() {
 function Off() {
   return (
     <div className="off-screen">
-      <p>It is now safe to turn off your computer.</p>
-      <button className="power-btn" onClick={() => setPhase("boot")} aria-label="Power on">
-        ⏻
+      <p>IT IS NOW SAFE TO TURN OFF YOUR COMPUTER.</p>
+      <button className="nes-btn is-success" onClick={() => setPhase("boot")}>
+        POWER ON
       </button>
     </div>
   );

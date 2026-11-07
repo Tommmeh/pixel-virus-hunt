@@ -11,6 +11,7 @@ import {
   useFs,
   writeFile,
 } from "../../system/fs";
+import { Select } from "../../components/ui";
 import { wm, type Win } from "../../system/windows";
 
 type Menu = "file" | "format" | "help" | null;
@@ -89,7 +90,7 @@ export function Notepad({ win }: { win: Win }) {
 
   return (
     <div className="notepad" onPointerDown={() => menu && setMenu(null)}>
-      <div className="xp-menubar" onPointerDown={(e) => e.stopPropagation()}>
+      <div className="os-menubar" onPointerDown={(e) => e.stopPropagation()}>
         {(["file", "format", "help"] as const).map((m) => (
           <div key={m} className="menu-root">
             <button
@@ -145,7 +146,7 @@ export function Notepad({ win }: { win: Win }) {
               ))}
             </ul>
           )}
-          <button className="xp-btn" onClick={() => setPanel(null)}>
+          <button className="nes-btn" onClick={() => setPanel(null)}>
             Cancel
           </button>
         </div>
@@ -164,32 +165,28 @@ export function Notepad({ win }: { win: Win }) {
           <b>Save As</b>
           <label>
             Save in:{" "}
-            <select
-              className="xp-input"
-              value={saveDir}
-              onChange={(e) => setSaveDir(e.target.value)}
-            >
+            <Select value={saveDir} onChange={(e) => setSaveDir(e.target.value)}>
               {SAVE_DIRS.map((d) => (
                 <option key={d.path} value={d.path}>
                   {d.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label>
             File name:{" "}
             <input
-              className="xp-input"
+              className="nes-input"
               value={saveName}
               onChange={(e) => setSaveName(e.target.value)}
               autoFocus
             />
           </label>
           <span className="flex gap-2">
-            <button className="xp-btn" type="submit">
+            <button className="nes-btn is-primary" type="submit">
               Save
             </button>
-            <button className="xp-btn" type="button" onClick={() => setPanel(null)}>
+            <button className="nes-btn" type="button" onClick={() => setPanel(null)}>
               Cancel
             </button>
           </span>

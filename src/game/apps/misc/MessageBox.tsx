@@ -20,7 +20,7 @@ export function MessageBox({ win }: { win: Win }) {
         <p>{win.args?.["text"]}</p>
       </div>
       <div className="msgbox-actions">
-        <button className="xp-btn" autoFocus onClick={() => wm.close(win.key)}>
+        <button className="nes-btn is-primary" autoFocus onClick={() => wm.close(win.key)}>
           OK
         </button>
       </div>
@@ -42,7 +42,7 @@ export function RecycleBin() {
           <p className="empty-note">The Recycle Bin is empty.</p>
         </div>
       </div>
-      <div className="xp-status">0 object(s)</div>
+      <div className="os-status">0 object(s)</div>
     </div>
   );
 }

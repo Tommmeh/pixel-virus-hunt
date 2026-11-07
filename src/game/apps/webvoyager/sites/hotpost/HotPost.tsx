@@ -33,12 +33,12 @@ function SignIn() {
         <b>Sign in to HotPost Mail</b>
         <label>
           E-mail address
-          <input className="xp-input" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input className="nes-input" value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
         <label>
           Password
           <input
-            className="xp-input"
+            className="nes-input"
             type="password"
             value={pw}
             onChange={(e) => setPw(e.target.value)}
@@ -46,7 +46,7 @@ function SignIn() {
           />
         </label>
         {err && <p className="form-error">{err}</p>}
-        <button className="xp-btn" type="submit">
+        <button className="nes-btn is-warning" type="submit">
           Sign In
         </button>
         <small>Forgot your password? Check the place you keep your notes.</small>
@@ -101,7 +101,7 @@ function ReadMail({ mail }: { mail: Mail | undefined }) {
       <pre className="hp-body">{mail.body}</pre>
       {mail.from !== PROFILE.email && (
         <button
-          className="xp-btn"
+          className="nes-btn is-primary"
           onClick={() =>
             navigate(
               `${BASE}/compose?to=${encodeURIComponent(mail.from)}&subject=${encodeURIComponent(
@@ -139,7 +139,7 @@ function Compose({ to0, subject0 }: { to0: string; subject0: string }) {
       <label>
         To:
         <input
-          className="xp-input"
+          className="nes-input"
           value={to}
           onChange={(e) => setTo(e.target.value)}
           list="hp-contacts"
@@ -154,20 +154,20 @@ function Compose({ to0, subject0 }: { to0: string; subject0: string }) {
       </label>
       <label>
         Subject:
-        <input className="xp-input" value={subject} onChange={(e) => setSubject(e.target.value)} />
+        <input className="nes-input" value={subject} onChange={(e) => setSubject(e.target.value)} />
       </label>
       <textarea
-        className="xp-input hp-compose-body"
+        className="nes-textarea hp-compose-body"
         value={body}
         onChange={(e) => setBody(e.target.value)}
         aria-label="Message"
       />
       {err && <p className="form-error">{err}</p>}
       <span className="flex gap-2">
-        <button className="xp-btn" type="submit">
+        <button className="nes-btn is-primary" type="submit">
           Send
         </button>
-        <button className="xp-btn" type="button" onClick={() => navigate(`${BASE}/`)}>
+        <button className="nes-btn" type="button" onClick={() => navigate(`${BASE}/`)}>
           Cancel
         </button>
       </span>
