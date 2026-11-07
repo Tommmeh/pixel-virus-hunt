@@ -87,7 +87,7 @@ export function Desktop() {
   useEffect(() => {
     if (!investigating || !symptoms.has("ads")) return;
     const t = setInterval(() => {
-      setAds((a) => (a.length > 4 ? a : [...a, { id: Date.now(), text: ADS[Math.floor(Math.random() * ADS.length)], x: 200 + Math.random() * 500, y: 60 + Math.random() * 300 }]));
+      setAds((a) => (a.length > 4 ? a : [...a, { id: Date.now(), text: ADS[Math.floor(Math.random() * ADS.length)]!, x: 200 + Math.random() * 500, y: 60 + Math.random() * 300 }]));
     }, 9000);
     return () => clearInterval(t);
   }, [investigating, symptoms.has("ads")]); // eslint-disable-line react-hooks/exhaustive-deps
