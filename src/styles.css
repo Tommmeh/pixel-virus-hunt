@@ -8,6 +8,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "nes.css/css/nes.min.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -37,6 +38,9 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --font-sans: "Press Start 2P", monospace;
+  --color-success: var(--success);
+  --color-wallpaper: var(--wallpaper);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -73,14 +77,21 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --radius: 0rem;
+  --wallpaper: oklch(0.55 0.1 190);
+  --taskbar: oklch(0.8 0 0);
+  --titlebar: oklch(0.38 0.15 260);
+  --titlebar-alert: oklch(0.55 0.2 28);
+  --success: oklch(0.6 0.15 145);
+  --selection: oklch(0.38 0.15 260);
+  --selection-foreground: oklch(1 0 0);
+  --background: oklch(0.55 0.1 190);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
+  --primary: oklch(0.5 0.17 255);
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
@@ -153,3 +164,45 @@
     color: var(--color-foreground);
   }
 }
+
+body { font-family: var(--font-sans); image-rendering: pixelated; }
+
+.screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; background: var(--wallpaper); }
+.screen .nes-container:not(.is-dark) { background: var(--card); }
+
+.desktop { position: fixed; inset: 0; overflow: hidden; user-select: none;
+  background:
+    radial-gradient(ellipse 80% 40% at 30% 110%, oklch(0.6 0.15 140) 60%, transparent 61%),
+    radial-gradient(ellipse 70% 35% at 85% 115%, oklch(0.52 0.14 145) 60%, transparent 61%),
+    var(--wallpaper); }
+.desktop-icons { position: absolute; top: 12px; left: 12px; bottom: 60px; display: flex; flex-direction: column; flex-wrap: wrap; gap: 14px; align-content: flex-start; }
+.desk-icon { width: 96px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 8px; line-height: 1.5; color: var(--primary-foreground); text-shadow: 2px 2px 0 oklch(0 0 0); background: none; border: 0; text-align: center; word-break: break-all; cursor: pointer; }
+.desk-icon:focus .desk-icon-img { outline: 2px dotted var(--primary-foreground); }
+.desk-icon-img { font-size: 30px; line-height: 1; }
+
+.win { position: absolute; background: var(--card); border: 4px solid var(--foreground); box-shadow: 6px 6px 0 oklch(0 0 0 / 40%); max-height: calc(100vh - 80px); display: flex; flex-direction: column; }
+.win-title { background: var(--titlebar); color: var(--primary-foreground); padding: 6px 8px; font-size: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; cursor: move; }
+.win-alert .win-title { background: var(--titlebar-alert); }
+.win-ctrl { width: 22px; height: 20px; background: var(--taskbar); color: var(--foreground); border: 2px solid var(--foreground); font-size: 10px; line-height: 1; cursor: pointer; }
+.win-body { padding: 12px; overflow: auto; }
+
+.xp-table { width: 100%; border-collapse: collapse; }
+.xp-table th { text-align: left; border-bottom: 3px solid var(--foreground); padding: 4px; }
+.xp-table td { padding: 4px; cursor: pointer; }
+.xp-table tr.is-selected td { background: var(--selection); color: var(--selection-foreground); }
+.address-bar { border: 3px solid var(--foreground); padding: 4px 6px; margin-bottom: 8px; background: var(--muted); word-break: break-all; }
+.explorer-tree { min-width: 120px; border-right: 3px solid var(--foreground); padding-right: 8px; }
+.tree-btn { background: none; border: 0; padding: 4px; cursor: pointer; font-size: 10px; }
+.tree-btn.is-active { background: var(--selection); color: var(--selection-foreground); }
+
+.nes-btn.btn-xs { font-size: 8px; padding: 2px 8px; }
+.nes-btn { font-family: var(--font-sans); }
+
+.taskbar { position: absolute; left: 0; right: 0; bottom: 0; height: 52px; background: var(--taskbar); border-top: 4px solid var(--foreground); display: flex; align-items: center; gap: 10px; padding: 0 8px; z-index: 2000; }
+.tray { font-size: 10px; border: 3px solid var(--foreground); padding: 6px 10px; background: var(--muted); }
+.start-menu { position: absolute; left: 8px; bottom: 60px; z-index: 2100; display: flex; flex-direction: column; min-width: 280px; background: var(--card) !important; }
+.start-item { text-align: left; padding: 8px; font-size: 10px; background: none; border: 0; cursor: pointer; }
+.start-item:hover { background: var(--selection); color: var(--selection-foreground); }
+
+.blink { animation: blink 0.8s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
