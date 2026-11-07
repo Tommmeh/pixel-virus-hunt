@@ -1,22 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { GameProvider, useGame } from "@/game/state";
-import { Desktop } from "@/game/Desktop";
-import { TitleScreen } from "@/game/Screens";
+import { BootScreen } from "@/game/shell/BootScreen";
+import { Desktop } from "@/game/shell/Desktop";
+import { usePhase } from "@/game/system/session";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Virus Hunt — Get Infected. Collect Them All. Stay Safe." },
+      { title: "Virus Hunt — a safe practice PC" },
       {
         name: "description",
         content:
-          "A retro 2000s PC sandbox where every scam you fall for unlocks an achievement. Learn the tricks safely.",
+          "A retro 2000s PC in your browser: browse, chat, bank and email safely. Learn to spot scams without risking your real computer.",
       },
       { property: "og:title", content: "Virus Hunt" },
       {
         property: "og:description",
-        content:
-          "Fall for every scam on a fake PC, collect the achievements, stay safe on your real one.",
+        content: "A retro 2000s PC in your browser for practising staying safe online.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -25,15 +24,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function Game() {
-  const { state } = useGame();
-  return state.phase === "title" ? <TitleScreen /> : <Desktop />;
-}
-
 function Index() {
-  return (
-    <GameProvider>
-      <Game />
-    </GameProvider>
-  );
+  const phase = usePhase();
+  return phase === "desktop" ? <Desktop /> : <BootScreen />;
 }
