@@ -15,7 +15,20 @@ interface Props {
   variant?: "default" | "alert";
 }
 
-export function Window({ title, x, y, z, width = 520, laggy, onMove, onFocus, onClose, onMinimize, children, variant }: Props) {
+export function Window({
+  title,
+  x,
+  y,
+  z,
+  width = 520,
+  laggy,
+  onMove,
+  onFocus,
+  onClose,
+  onMinimize,
+  children,
+  variant,
+}: Props) {
   const last = useRef(0);
   const start = (e: React.PointerEvent) => {
     if ((e.target as HTMLElement).closest("button")) return;
@@ -36,15 +49,23 @@ export function Window({ title, x, y, z, width = 520, laggy, onMove, onFocus, on
     window.addEventListener("pointerup", up);
   };
   return (
-    <div className={`win ${variant === "alert" ? "win-alert" : ""}`} style={{ left: x, top: y, zIndex: z, width }} onPointerDown={onFocus}>
+    <div
+      className={`win ${variant === "alert" ? "win-alert" : ""}`}
+      style={{ left: x, top: y, zIndex: z, width }}
+      onPointerDown={onFocus}
+    >
       <div className="win-title" onPointerDown={start}>
         <span className="truncate">{title}</span>
         <span className="flex gap-1">
           {onMinimize && (
-            <button className="win-ctrl" onClick={onMinimize} aria-label="Minimize">_</button>
+            <button className="win-ctrl" onClick={onMinimize} aria-label="Minimize">
+              _
+            </button>
           )}
           {onClose && (
-            <button className="win-ctrl" onClick={onClose} aria-label="Close">x</button>
+            <button className="win-ctrl" onClick={onClose} aria-label="Close">
+              x
+            </button>
           )}
         </span>
       </div>
