@@ -1,115 +1,126 @@
-# Pixel Virus Hunt
+# Virus Hunt
 
-Build "Virus Hunt," a browser game that simulates a retro 2000s PC to teach cybersecurity awareness.
+**Play. Get Infected. Stay Safe.**
 
-## Core concept
+A browser game that teaches cybersecurity awareness by letting you fall for real scams inside a fake 2004 Windows PC — and only telling you what you did wrong _after_ you've done it.
 
-The player uses a fake Windows 98/XP-style desktop and makes everyday choices. Some are risky. Risky choices silently infect the PC. The player then has to notice the symptoms, investigate, find and remove every piece of malware, and only then learn what they did wrong and how to prevent it.
+Built for HackCamp 2026 with React 19, TypeScript, TanStack Start, Tailwind v4 and NES.css.
 
-Game loop: Make choices → Get infected (silently) → Notice symptoms → Investigate → Remove all malware → Debrief/lesson
+---
 
-KEY DESIGN RULE: Never tell the player immediately that a choice was bad. No warning popups at the moment of the mistake. Consequences show up later as symptoms. The lesson comes only in the debrief.
+## The idea
 
-## Visual style
+Most security training opens with a warning. Players click past it.
 
-- Use the NES.css framework (npm package "nes.css", import "nes.css/css/nes.min.css") for all UI components: buttons, containers, dialogs, progress bars, icons.
+Virus Hunt does the opposite. You sit down at a period-accurate Windows XP desktop: a taskbar, a Wi-Fi tray icon, an inbox, a browser. Scams arrive looking exactly the way they looked in 2004 — a found USB stick labelled _Salaries 2004_, a recruiter who loved your CV, a popup counting down to your free iPod.
 
-- Font: "Press Start 2P" (Google Fonts).
+You are never warned. Nothing says "this is a phishing email". You click, and the scam resolves.
 
-- Layout follows a Windows 98 desktop: teal or green-hills wallpaper, desktop icons on the left, a bottom taskbar with a Start button and a clock, and draggable windows with title bars and close/minimize buttons.
+**The lesson lives on the achievement card.** Every scam you fall for unlocks a card in the Achievements tab: what really happened, the red flags you missed, and one concrete thing to do differently. Locked cards show only a hint. The teaching happens on the card, not in the moment — which is the whole point, because real life doesn't warn you either.
 
-- In short: a Win98 layout drawn in NES.css pixel style. Keep it chunky and pixelated, with nothing glossy or modern.
+## What's in the desktop
 
-## Screens
+| App                                          | What it's for                                            |
+| -------------------------------------------- | -------------------------------------------------------- |
+| **Internet**                                 | Browsing, including a warez site offering a game "crack" |
+| **Email**                                    | Inbox with recruiter and account-signup lures            |
+| **Messenger**                                | A live, AI-driven conversation with a scammer            |
+| **Wi-Fi tray**                               | Network picker with an open café network                 |
+| **Achievements**                             | Every scam in the game, locked and unlocked              |
+| **Task Manager / File Explorer / Antivirus** | The dormant infection model, kept for consequences       |
 
-1. Title screen: "Virus Hunt — Play. Get Infected. Stay Safe." with a Start button.
+Scams are pure data (`src/game/scams/`), grouped by the track that owns each file, so new content never needs a component change.
 
-2. Desktop: the main play area. Icons: My Computer, Internet Explorer, Email, Recycle Bin, Task Manager, Antivirus Scanner.
+## The live scammer chat (Track D)
 
-3. Scenario phase: a sequence of 5 choice events delivered as popups, emails, or desktop prompts.
+The Messenger app is the part that isn't scripted. Four personas, each a different con:
 
-4. Investigation phase: symptoms appear and the player uses the tools to hunt malware.
+| Persona            | The con                                                  | What they're after   |
+| ------------------ | -------------------------------------------------------- | -------------------- |
+| `ai-techsupport`   | "Dave from SysAssist" — your PC is sending error reports | A remote-access code |
+| `ai-friend-abroad` | "Sarah" — bag stolen abroad, needs a hotel tonight       | Gift-card codes      |
+| `ai-romance`       | "Alex" — new romance, mother in hospital                 | Gift-card codes      |
+| `ai-bank`          | "HotPost fraud desk" — two suspicious payments           | A one-time code      |
 
-5. Debrief screen: lists each infection, which choice caused it, its real-world name/type, and a prevention tip.
+Gemini role-plays the scammer against the player's actual messages, so no two runs are identical. The personas are data in `src/game/scams/ai.ts`.
 
-6. Score screen: viruses found, time taken, false removals, safety rating.
+### How "you fell for it" is decided
 
-## Scenarios (each has a safe and a risky option)
+Deliberately **not** by the model. A deterministic check on the server decides, so the game behaves identically online and offline:
 
-1. Public Wi-Fi: "CoffeeShop_FREE" (open) vs. using a phone hotspot → risky: credential stealer / man-in-the-middle
+1. **Leaked secrets.** The fake PC hands you secrets — `passwords.txt` on the desktop, a card in a wallet note, a one-time code, a remote-access code. If your message contains one (any casing or spacing), it counts as leaked and the matching secret card unlocks.
+2. **Going along with it.** Each persona has compliance phrasing (`"I'll buy the gift cards"`), guarded by a refusal check so `"I'm not sending anything, this is a scam"` never counts against you.
 
-2. Unknown USB: "Found a USB labelled 'Salaries 2004' — plug it in?" → risky: worm with autorun
+The model only supplies the words. Both paths run through `resolveChatTurn()`, so Gemini and the fallback can never disagree about what happened.
 
-3. Forum download: "free_game_crack.exe" from a sketchy forum vs. the official site → risky: trojan dropper
+### It cannot break on stage
 
-4. Fake job interview: a recruiter email asks you to run "InterviewSetup.exe" → risky: remote access trojan
+Every persona ships a fixed scripted conversation. If the gateway is unreachable, rate-limited, slow (12s timeout), or returns something unsafe, the chat plays the next scripted line and **still unlocks achievements**. The window shows a discreet `Messenger: offline, replies are scripted` note so you know which mode you are in.
 
-5. Password setup: choose "password123" vs. a strong passphrase → risky: account compromised later
+### Guardrails
 
-## Symptoms (shown after infection, never explained)
+- **Key stays server-side.** The gateway key is read only in `src/game/ai.functions.ts`, inside `createServerFn` handlers that compile to server RPCs and are stripped from the client bundle. A test fails if any other module references it.
+- **Capped.** History trimmed to 12 messages, input to 400 characters, `max_tokens` 220, 12-second timeout.
+- **No real links, numbers or brands.** Model output passes through `sanitizeReply()`: URLs, bare domains, emails and long digit runs become `[link removed]` / `[number removed]`, and real payment or remote-tool brand names are swapped for the in-world equivalents (PixelGift, SysAssist, HotPost).
+- **PG.** Anything off-colour is replaced by the scripted line instead of being shown.
+- **Never warns.** The system prompt forbids the scammer from mentioning the game, explaining the scam, or coaching the player.
 
-- Desktop slows down (laggy window dragging)
+### Gateway details
 
-- Random popup ads
+- Endpoint: `https://ai.gateway.lovable.dev/v1/chat/completions` (OpenAI-compatible)
+- Model: `google/gemini-3.8-flash` — Lovable's current recommended chat model; override with the `LOVABLE_CHAT_MODEL` environment variable
+- Auth: `Authorization: Bearer $LOVABLE_API_KEY`, set as a Lovable secret or server env var. Never in the repo, never in the browser.
 
-- Unknown process in Task Manager using high CPU
+To move to a different provider later, change `GATEWAY_URL` and the model id in `src/game/ai.functions.ts`; nothing else needs to move.
 
-- Browser homepage changed
+## Run it
 
-- Strange files appearing on the desktop
-
-- Fake "Your account was logged in from Russia" email
-
-## Investigation tools
-
-- Task Manager: list of processes; the player can inspect and end suspicious ones. Mix in legitimate processes (explorer.exe, svchost.exe) so the player has to think.
-
-- File Explorer: browse folders (C:\Windows\Temp, Startup, Downloads) and delete suspicious files.
-
-- Antivirus Scanner: finds only SOME threats (not all), so the player can't just click "scan."
-
-- Startup Programs list: remove persistence entries.
-
-- Removing a legitimate system file costs points.
-
-## Win condition
-
-All malware removed (process killed AND file deleted AND startup entry removed where applicable) → go to the debrief.
-
-## Technical requirements
-
-- React + TypeScript; store game state in a single reducer/context: choices made, active infections, removed items, score.
-
-- Define scenarios and malware as data (a JSON/TS config array) so new ones can be added without changing components.
-
-- No backend needed for this version. Use localStorage for high scores.
-
-- Responsive enough for a laptop screen; mobile is not a priority.
-
-## Scope for this first version
-
-Build the full loop with all 5 scenarios, Task Manager, File Explorer, the scanner, and the debrief. Skip sound, window resizing, and multiplayer for now.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/4bafb1ff-2569-4aa3-b695-03292aea7d06).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+```bash
+bun install
+bun run dev
 ```
 
+The chat needs a gateway key on the server:
 
-111111
+```bash
+# .env (never commit this)
+LOVABLE_API_KEY=...
+```
+
+Without a key the game still runs: the chat falls back to its scripted conversations.
+
+```bash
+bun run test    # vitest: game rules, scam data invariants, chat logic
+bun run lint    # eslint + prettier
+```
+
+> **Windows note:** this checkout has `core.autocrlf=true`, so files are LF in git but CRLF on disk. Prettier expects LF, so `bun run lint` reports thousands of `Delete ␍` errors in files nobody touched. That is a line-ending artefact, not a code problem. Fix it once per clone with `git config core.autocrlf false` and a re-checkout, or accept it and lint only the files you changed.
+
+## Architecture
+
+```
+src/game/types.ts              Shared contract: Scam, Lure, LureLocation (incl. "chat")
+src/game/state.tsx             Single reducer; useUnlock() is the only way to award a card
+src/game/scams/ai.ts           Track D: personas, secrets, fallbacks, guardrails, turn logic
+src/game/apps/Chat.tsx         Track D: the Messenger window + "Ask the IT guy"
+src/game/ai.functions.ts               Track D: server functions calling Lovable's gateway
+src/game/apps/registry.ts      App registry (Track A owns this)
+src/game/apps/Achievements.tsx Achievements tab (Track A owns this)
+```
+
+### Stretch: "Ask the IT guy"
+
+`AskItGuy` (in `Chat.tsx`) is a drop-in for an unlocked achievement card. It asks Gemini to explain that card's red flags in plain language, grounded strictly in the card's own text, and falls back to the card's own flags if the API is down.
+
+## Docs
+
+- `docs/pitch/slides.md` — six-slide pitch
+- `docs/pitch/demo-script.md` — the two-minute demo, including the offline fallback
+- `docs/content-qa.md` — accuracy review of every scam in the game, with suggested fixes
+- `docs/track-a-handoff.md` — how the Chat app is registered, and what the fake secret props still need
+
+## Project notes
+
+Built with [Lovable](https://lovable.dev). `main` syncs back to the Lovable editor, so avoid force-pushing or rewriting published history.
+
+Content rules for contributors: never warn the player at the moment of the mistake; keep every lure free of real URLs, phone numbers and card numbers (use `.example`); put the lesson on the achievement card.

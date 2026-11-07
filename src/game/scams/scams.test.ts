@@ -6,7 +6,7 @@ import type { LureLocation } from "../types";
 import { SCAM_GROUPS, SCAMS } from "./index";
 
 /** Locations that currently have a renderer. Add "chat" when Track D registers the Chat app. */
-const RENDERED: LureLocation[] = ["email", "browser", "popup", "desktop", "tray"];
+const RENDERED: LureLocation[] = ["email", "browser", "popup", "desktop", "tray", "chat"];
 
 describe("scam data", () => {
   it("has unique ids", () => {

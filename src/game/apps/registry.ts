@@ -5,6 +5,7 @@ import type { AppArgs } from "../desktop-context";
 import { Achievements } from "./Achievements";
 import { Antivirus } from "./Antivirus";
 import { Browser } from "./Browser";
+import { Chat } from "./Chat";
 import { EmailApp } from "./Email";
 import { FileExplorer } from "./FileExplorer";
 import { RecycleBin } from "./RecycleBin";
@@ -55,6 +56,15 @@ export const APPS: AppDef[] = [
     width: 560,
     listed: true,
     component: EmailApp,
+  },
+  {
+    id: "chat",
+    label: "Messenger",
+    icon: "💬",
+    title: "Messenger",
+    width: 620,
+    listed: true,
+    component: Chat,
   },
   {
     id: "taskmgr",
