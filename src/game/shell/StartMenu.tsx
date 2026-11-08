@@ -3,6 +3,7 @@ import { MY_DOCUMENTS } from "../system/fs";
 import { logOff, turnOff } from "../system/session";
 import { useSettings } from "../system/settings";
 import { wm, type AppArgs } from "../system/windows";
+import { startTutorial } from "../tutorial/store";
 
 interface Item {
   label: string;
@@ -10,6 +11,8 @@ interface Item {
   icon: string;
   app: string;
   args?: AppArgs;
+  /** Run this instead of opening an app (e.g. replay the tutorial). */
+  run?: () => void;
 }
 
 const LEFT_PINNED: Item[] = [
@@ -42,13 +45,15 @@ const RIGHT: Item[] = [
 const RIGHT_2: Item[] = [
   { label: "Control Panel", icon: "gear", app: "settings" },
   { label: "Search", icon: "search", app: "webvoyager", args: { url: "http://www.searchly.com/" } },
+  { label: "Tutorial", icon: "scout", app: "", run: startTutorial },
 ];
 
 export function StartMenu({ onClose }: { onClose: () => void }) {
   const s = useSettings();
   const launch = (it: Item) => {
     onClose();
-    wm.open(it.app, it.args);
+    if (it.run) it.run();
+    else wm.open(it.app, it.args);
   };
   const row = (it: Item, big = false) => (
     <button key={it.label} className={`sm-item ${big ? "is-big" : ""}`} onClick={() => launch(it)}>

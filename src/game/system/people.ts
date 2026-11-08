@@ -35,7 +35,7 @@ export const PEOPLE: Person[] = [
     status: "online",
     personalMessage: "art project due friday :(",
     bio: "Art club, chess club, too many clubs.",
-    autoReply: "Thanks Jamie! I'll have a look tonight.",
+    autoReply: "Thanks {name}! I'll have a look tonight.",
   },
   {
     id: "sam",
