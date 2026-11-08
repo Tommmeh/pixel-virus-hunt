@@ -1,5 +1,6 @@
 import { PixelIcon } from "../components/PixelIcon";
 import { MY_DOCUMENTS } from "../system/fs";
+import { afterLag } from "../system/health";
 import { logOff, turnOff } from "../system/session";
 import { useSettings } from "../system/settings";
 import { wm, type AppArgs } from "../system/windows";
@@ -52,8 +53,11 @@ export function StartMenu({ onClose }: { onClose: () => void }) {
   const s = useSettings();
   const launch = (it: Item) => {
     onClose();
-    if (it.run) it.run();
-    else wm.open(it.app, it.args);
+    // On a malware-slowed PC the program takes a moment to appear.
+    afterLag(() => {
+      if (it.run) it.run();
+      else wm.open(it.app, it.args);
+    });
   };
   const row = (it: Item, big = false) => (
     <button key={it.label} className={`sm-item ${big ? "is-big" : ""}`} onClick={() => launch(it)}>
