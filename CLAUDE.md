@@ -69,6 +69,8 @@ components/  PixelIcon + icons.ts (16×16 grids), ui.tsx (Tabs, GroupBox, useNow
 - **An email:** add to `SEED_INBOX` in `sites/hotpost/store.ts`, or call `receiveMail()` at runtime.
 - **A file:** add nodes to `DRIVES` in `system/fs.ts`. Text files open in Notepad; `program` files launch `app`.
 - **An icon:** add a 16-row × 16-char grid to `components/icons.ts` (palette letters, `.` = transparent).
+  Exception: taskbar tray icons are 12×12 grids named `tray-*`, drawn at 24px (exactly 2×) so they stay crisp
+  and fill the 30px tray. `PixelIcon` reads the grid size; `icons.test.ts` enforces both sizes.
 
 ### Events (for Stage 2 questlines)
 

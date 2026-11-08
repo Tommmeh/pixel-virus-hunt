@@ -277,8 +277,9 @@ body { font-family: var(--font-sans); background: #000; }
 .os .nes-table tbody tr { cursor: pointer; }
 .os .nes-progress { height: 14px; margin: 0; padding: 2px; }
 .os .nes-balloon { margin: 4px 10px 20px; padding: 4px 10px; font: 20px/1.1 var(--font-body); }
-.os .nes-balloon.from-left::before { left: 10px; }
-.os .nes-balloon.from-right::before { right: 10px; }
+/* The tail is two pieces (::before = upper part, ::after = pixel tip): move them together. */
+.os .nes-balloon.from-left::before, .os .nes-balloon.from-left::after { left: 10px; }
+.os .nes-balloon.from-right::before, .os .nes-balloon.from-right::after { right: 10px; }
 .os label.os-check { display: flex; align-items: center; min-height: 26px; cursor: pointer; }
 .os .os-check span { font-size: 8px; display: inline-flex; align-items: center; gap: 6px; }
 .os-tabs { flex: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 8px 4px; }
@@ -314,7 +315,9 @@ body { font-family: var(--font-sans); background: #000; }
 
 /* ---------- Desktop ---------- */
 .desk-icons { position: absolute; top: 10px; left: 10px; bottom: 50px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; gap: 8px; }
-.desk-icon { width: 84px; padding: 4px 2px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: none; border: 0; color: #fff; font: 8px/1.5 var(--font-sans); text-align: center; text-shadow: 2px 2px 0 #000; word-break: break-word; cursor: pointer; }
+.desk-icon { width: 120px; padding: 4px 2px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: none; border: 0; color: #fff; font: 9px/1.6 var(--font-sans); text-align: center; word-break: break-word; cursor: pointer; }
+/* Label: outlined on every side + a translucent plate, so it reads on any wallpaper. */
+.desk-icon span:last-child { padding: 1px 3px; background: rgb(0 0 0 / 45%); text-shadow: 1px 0 0 #000, -1px 0 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 2px 2px 0 #000; }
 .desk-icon .pixel-icon { filter: drop-shadow(2px 2px 0 rgb(0 0 0 / 55%)); }
 .desk-icon.is-selected span:last-child { background: var(--sel); color: var(--sel-text); text-shadow: none; box-shadow: 0 0 0 2px var(--sel); }
 .desk-icon:focus-visible { outline: 2px dashed #fff; }
@@ -358,7 +361,7 @@ body { font-family: var(--font-sans); background: #000; }
 @keyframes taskflash { 50% { filter: brightness(1.25) saturate(1.4); transform: translateY(-2px); } }
 .task-btn-text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .tray { height: 30px; display: flex; align-items: center; gap: 6px; padding: 0 8px; background: var(--tray-bg, #fff); color: var(--tray-text, #212529); box-shadow: 0 -3px 0 0 var(--border), 0 3px 0 0 var(--border), -3px 0 0 0 var(--border), 3px 0 0 0 var(--border); }
-.tray-icon { display: inline-flex; padding: 2px; background: none; border: 0; cursor: pointer; }
+.tray-icon { display: inline-flex; padding: 1px; background: none; border: 0; cursor: pointer; }
 .tray-icon:hover { background: rgb(0 0 0 / 15%); }
 .tray-icon.is-off { opacity: 0.4; }
 .tray-clock { margin-left: 4px; padding: 0 2px; background: none; border: 0; color: inherit; font: 8px var(--font-sans); cursor: pointer; min-width: 64px; }
@@ -614,7 +617,7 @@ body { font-family: var(--font-sans); background: #000; }
 .pm-chat { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .pm-chat-to { padding: 6px 10px; border-bottom: 4px solid var(--border); font: 18px var(--font-body); }
 .pm-chat-body { flex: 1; min-height: 0; display: flex; gap: 8px; padding: 8px; }
-.pm-log { flex: 1; overflow: auto; padding: 6px 2px; background: #fff; color: #212529; user-select: text; box-shadow: 0 0 0 3px var(--border); }
+.pm-log { flex: 1; overflow: auto; padding: 6px 2px; background: #cfe0f5; color: #212529; user-select: text; box-shadow: 0 0 0 3px var(--border); }
 .pm-msg {
   display: flex;
   flex-direction: column;
