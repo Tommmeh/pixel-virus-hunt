@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { AARON_CARDS } from "../storylines/aaron/cards";
 import { ZHUMING_CARDS } from "../storylines/zhuming/cards";
 import { ANISH_CARDS } from "../storylines/anish/cards";
+import { USB_CARDS } from "../storylines/usb/cards";
 import { AI_SCAMS } from "./ai";
 import { LESSON_CARDS } from "./cards";
 
@@ -10,7 +11,9 @@ const STORYLINE_CARDS = [...AARON_CARDS, ...ANISH_CARDS, ...ZHUMING_CARDS];
 
 describe("lesson cards", () => {
   it("include the chat scams and every storyline", () => {
-    expect(LESSON_CARDS).toHaveLength(AI_SCAMS.length + STORYLINE_CARDS.length);
+    expect(LESSON_CARDS).toHaveLength(
+      AI_SCAMS.length + AARON_CARDS.length + ANISH_CARDS.length + USB_CARDS.length,
+    );
   });
 
   it("have unique ids", () => {

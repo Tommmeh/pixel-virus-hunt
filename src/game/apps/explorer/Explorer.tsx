@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { PixelIcon } from "../../components/PixelIcon";
 import { emit } from "../../system/events";
+import { afterLag } from "../../system/health";
 import {
   DRIVES,
   DESKTOP_DIR,
@@ -196,7 +197,7 @@ export function Explorer({ win }: { win: Win }) {
                     icon={n.type === "folder" ? "folder" : ICON_FOR_KIND[n.kind]}
                     selected={sel === p}
                     onSelect={() => setSel(p)}
-                    onOpen={() => (n.type === "folder" ? go(p) : openPath(p))}
+                    onOpen={() => afterLag(() => (n.type === "folder" ? go(p) : openPath(p)))}
                   />
                 );
               })}

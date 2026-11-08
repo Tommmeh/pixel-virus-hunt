@@ -8,6 +8,7 @@ import { socialStore } from "../apps/webvoyager/sites/friendspace/store";
 import { mailStore } from "../apps/webvoyager/sites/hotpost/store";
 import { scamStore, trophySeenStore } from "../scams/store";
 import { aaronStore } from "../storylines/aaron/story";
+import { resetUsb } from "../storylines/usb/story";
 import { marketStore } from "../storylines/zhuming/store";
 import { zhumingStore } from "../storylines/zhuming/story";
 import { questStore } from "../system/quests";
@@ -26,6 +27,8 @@ export function resetStory() {
   // Aaron (PhotoWorm) storyline: stage, infection, Mum's post, any leftover pop-ups
   aaronStore.reset();
   threatStore.reset();
+  // USB storyline: no infection, no pending crash, PC healthy again
+  resetUsb();
   socialStore.reset();
   // Zhuming (RAM Capital) storyline: the advertorial, Kevin's thread, the installed app
   zhumingStore.reset();

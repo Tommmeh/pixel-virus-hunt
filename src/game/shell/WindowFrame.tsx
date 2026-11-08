@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { PixelIcon } from "../components/PixelIcon";
+import { isSlow } from "../system/health";
 import { wm, type Win } from "../system/windows";
 
 interface Props {
@@ -27,9 +28,15 @@ export function WindowFrame({ win, active, dialog, children }: Props) {
     e.preventDefault();
     const ox = e.clientX - win.x;
     const oy = e.clientY - win.y;
+    let lastMove = 0;
     const move = (ev: PointerEvent) => {
       const x = Math.min(Math.max(ev.clientX - ox, 80 - win.w), window.innerWidth - 80);
       const y = Math.min(Math.max(ev.clientY - oy, 0), window.innerHeight - 60);
+      // An infected PC can't keep up: the window jumps behind the pointer instead of following it.
+      if (isSlow()) {
+        if (ev.timeStamp - lastMove < 240) return;
+        lastMove = ev.timeStamp;
+      }
       wm.move(win.key, x, y);
     };
     const up = () => {
