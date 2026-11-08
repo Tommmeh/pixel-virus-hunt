@@ -2,7 +2,6 @@
 // they are being scammed, and finds out what happened only here, after the fact.
 import { useState } from "react";
 import { askItGuy } from "../ai.functions";
-import { AI_SCAMS, itGuyFallback, type LessonCard } from "./ai";
 import { itGuyFallback, type LessonCard } from "./ai";
 import { LESSON_CARDS } from "./cards";
 import { useScams } from "./store";
