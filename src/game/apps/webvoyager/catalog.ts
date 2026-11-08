@@ -88,7 +88,8 @@ export const SITE_INFO: SiteInfo[] = [
   // Aaron's storyline: where Mum's hacked "photos" link goes. Shady download site, plain http. Not a favourite.
   {
     host: "get-photoviewer.net",
-    aliases: ["www.get-photoviewer.net"],
+    // The old fake-album address: Mum's post in saves from before this change still links there.
+    aliases: ["www.get-photoviewer.net", "friendspace.com.photo-album.net"],
     name: "PhotoViewer - Free Download",
     icon: "download",
     secure: false,

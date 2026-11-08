@@ -1,3 +1,4 @@
+import { findSiteInfo } from "../../apps/webvoyager/catalog";
 import { beforeEach, describe, expect, it } from "vitest";
 import { socialStore } from "../../apps/webvoyager/sites/friendspace/store";
 import { scamStore } from "../../scams/store";
@@ -49,6 +50,10 @@ describe("Aaron — PhotoWorm escalation", () => {
     expect(popupContent(50).tier).toBe("error");
     expect(isSwarm(SWARM_AT - 1)).toBe(false);
     expect(isSwarm(SWARM_AT)).toBe(true);
+  });
+
+  it("old saves: the retired fake-album address still lands on the download site", () => {
+    expect(findSiteInfo("friendspace.com.photo-album.net")?.host).toBe(PHISH_HOST);
   });
 
   it("Mum's link goes to a download site that isn't FriendSpace, over plain http", () => {
