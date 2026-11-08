@@ -1,6 +1,8 @@
 import { useState, type CSSProperties, type FormEvent } from "react";
 import { PROFILE } from "../../../system/profile";
 import { questStore, type QuestFlags } from "../../../system/quests";
+import { unlockScam } from "../../../scams/store";
+import { ANISH_CARD_IDS } from "../../../storylines/anish/cards";
 import { continueConversation } from "../../messenger/store";
 import { useBrowser } from "../BrowserContext";
 import type { PageUrl } from "../url";
@@ -176,6 +178,7 @@ function Login() {
 
   function signIn() {
     questStore.set((s: QuestFlags) => ({ ...s, videoVaultSignedIn: true }));
+    unlockScam(ANISH_CARD_IDS.paidTrial); // silent: the lesson waits in Achievements
     setSignedIn(true);
     deposit({ account: "chk", amount: BONUS, desc: "VIDEOVAULT SIGN-UP BONUS" });
     sendBankAlert();
@@ -232,6 +235,7 @@ function Prize() {
 
   function enterDraw() {
     questStore.set((s: QuestFlags) => ({ ...s, bankDrained: true }));
+    unlockScam(ANISH_CARD_IDS.prize);
     setEntered(true);
     drainAccounts();
     sendInsufficientFundsAlert();

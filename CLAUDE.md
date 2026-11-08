@@ -95,6 +95,10 @@ pages/windows. Shared files only get small additive registrations (app registry,
   Antivirus** (`apps/antivirus/`) scans and `removeThreat()`s them, which emits `threat.removed` for the storyline.
 - **Achievements:** each storyline defines `LessonCard`s in its folder (e.g. `storylines/aaron/cards.ts`), adds them
   to `scams/cards.ts`, and unlocks them silently with `unlockScam(id)` at the matching stage.
+  The Achievements app is a **trophy shelf**: one trophy per quest line (`scams/questlines.ts`). Locked trophies are
+  black silhouettes with a vague teaser and "x/y clues found"; a trophy unlocks when its line's `completeWhen` card is
+  unlocked, and clicking it shows that line's cards. New quest line = cards + one `QUEST_LINES` entry (each Gemini
+  persona is its own line automatically). Bank line cards: `storylines/anish/cards.ts`.
 
 ### Tutorial — Scout (`src/game/tutorial/`)
 
@@ -104,6 +108,15 @@ replayed from Start → Tutorial or the "Scout's Tips" desktop icon. Story text 
 element (add the attribute in the UI and the id to `TOUR_TARGETS`) and/or wait for a system event (`waitFor`).
 It explains the layout and purpose, then walks the player into the HotPost inbox — the start of Anish's bank
 storyline — and leaves before any scam (never warn at the moment of the mistake).
+
+### Guided demo (`src/game/demo/`)
+
+For judges / first-time visitors: Welcome → "Guided demo" (no sign-in needed) runs **only Aaron's PhotoWorm** with
+Scout narrating every step and pointing out the red flags (incl. a spotlight on the `http` in the address bar).
+`demoStore` (session-only) turns off MessengerService, QuestFlow and ScamPopups and speeds the worm up (AaronService).
+The script is `demo/steps.ts`, registered with Scout via `registerScript` (Scout can run several scripts; steps can
+have several targets and an `onEnter`). Removing the worm → `demo-end` phase (`DemoEnd.tsx`) → "Try the full
+experience" resets the story and returns to Welcome. This is the only place Scout talks around a mistake.
 
 ## Conventions
 

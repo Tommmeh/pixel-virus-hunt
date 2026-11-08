@@ -64,7 +64,7 @@ describe("Scout sprite", () => {
 describe("tutorial flow", () => {
   it("starts, steps forward and back, and finishes", () => {
     startTutorial();
-    expect(tutorialSession.get()).toEqual({ active: true, step: 0 });
+    expect(tutorialSession.get()).toEqual({ active: true, step: 0, script: "tour" });
     nextStep();
     nextStep();
     expect(stepId()).toBe("mission");

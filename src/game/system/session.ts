@@ -3,7 +3,8 @@ import { emit } from "./events";
 import { createStore } from "./store";
 import { wm } from "./windows";
 
-export type Phase = "boot" | "welcome" | "desktop" | "shutdown" | "off" | "end";
+/** "demo-end" is the guided demo's ending screen (game/demo/DemoEnd.tsx). */
+export type Phase = "boot" | "welcome" | "desktop" | "shutdown" | "off" | "end" | "demo-end";
 
 export const sessionStore = createStore<{ phase: Phase }>(null, { phase: "boot" });
 export const usePhase = () => sessionStore.use().phase;
