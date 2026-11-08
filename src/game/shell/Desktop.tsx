@@ -16,6 +16,8 @@ import { useZhuming } from "../storylines/zhuming/story";
 import { DemoGuide } from "../demo/DemoGuide";
 import { useDemo } from "../demo/store";
 import { TutorialGuide } from "../tutorial/TutorialGuide";
+import { AchievementService } from "../achievements/AchievementService";
+import { VirusHud } from "./VirusHud";
 import { startTutorial } from "../tutorial/store";
 import { PixelIcon } from "../components/PixelIcon";
 import { DESKTOP_DIR, ICON_FOR_KIND, MY_DOCUMENTS, joinPath, listDir, useFs } from "../system/fs";
@@ -54,6 +56,7 @@ const SHORTCUTS: Shortcut[] = [
   { id: "mines", label: "Mines", icon: "mine", open: () => wm.open("mines") },
   { id: "paneguard", label: "PaneGuard", icon: "shield", open: () => wm.open("antivirus") },
   { id: "scout", label: "Scout's Tips", icon: "scout", open: startTutorial },
+  { id: "quests", label: "Quests", icon: "trophy", open: () => wm.open("quests") },
   {
     id: "achievements",
     label: "Achievements",
@@ -161,6 +164,8 @@ export function Desktop() {
       </div>
 
       {startOpen && <StartMenu onClose={() => setStartOpen(false)} />}
+      {/* The score, front and centre: how many viruses the player has caught. */}
+      <VirusHud />
       <Balloons />
       {/* The guided demo keeps the desktop quiet: only Aaron's PhotoWorm runs, narrated by Scout. */}
       {!demo && <MessengerService />}
@@ -171,6 +176,7 @@ export function Desktop() {
       <UsbService />
       <SlowPc />
       {!demo && <ZhumingService />}
+      {!demo && <AchievementService />}
       {demo ? <DemoGuide /> : <TutorialGuide />}
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>

@@ -40,7 +40,7 @@ function WatchPage() {
     if (collected) return;
     setCollected(true);
     deposit({ account: "chk", amount: 5, desc: "ADREWARDS - AD PAYOUT" });
-    unlockScam(ANISH_CARD_IDS.easyMoney); // silent: the lesson waits in Achievements
+    unlockScam(ANISH_CARD_IDS.easyMoney); // silent: the lesson waits in Quests
 
     // The money landing is what reminds Emma how short they are this month.
     setTimeout(() => startConversation("emma"), 2_500);

@@ -93,12 +93,18 @@ pages/windows. Shared files only get small additive registrations (app registry,
   capped at 24) → cleared by PaneGuard Antivirus.
 - **Threats** (`system/threats.ts`, `vh-threats`): storylines `addThreat()` when the PC gets infected; **PaneGuard
   Antivirus** (`apps/antivirus/`) scans and `removeThreat()`s them, which emits `threat.removed` for the storyline.
-- **Achievements:** each storyline defines `LessonCard`s in its folder (e.g. `storylines/aaron/cards.ts`), adds them
-  to `scams/cards.ts`, and unlocks them silently with `unlockScam(id)` at the matching stage.
-  The Achievements app is a **trophy shelf**: one trophy per quest line (`scams/questlines.ts`). Locked trophies are
-  black silhouettes with a vague teaser and "x/y clues found"; a trophy unlocks when its line's `completeWhen` card is
-  unlocked, and clicking it shows that line's cards. New quest line = cards + one `QUEST_LINES` entry (each Gemini
-  persona is its own line automatically). Bank line cards: `storylines/anish/cards.ts`.
+- **The goal: catch viruses.** Every quest line (`scams/questlines.ts`) is one virus / scam to catch. The **VIRUSES
+  CAUGHT x/8** counter (`shell/VirusHud.tsx`) sits top-centre on the desktop, always visible (the top 60px — `HUD_H` in
+  `system/windows.ts` — is kept clear: windows open below it). A line is *caught* when its `caughtWhen` card unlocks
+  (the moment the player falls for it) and *complete* when its `completeWhen` card does.
+- **Quests** (`scams/Quests.tsx`, app id `quests`): the trophy shelf, one trophy per quest line. Each storyline defines
+  `LessonCard`s in its folder (e.g. `storylines/aaron/cards.ts`), adds them to `scams/cards.ts`, and unlocks them
+  silently with `unlockScam(id)`. Locked trophies are silhouettes with a teaser; clicking an unlocked one shows its
+  lessons. New quest line = cards + one `QUEST_LINES` entry with `caughtWhen` and `completeWhen` (each Gemini persona
+  is its own line automatically).
+- **Achievements** (`achievements/achievements.ts`, app id `achievements`): small badges for exploring (open the flash
+  drive, log into e-mail, log into the bank...). Each is one `when(event)` callback over the system event bus;
+  `AchievementService` (desktop, off in the guided demo) awards them with a tray toast. Add one = one array entry.
 
 ### Tutorial — Scout (`src/game/tutorial/`)
 

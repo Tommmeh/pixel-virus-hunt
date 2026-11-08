@@ -102,6 +102,13 @@ function obstacles(vw: number, vh: number): Obstacle[] {
           ? WEIGHT.active
           : WEIGHT.window,
     }));
+  // The virus counter: Scout shouldn't hide the score.
+  const hud = document.querySelector(".virus-hud")?.getBoundingClientRect();
+  if (hud && hud.height > 0)
+    list.push({
+      rect: { x: hud.left, y: hud.top, w: hud.width, h: hud.height },
+      weight: WEIGHT.balloon,
+    });
   const balloons = document.querySelector(".balloons")?.getBoundingClientRect();
   if (balloons && balloons.height > 0)
     list.push({

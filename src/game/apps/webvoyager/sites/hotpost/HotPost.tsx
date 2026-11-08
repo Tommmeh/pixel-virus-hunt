@@ -163,7 +163,7 @@ function AmazingSignIn({ mail }: { mail: Mail }) {
           }
           // Mark done so we can't fire twice
           questStore.set((s: QuestFlags) => ({ ...s, amazingSignedIn: true }));
-          unlockScam(ANISH_CARD_IDS.giftCard); // silent: the lesson waits in Achievements
+          unlockScam(ANISH_CARD_IDS.giftCard); // silent: the lesson waits in Quests
           setSignedIn(true);
 
           // 1) FriendSpace login alert (arrives quickly)

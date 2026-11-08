@@ -1,4 +1,4 @@
-// USB storyline — lesson cards for the Achievements app (same format as every other storyline).
+// USB storyline — lesson cards for the Quests app (same format as every other storyline).
 // They unlock silently at each step: the player is never told off while it is happening.
 import type { LessonCard } from "../../scams/ai";
 

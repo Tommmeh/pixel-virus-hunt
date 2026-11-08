@@ -1,4 +1,4 @@
-// The Achievements app: a trophy shelf with one trophy per quest line. This is where the lesson lives:
+// The Quests app: a trophy shelf with one trophy per quest line (one per virus / scam). This is where the lesson lives:
 // the player is never warned while they are being scammed, and finds out what happened only here.
 // Locked trophies are black silhouettes (no spoilers); finishing a quest line turns it gold, and
 // clicking it opens that line's lesson cards.
@@ -132,7 +132,7 @@ function QuestDetail({ line, onBack }: { line: QuestLine; onBack: () => void }) 
   );
 }
 
-export function Achievements() {
+export function Quests() {
   const { unlocked } = useScams();
   const { seen } = trophySeenStore.use();
   const [openId, setOpenId] = useState<string | null>(null);
@@ -151,13 +151,13 @@ export function Achievements() {
     <div className="p-2 trophy-shelf ach-scroll">
       <div className="trophy-head">
         <p>
-          <b>Trophies</b> {done} / {QUEST_LINES.length}
+          <b>Quests done</b> {done} / {QUEST_LINES.length}
         </p>
         <progress
           className="nes-progress is-warning"
           value={done}
           max={QUEST_LINES.length}
-          aria-label="Trophies unlocked"
+          aria-label="Quests done"
         />
       </div>
       <div className="trophy-grid">
@@ -176,7 +176,7 @@ export function Achievements() {
       </div>
       <p className="trophy-foot">
         {done === 0
-          ? "Every quest line hides a scam or a virus. Trophies unlock after you've been caught out and seen it through: you find out afterwards, not while it's happening."
+          ? "Every quest hides a virus or a scam. Catch it, see it through, and its trophy unlocks here with the lesson behind it."
           : "Finish a quest line to turn its silhouette into a trophy."}
       </p>
     </div>

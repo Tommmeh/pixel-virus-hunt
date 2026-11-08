@@ -1,4 +1,4 @@
-// Anish's storyline (the bank line) — lesson cards for the Achievements app.
+// Anish's storyline (the bank line) — lesson cards for the Quests app.
 // $5 ad → Amazing gift card → VideoVault "paid" trial → $500 prize draw → empty account.
 // Each unlocks silently at the matching point (AdRewards, HotPost, VideoVault, QuestFlow); the trophy
 // unlocks with the last one, when the story ends.

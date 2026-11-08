@@ -1,4 +1,4 @@
-// Zhuming's storyline — lesson cards for the Achievements app (same format as the other stories).
+// Zhuming's storyline — lesson cards for the Quests app (same format as the other stories).
 // Each unlocks silently at the matching stage; the player is never warned while it is happening.
 import type { LessonCard } from "../../scams/ai";
 

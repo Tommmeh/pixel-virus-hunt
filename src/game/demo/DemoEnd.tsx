@@ -1,4 +1,5 @@
 // The guided demo's ending (same black full-screen style as shell/EndGame.tsx), shown once PhotoWorm is removed.
+import { VIRUS_TOTAL } from "../scams/questlines";
 import { Scout } from "../tutorial/Scout";
 import { exitDemo, startDemo } from "./store";
 
@@ -41,8 +42,9 @@ export function DemoEnd() {
         </section>
       </div>
       <p className="demo-end-note">
-        That was one virus. The full game has more: a bank scam, fake prizes, AI chats, and no Scout
-        telling you where to click.
+        Viruses caught: 1 / {VIRUS_TOTAL}. The other {VIRUS_TOTAL - 1} are hiding in the full game:
+        a bank scam, a dodgy USB stick, a hot stock tip, AI chat scammers, and no Scout telling you
+        where to click.
       </p>
       <div className="demo-end-actions">
         <button className="nes-btn is-primary" onClick={exitDemo}>

@@ -15,6 +15,7 @@ import { questStore } from "../system/quests";
 import { threatStore } from "../system/threats";
 import { stopTutorial, tutorialProgress } from "../tutorial/store";
 import { wm } from "../system/windows";
+import { achievementStore } from "../achievements/achievements";
 
 export function resetStory() {
   // Anish (bank) storyline
@@ -37,6 +38,7 @@ export function resetStory() {
   // Rewards: unlocked lesson cards and scammer chats
   scamStore.reset();
   trophySeenStore.reset();
+  achievementStore.reset();
   // Scout's tour: forget that it was finished or skipped, so he pops up on the next login.
   stopTutorial();
   tutorialProgress.reset();

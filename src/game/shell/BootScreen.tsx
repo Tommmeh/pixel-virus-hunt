@@ -9,6 +9,7 @@ import { useIsSlow } from "../system/health";
 import { logIn, setPhase, usePhase } from "../system/session";
 import { updateSettings, useSettings } from "../system/settings";
 import { resetStory } from "./startOver";
+import { VIRUS_TOTAL } from "../scams/questlines";
 import { CrashScreen } from "../storylines/usb/CrashScreen";
 import {
   nextSponsorIndex,
@@ -141,6 +142,9 @@ function Welcome() {
       <div className="welcome-mid" data-sponsor={sponsor?.id}>
         <Logo />
         <p className="welcome-tagline">A SAFE PC FOR PRACTISING AGAINST SCAMS &amp; MALWARE</p>
+        <p className="welcome-goal">
+          <PixelIcon name="worm" size={24} /> YOUR GOAL: CATCH ALL {VIRUS_TOTAL} VIRUSES
+        </p>
         <div className="welcome-stack">
           {/* 1. What to click — first thing on screen. */}
           <section className="welcome-panel welcome-actions">

@@ -2,7 +2,15 @@ import { describe, expect, it } from "vitest";
 import { AARON_CARD_IDS } from "../storylines/aaron/cards";
 import { ANISH_CARDS } from "../storylines/anish/cards";
 import { LESSON_CARDS } from "./cards";
-import { getQuestLine, isComplete, progress, QUEST_LINES } from "./questlines";
+import {
+  getQuestLine,
+  isCaught,
+  isComplete,
+  progress,
+  QUEST_LINES,
+  VIRUS_TOTAL,
+  virusesCaught,
+} from "./questlines";
 
 describe("quest lines (trophies)", () => {
   it("has one trophy each for PhotoWorm, the bank line, the USB line and every chat scammer", () => {
@@ -46,5 +54,16 @@ describe("quest lines (trophies)", () => {
     expect(bank.cardIds).toEqual(ANISH_CARDS.map((c) => c.id));
     expect(bank.completeWhen).toBe("bank-aftermath");
     for (const c of ANISH_CARDS) expect(c.id.startsWith("bank-"), c.id).toBe(true);
+  });
+
+  it("the virus counter: one per quest line, caught the moment you fall for it", () => {
+    expect(VIRUS_TOTAL).toBe(QUEST_LINES.length);
+    for (const l of QUEST_LINES) expect(l.cardIds, l.id).toContain(l.caughtWhen);
+    expect(virusesCaught({})).toBe(0);
+    const worm = getQuestLine("photoworm")!;
+    // Seeing Mum's post isn't catching it; running the PhotoViewer is.
+    expect(isCaught(worm, { [AARON_CARD_IDS.hackedFriend]: 1 })).toBe(false);
+    expect(isCaught(worm, { [AARON_CARD_IDS.download]: 1 })).toBe(true);
+    expect(virusesCaught({ [AARON_CARD_IDS.download]: 1, "ai-romance": 2 })).toBe(2);
   });
 });

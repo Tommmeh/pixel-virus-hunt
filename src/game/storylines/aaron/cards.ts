@@ -1,4 +1,4 @@
-// Aaron's storyline — lesson cards for the Achievements app (same format as the Gemini scam cards).
+// Aaron's storyline — lesson cards for the Quests app (same format as the Gemini scam cards).
 // Each unlocks silently at the matching stage of the PhotoWorm sequence (see story.ts).
 import type { LessonCard } from "../../scams/ai";
 

@@ -94,7 +94,7 @@ export function clean() {
     title: "PaneGuard Antivirus",
     text: `${THREAT_NAME} removed. Your PC is running normally again.`,
     icon: "shield",
-    open: { app: "achievements" },
+    open: { app: "quests" },
   });
   emit({ type: "story.complete", story: STORY });
 }

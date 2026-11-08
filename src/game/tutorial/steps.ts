@@ -22,7 +22,7 @@ function showNotes() {
 /** Every `data-tour` id the tutorial points at. Add the attribute in the UI when adding one here. */
 export const TOUR_TARGETS = [
   "taskbar",
-  "icon-achievements",
+  "virus-hud",
   "icon-paneguard",
   "icon-webvoyager",
   "fav-mail.hotpost.com",
@@ -75,17 +75,18 @@ export const STEPS: TutorialStep[] = [
     id: "hello",
     title: "Hi, I'm Scout!",
     text: [
-      "Welcome to VirusHuntOS: a pretend computer from 2004. Everything here is fake, so it's a safe place to learn how scams and viruses trick people.",
-      "Your mission: use this PC like normal and hunt down the scams and viruses hiding in it.",
+      "Welcome to VirusHuntOS: a pretend computer from 2004. Everything here is fake, so it's safe to break.",
+      "Your goal: CATCH ALL 8 VIRUSES hiding on this PC. Use it like normal, and when something looks too good to be true... fall for it!",
     ],
   },
   {
-    id: "achievements",
-    title: "Your trophies",
+    id: "goal",
+    title: "Your score",
     text: [
-      "Every scam or virus you uncover becomes a trophy in here, with the lesson behind it. Try to collect them all!",
+      "This is how many viruses you've caught. Each slot lights up when you fall for one.",
+      "Click it any time to open Quests and see what each virus taught you.",
     ],
-    target: "icon-achievements",
+    target: "virus-hud",
   },
   {
     id: "paneguard",

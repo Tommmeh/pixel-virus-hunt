@@ -171,7 +171,7 @@ export function infect(now = Date.now()) {
   const { stage } = aaronStore.get();
   if (stage !== "idle" && stage !== "posted" && stage !== "clicked") return;
   setStage("infected", { infectedAt: now, popups: 0 });
-  // Lesson cards unlock silently — the player only finds them later in Achievements.
+  // Lesson cards unlock silently — the player only finds them later in Quests.
   unlockScam(AARON_CARD_IDS.hackedFriend);
   unlockScam(AARON_CARD_IDS.download);
   addThreat({
@@ -215,7 +215,7 @@ export function spawnPopup(vw = 1280, vh = 800): boolean {
     keepClear.some((r) => x < r.x + r.w && r.x < x + w && y < r.y + r.h && r.y < y + h);
   const randomSpot = () => ({
     x: 120 + Math.random() * Math.max(0, vw - w - 160),
-    y: 10 + Math.random() * Math.max(0, vh - h - 70),
+    y: 64 + Math.random() * Math.max(0, vh - h - 124), // below the virus counter
   });
   let pos: { x: number; y: number };
   if (s.stage === "swarm") {
@@ -224,7 +224,7 @@ export function spawnPopup(vw = 1280, vh = 800): boolean {
     const restart =
       stackPos.x === 0 || next.x + w > vw - 20 || next.y + h > vh - 60 || hitsAv(next.x, next.y);
     if (restart) {
-      let start = { x: 140 + Math.random() * 120, y: 20 + Math.random() * 60 };
+      let start = { x: 140 + Math.random() * 120, y: 64 + Math.random() * 60 };
       for (let i = 0; i < 30 && hitsAv(start.x, start.y); i++) start = randomSpot();
       stackPos = start;
     } else {
@@ -268,9 +268,9 @@ export function clean() {
   unlockScam(AARON_CARD_IDS.cleaned);
   notify({
     title: "PaneGuard Antivirus",
-    text: "PhotoWorm removed. Your PC is clean. New lessons are waiting in Achievements.",
+    text: "PhotoWorm removed. Your PC is clean. New lessons are waiting in Quests.",
     icon: "shield",
-    open: { app: "achievements" },
+    open: { app: "quests" },
   });
   emit({ type: "story.complete", story: STORY });
 }
