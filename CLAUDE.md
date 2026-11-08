@@ -91,8 +91,17 @@ pages/windows. Shared files only get small additive registrations (app registry,
   capped at 24) → cleared by PaneGuard Antivirus.
 - **Threats** (`system/threats.ts`, `vh-threats`): storylines `addThreat()` when the PC gets infected; **PaneGuard
   Antivirus** (`apps/antivirus/`) scans and `removeThreat()`s them, which emits `threat.removed` for the storyline.
-- Achievements aren't wired yet: each storyline marks the spot with `// TODO(achievements)` and emits
-  `story.complete` when solved.
+- **Achievements:** each storyline defines `LessonCard`s in its folder (e.g. `storylines/aaron/cards.ts`), adds them
+  to `scams/cards.ts`, and unlocks them silently with `unlockScam(id)` at the matching stage.
+
+### Tutorial — Scout (`src/game/tutorial/`)
+
+An original pixel magnifying-glass detective who auto-starts on first login (`vh-tutorial`), can be skipped, and is
+replayed from Start → Tutorial or the "Scout's Tips" desktop icon. Story text can use `{name}` → the player's name
+(`personalize()` in `system/profile.ts`). The script is data in `steps.ts`: each step can spotlight a `data-tour="..."`
+element (add the attribute in the UI and the id to `TOUR_TARGETS`) and/or wait for a system event (`waitFor`).
+It explains the layout and purpose, then walks the player into the HotPost inbox — the start of Anish's bank
+storyline — and leaves before any scam (never warn at the moment of the mistake).
 
 ## Conventions
 

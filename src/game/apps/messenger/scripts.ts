@@ -89,7 +89,7 @@ export const SCRIPTS: ChatScript[] = [
       {
         id: "art",
         them: [
-          "Hi Jamie! It's going well",
+          "Hi {name}! It's going well",
           "Can you bring the trip photos on Friday? I think they're on your USB stick",
         ],
         choices: [

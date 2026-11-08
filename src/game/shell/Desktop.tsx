@@ -5,6 +5,8 @@ import { MessengerService } from "../apps/messenger/MessengerService";
 import { QuestFlow } from "./QuestFlow";
 import { ScamPopups } from "./ScamPopups";
 import { AaronService } from "../storylines/aaron/AaronService";
+import { TutorialGuide } from "../tutorial/TutorialGuide";
+import { startTutorial } from "../tutorial/store";
 import { PixelIcon } from "../components/PixelIcon";
 import { DESKTOP_DIR, ICON_FOR_KIND, MY_DOCUMENTS, joinPath, listDir, useFs } from "../system/fs";
 import { resolveTheme, useSettings } from "../system/settings";
@@ -40,6 +42,7 @@ const SHORTCUTS: Shortcut[] = [
   { id: "pingme", label: "PingMe Messenger", icon: "buddy", open: () => wm.open("messenger") },
   { id: "mines", label: "Mines", icon: "mine", open: () => wm.open("mines") },
   { id: "paneguard", label: "PaneGuard", icon: "shield", open: () => wm.open("antivirus") },
+  { id: "scout", label: "Scout's Tips", icon: "scout", open: startTutorial },
   {
     id: "achievements",
     label: "Achievements",
@@ -84,10 +87,11 @@ export function Desktop() {
         setSelected(null);
       }}
     >
-      <div className="desk-icons">
+      <div className="desk-icons" data-tour="desktop-icons">
         {[...SHORTCUTS, ...desktopFiles].map((s) => (
           <button
             key={s.id}
+            data-tour={`icon-${s.id}`}
             className={`desk-icon ${selected === s.id ? "is-selected" : ""}`}
             onPointerDown={(e) => {
               e.stopPropagation();
@@ -119,6 +123,7 @@ export function Desktop() {
       <QuestFlow />
       <ScamPopups />
       <AaronService />
+      <TutorialGuide />
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>
   );

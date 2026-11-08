@@ -50,7 +50,7 @@ export const SEED_INBOX: Mail[] = [
     from: "priya.patel@hotpost.com",
     to: PROFILE.email,
     subject: "Art project - group ideas",
-    body: "Hi Jamie,\n\nFor the group project I was thinking we could do a mural of the town. Can you bring the photos from the trip? They're on your USB stick I think.\n\nPriya",
+    body: "Hi {name},\n\nFor the group project I was thinking we could do a mural of the town. Can you bring the photos from the trip? They're on your USB stick I think.\n\nPriya",
     date: "Sat 11/09/2004",
   },
   {
@@ -59,7 +59,7 @@ export const SEED_INBOX: Mail[] = [
     from: "statements@copperleafbank.com",
     to: PROFILE.email,
     subject: "Your September statement is ready",
-    body: "Dear Jamie Taylor,\n\nYour monthly statement for Everyday Checking (ending 4821) is ready to view in Online Banking.\n\nFor your security, we will never ask for your password by email.\n\nCopperleaf Bank",
+    body: "Dear {name},\n\nYour monthly statement for Everyday Checking (ending 4821) is ready to view in Online Banking.\n\nFor your security, we will never ask for your password by email.\n\nCopperleaf Bank",
     date: "Fri 10/09/2004",
   },
   {
