@@ -54,7 +54,7 @@ describe("window manager", () => {
   });
 
   it("closes every window of one app (End Process)", () => {
-    const s = wmReducer(run(open("chat:alex", "chat"), open("chat:sam", "chat"), open("notepad")), {
+    const s = wmReducer(run(open("chat:priya", "chat"), open("chat:sam", "chat"), open("notepad")), {
       type: "CLOSE_APP",
       app: "chat",
     });
