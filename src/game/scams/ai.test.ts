@@ -43,7 +43,7 @@ describe("personas", () => {
 
   it("uses ids that route to the live chat", () => {
     for (const p of AI_PERSONAS) expect(isScamContact(p.id)).toBe(true);
-    expect(isScamContact("alex")).toBe(false);
+    expect(isScamContact("priya")).toBe(false);
   });
 
   it("gives every persona a card, an opener and a scripted fallback", () => {

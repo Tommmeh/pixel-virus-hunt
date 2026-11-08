@@ -65,8 +65,14 @@ function Composer() {
 export function FriendSpace({ url }: { url: PageUrl }) {
   const social = useSocial();
   const s = useSettings();
-  const visibleSeed = SEED_POSTS.filter((p) => social.friends.includes(p.author));
-  const feed = [...social.posts, ...visibleSeed];
+  // Saves from older versions may still list contacts that have since been cut from the game (e.g. Alex).
+  const friends = social.friends.filter((id) => getPerson(id));
+  const requests = social.requests.filter((id) => getPerson(id));
+  const visibleSeed = SEED_POSTS.filter((p) => friends.includes(p.author));
+  const feed = [
+    ...social.posts.filter((p) => p.author === "me" || getPerson(p.author)),
+    ...visibleSeed,
+  ];
   const myPosts = social.posts.filter((p) => p.author === "me");
 
   let main;
@@ -78,7 +84,7 @@ export function FriendSpace({ url }: { url: PageUrl }) {
           <div>
             <h2>{s.userName} Taylor</h2>
             <p>
-              @{PROFILE.friendspaceHandle} · {social.friends.length} friends
+              @{PROFILE.friendspaceHandle} · {friends.length} friends
             </p>
           </div>
         </div>
@@ -93,9 +99,9 @@ export function FriendSpace({ url }: { url: PageUrl }) {
   } else if (url.path === "/friends") {
     main = (
       <>
-        <h3>My friends ({social.friends.length})</h3>
+        <h3>My friends ({friends.length})</h3>
         <ul className="fs-friends">
-          {social.friends.map((id) => {
+          {friends.map((id) => {
             const p = getPerson(id)!;
             return (
               <li key={id}>
@@ -142,10 +148,10 @@ export function FriendSpace({ url }: { url: PageUrl }) {
         <main className="fs-main">{main}</main>
         <aside className="fs-side">
           <b>Friend requests</b>
-          {social.requests.length === 0 ? (
+          {requests.length === 0 ? (
             <small>No new requests.</small>
           ) : (
-            social.requests.map((id) => {
+            requests.map((id) => {
               const p = getPerson(id)!;
               return (
                 <div key={id} className="fs-request">

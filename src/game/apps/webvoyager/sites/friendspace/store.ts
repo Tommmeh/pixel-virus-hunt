@@ -13,13 +13,6 @@ export interface Post {
 
 export const SEED_POSTS: Post[] = [
   {
-    id: "p1",
-    author: "alex",
-    text: "BEAT LEVEL 7 OF GALAXY BLASTERS 3!!! who's next",
-    time: "2 hours ago",
-    likes: 4,
-  },
-  {
     id: "p2",
     author: "priya",
     text: "Art club mural is coming together. Photos soon!",
@@ -59,7 +52,7 @@ export interface SocialState {
 export const socialStore = createStore<SocialState>("vh-social", {
   posts: [],
   liked: [],
-  friends: ["alex", "priya", "sam", "mum"],
+  friends: ["priya", "sam", "mum"],
   requests: ["jordan"],
 });
 export const useSocial = socialStore.use;

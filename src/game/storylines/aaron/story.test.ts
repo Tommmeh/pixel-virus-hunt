@@ -6,6 +6,7 @@ import { onEvent, type SystemEvent } from "../../system/events";
 import { AARON_CARD_IDS } from "./cards";
 import { threatStore } from "../../system/threats";
 import { initialWm, windowStore, wm } from "../../system/windows";
+import { balloonStore } from "../../system/notify";
 import {
   aaronStore,
   clean,
@@ -30,6 +31,7 @@ beforeEach(() => {
   threatStore.reset();
   scamStore.reset();
   windowStore.set(initialWm);
+  balloonStore.set([]);
 });
 
 const unlocked = () => Object.keys(scamStore.get().unlocked).sort();
@@ -134,5 +136,14 @@ describe("Aaron — the sequence", () => {
     expect(aaronStore.get().stage).toBe("infected");
     click(); // too late to "click" — stays infected
     expect(aaronStore.get().stage).toBe("infected");
+  });
+
+  it("posting quietly (player already on FriendSpace) adds the post without a tray notification", () => {
+    post(Date.now(), false);
+    expect(aaronStore.get().stage).toBe("posted");
+    expect(socialStore.get().posts[0]?.id).toBe("aaron-mum-photos");
+    expect(balloonStore.get()).toEqual([]);
+    post(); // only ever posts once
+    expect(socialStore.get().posts.filter((p) => p.id === "aaron-mum-photos")).toHaveLength(1);
   });
 });

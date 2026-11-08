@@ -1001,6 +1001,8 @@ body { font-family: var(--font-sans); background: #000; }
 .demo-end-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 
 /* ---------- Achievements: trophy shelf ---------- */
+/* The window body clips its content; the app scrolls itself (the lesson view is much taller than the window). */
+.ach-scroll { flex: 1; min-height: 0; overflow-y: auto; }
 .trophy-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .trophy-head p { margin: 0; white-space: nowrap; font: 10px var(--font-sans); }
 .trophy-head .nes-progress { flex: 1; height: 20px; margin: 0; }

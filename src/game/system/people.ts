@@ -18,17 +18,6 @@ export interface Person {
 
 export const PEOPLE: Person[] = [
   {
-    id: "alex",
-    name: "Alex Chen",
-    screenName: "xX_Alex_Xx",
-    email: "alex.chen@hotpost.com",
-    avatar: "🎮",
-    status: "online",
-    personalMessage: "Galaxy Blasters 3 is SO good",
-    bio: "Gamer. Pizza enthusiast. Year 10.",
-    autoReply: "lol got your email. are you coming online later?",
-  },
-  {
     id: "priya",
     name: "Priya Patel",
     screenName: "priya_paints",
