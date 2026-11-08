@@ -718,8 +718,11 @@ body { font-family: var(--font-sans); background: #000; }
 .welcome-stack { width: min(560px, 100%); display: flex; flex-direction: column; gap: 20px; }
 .welcome-stack > .welcome-panel { margin: 8px 4px; }
 .welcome-actions { text-align: center; }
-.welcome-reset { margin-top: 12px; font: 19px var(--font-body); color: #fff !important; }
+.welcome-account { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-top: 12px; }
+.welcome-reset { font: 19px var(--font-body); color: #fff !important; }
 .welcome-reset:hover { color: #f7d51d !important; }
+.welcome-reset.is-signout:hover { color: #e76e55 !important; }
+.welcome-account-sep { font: 19px var(--font-body); color: #6c7a89; }
 .welcome-credits { padding: 4px 0 8px; text-align: center; text-shadow: 2px 2px 0 #000; }
 .welcome-credits p { margin: 0; }
 .welcome-credits-title { font: 10px var(--font-sans); color: #f7d51d; margin-bottom: 10px !important; }
@@ -744,8 +747,6 @@ body { font-family: var(--font-sans); background: #000; }
 .user-tile-pic { width: 60px; height: 60px; display: grid; place-items: center; font-size: 36px; background: #fff; box-shadow: 0 0 0 4px #f7d51d; }
 .user-tile-name { flex: 1; text-align: left; }
 .user-tile-go { flex: none; margin: 0; pointer-events: none; }
-.welcome-bottom { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 12px 24px; background: #212529; border-top: 4px solid #000; }
-.welcome-note { color: #adafbc; font-size: 8px; text-align: right; }
 .shutdown-text { font-size: 12px; animation: blink 0.8s steps(1) infinite; }
 .off-screen p { color: #f7d51d; font-size: 12px; text-align: center; line-height: 1.8; padding: 0 16px; }
 
