@@ -8,6 +8,7 @@ import { playShutdown, playStartup } from "../components/sound";
 import { logIn, setPhase, usePhase } from "../system/session";
 import { updateSettings, useSettings } from "../system/settings";
 import { resetStory } from "./startOver";
+import { nextSponsorIndex, sponsorAt, sponsorBackground, sponsorBgStore } from "./sponsors";
 
 function Logo({ size = 48 }: { size?: number }) {
   return (
@@ -55,8 +56,51 @@ const TOOLS = [
 /** The team, alphabetical. */
 const TEAM = ["Aaron Liddle", "Anish Khosla", "Filipe Braga", "Zhuming Mai"];
 
+/** The easter egg: click it to cycle the home screen through sponsor backgrounds. */
+function SponsorEgg() {
+  const { index } = sponsorBgStore.use();
+  const [shaking, setShaking] = useState(false);
+  const sponsor = sponsorAt(index);
+  return (
+    <div className="egg-corner">
+      <button
+        className={`egg-btn ${shaking ? "is-shaking" : ""}`}
+        aria-label="Easter egg"
+        title="?"
+        onClick={() => {
+          setShaking(true);
+          setTimeout(() => setShaking(false), 300);
+          sponsorBgStore.set({ index: nextSponsorIndex(index) });
+        }}
+      >
+        <PixelIcon name="egg" size={32} />
+      </button>
+      {sponsor && (
+        <span className="sponsor-caption">
+          ★ Thanks to {sponsor.name} · HackCamp 2026
+        </span>
+      )}
+    </div>
+  );
+}
+
+/** The sponsor's name repeated in big pixel letters behind the panels. */
+function SponsorMark({ name, ink }: { name: string; ink: string }) {
+  const row = `${name}   `.repeat(8);
+  return (
+    <div className="sponsor-mark" style={{ color: ink }} aria-hidden>
+      {Array.from({ length: 14 }, (_, i) => (
+        <span key={i} style={{ marginLeft: `${(i % 2) * -6}em` }}>
+          {row}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function Welcome() {
   const s = useSettings();
+  const sponsor = sponsorAt(sponsorBgStore.use().index);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const [resetDone, setResetDone] = useState(false);
   // Without Auth0 configured there's no provider: useAuth0() returns defaults and we ignore it.
@@ -75,7 +119,12 @@ function Welcome() {
 
   return (
     <div className="welcome-screen">
-      <div className="welcome-mid">
+      <SponsorEgg />
+      <div
+        className="welcome-mid"
+        style={sponsor ? { background: sponsorBackground(sponsor) } : undefined}
+      >
+        {sponsor && <SponsorMark name={sponsor.name} ink={sponsor.colors.ink} />}
         <Logo />
         <p className="welcome-tagline">A SAFE PC FOR PRACTISING AGAINST SCAMS &amp; MALWARE</p>
         <div className="welcome-stack">
@@ -115,7 +164,9 @@ function Welcome() {
             >
               <span className="user-tile-pic">{s.avatar}</span>
               {/* Shows the PC's user name; it becomes the Auth0 name once signed in. */}
-              <span className="user-tile-name">{authEnabled && authName ? authName : s.userName}</span>
+              <span className="user-tile-name">
+                {authEnabled && authName ? authName : s.userName}
+              </span>
               {/* A span styled as a button: the whole tile is the real button. */}
               <span className="nes-btn is-success is-small user-tile-go" aria-hidden>
                 {needsSignIn ? "Sign in" : "Play ▶"}
@@ -154,8 +205,8 @@ function Welcome() {
             {confirmingReset && (
               <div className="mt-3">
                 <p className="welcome-fine">
-                  Reset the whole story? Mail, chats, bank balance, trophies and Scout&apos;s tour all
-                  start again.
+                  Reset the whole story? Mail, chats, bank balance, trophies and Scout&apos;s tour
+                  all start again.
                 </p>
                 <div className="flex gap-2 mt-2 justify-center">
                   <button
