@@ -1,3 +1,4 @@
+import { findSiteInfo } from "../../apps/webvoyager/catalog";
 import { beforeEach, describe, expect, it } from "vitest";
 import { socialStore } from "../../apps/webvoyager/sites/friendspace/store";
 import { scamStore } from "../../scams/store";
@@ -5,6 +6,7 @@ import { onEvent, type SystemEvent } from "../../system/events";
 import { AARON_CARD_IDS } from "./cards";
 import { threatStore } from "../../system/threats";
 import { initialWm, windowStore, wm } from "../../system/windows";
+import { balloonStore } from "../../system/notify";
 import {
   aaronStore,
   clean,
@@ -29,6 +31,7 @@ beforeEach(() => {
   threatStore.reset();
   scamStore.reset();
   windowStore.set(initialWm);
+  balloonStore.set([]);
 });
 
 const unlocked = () => Object.keys(scamStore.get().unlocked).sort();
@@ -51,8 +54,12 @@ describe("Aaron — PhotoWorm escalation", () => {
     expect(isSwarm(SWARM_AT)).toBe(true);
   });
 
-  it("uses a classic phishing link: brand as a subdomain, plain http", () => {
-    expect(PHISH_HOST.startsWith("friendspace.com.")).toBe(true);
+  it("old saves: the retired fake-album address still lands on the download site", () => {
+    expect(findSiteInfo("friendspace.com.photo-album.net")?.host).toBe(PHISH_HOST);
+  });
+
+  it("Mum's link goes to a download site that isn't FriendSpace, over plain http", () => {
+    expect(PHISH_HOST).not.toContain("friendspace.com");
     expect(PHISH_URL.startsWith("http://")).toBe(true);
   });
 });
@@ -129,5 +136,14 @@ describe("Aaron — the sequence", () => {
     expect(aaronStore.get().stage).toBe("infected");
     click(); // too late to "click" — stays infected
     expect(aaronStore.get().stage).toBe("infected");
+  });
+
+  it("posting quietly (player already on FriendSpace) adds the post without a tray notification", () => {
+    post(Date.now(), false);
+    expect(aaronStore.get().stage).toBe("posted");
+    expect(socialStore.get().posts[0]?.id).toBe("aaron-mum-photos");
+    expect(balloonStore.get()).toEqual([]);
+    post(); // only ever posts once
+    expect(socialStore.get().posts.filter((p) => p.id === "aaron-mum-photos")).toHaveLength(1);
   });
 });

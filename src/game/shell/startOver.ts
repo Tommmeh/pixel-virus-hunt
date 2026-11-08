@@ -1,13 +1,19 @@
 // Puts every storyline back to the very start: no scam mail, no chats, no money moved, no virus.
-// Settings (name, theme…), the player's own files and the tutorial are kept — Settings → Reset wipes those.
+// Scout's tour starts again too (a new game should always open with it, even if it was finished or skipped).
+// Settings (name, theme…) and the player's own files are kept — Settings → Reset wipes those.
 import { chatStore } from "../apps/messenger/store";
+import { resetPhone } from "../apps/phone/store";
 import { bankSession, bankStore } from "../apps/webvoyager/sites/copperleaf/store";
 import { socialStore } from "../apps/webvoyager/sites/friendspace/store";
 import { mailStore } from "../apps/webvoyager/sites/hotpost/store";
-import { scamStore } from "../scams/store";
+import { scamStore, trophySeenStore } from "../scams/store";
 import { aaronStore } from "../storylines/aaron/story";
+import { resetUsb } from "../storylines/usb/story";
+import { marketStore } from "../storylines/zhuming/store";
+import { zhumingStore } from "../storylines/zhuming/story";
 import { questStore } from "../system/quests";
 import { threatStore } from "../system/threats";
+import { stopTutorial, tutorialProgress } from "../tutorial/store";
 import { wm } from "../system/windows";
 
 export function resetStory() {
@@ -16,12 +22,22 @@ export function resetStory() {
   bankSession.reset();
   bankStore.reset();
   chatStore.reset();
+  resetPhone();
   questStore.reset();
   // Aaron (PhotoWorm) storyline: stage, infection, Mum's post, any leftover pop-ups
   aaronStore.reset();
   threatStore.reset();
+  // USB storyline: no infection, no pending crash, PC healthy again
+  resetUsb();
   socialStore.reset();
+  // Zhuming (RAM Capital) storyline: the advertorial, Kevin's thread, the installed app
+  zhumingStore.reset();
+  marketStore.reset();
   wm.closeAll();
   // Rewards: unlocked lesson cards and scammer chats
   scamStore.reset();
+  trophySeenStore.reset();
+  // Scout's tour: forget that it was finished or skipped, so he pops up on the next login.
+  stopTutorial();
+  tutorialProgress.reset();
 }

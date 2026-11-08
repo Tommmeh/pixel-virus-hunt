@@ -31,21 +31,21 @@ function Tray() {
         title={`PingMe Messenger (${s.chatStatus})`}
         onClick={() => wm.open("messenger")}
       >
-        <PixelIcon name="buddy" size={16} />
+        <PixelIcon name="tray-chat" size={24} />
       </button>
       <button
         className={`tray-icon ${s.wifi ? "" : "is-off"}`}
         title={s.wifi ? `Wireless: connected to ${s.wifi}` : "Wireless: not connected"}
         onClick={() => wm.open("settings", { tab: "network" })}
       >
-        <PixelIcon name="wifi" size={16} />
+        <PixelIcon name="tray-wifi" size={24} />
       </button>
       <button
         className="tray-icon"
         title={s.muted ? "Volume (muted)" : `Volume ${s.volume}%`}
         onClick={() => updateSettings({ muted: !settingsStore.get().muted })}
       >
-        <PixelIcon name={s.muted ? "mute" : "speaker"} size={16} />
+        <PixelIcon name={s.muted ? "tray-mute" : "tray-sound"} size={24} />
       </button>
       <button
         className="tray-icon"
@@ -53,7 +53,7 @@ function Tray() {
         aria-label="Settings"
         onClick={() => wm.open("settings")}
       >
-        <PixelIcon name="gear" size={16} />
+        <PixelIcon name="tray-gear" size={24} />
       </button>
       <Clock h24={s.clock24} />
     </div>

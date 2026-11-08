@@ -1,8 +1,19 @@
-import { setPhase } from "../system/session";
+import { bankSession } from "../apps/webvoyager/sites/copperleaf/store";
+import { questStore, type QuestFlags } from "../system/quests";
+import { logIn, setPhase } from "../system/session";
 import { wm } from "../system/windows";
+import { setShake } from "./shake";
 
 /** Shown once the player has read the bank's "review your balance" mail and there's nothing left. */
 export function EndGame() {
+  /** Stage 2: three days later, starting with Marcus picking the thread back up. */
+  function continueStory() {
+    setShake(0);
+    bankSession.set({ signedIn: false });
+    questStore.set((s: QuestFlags) => ({ ...s, stage2Started: true }));
+    logIn();
+  }
+
   return (
     <div
       style={{
@@ -63,8 +74,16 @@ export function EndGame() {
         <p style={{ margin: 0 }}>None of this was real — the money, the people, the bank.</p>
       </div>
       <button
+        className="nes-btn is-primary"
+        style={{ animation: "vh-fade-in 2.8s ease-in 1.8s both" }}
+        onClick={continueStory}
+      >
+        Continue
+      </button>
+      <button
         className="nes-btn is-error"
         onClick={() => {
+          setShake(0);
           wm.closeAll();
           setPhase("boot");
         }}

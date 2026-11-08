@@ -54,7 +54,7 @@ const NOTES = `Things to remember!!
 - Buy Mum a birthday card (birthday is the 14th)
 
 Passwords (don't forget!!)
-HotPost email: jamie.taylor@hotpost.com / sunflower42
+E-mail: jamie.taylor@hotpost.com / sunflower42
 Copperleaf Bank: jamie.taylor / sunflower42
 FriendSpace: same as email
 `;
@@ -160,6 +160,8 @@ export const DRIVES: Drive[] = [
       folder("Photos", [
         file("holiday_01.jpg", "image", "1,200 KB"),
         file("holiday_02.jpg", "image", "1,150 KB"),
+        // USB storyline: a program wearing a photo's name (the real extension is .exe).
+        file("holiday_03.jpg.exe", "program", "1,204 KB", { app: "usb-photo" }),
       ]),
     ]),
   },

@@ -6,7 +6,10 @@ import { Chat } from "./messenger/Chat";
 import { Messenger } from "./messenger/Messenger";
 import { WormPopup } from "../storylines/aaron/WormPopup";
 import { Antivirus } from "./antivirus/Antivirus";
+import { PhotoExe } from "../storylines/usb/PhotoExe";
 import { Mines } from "./mines/Mines";
+import { Phone } from "./phone/Phone";
+import { RBCApp } from "./rbc/RBCApp";
 import { MessageBox, RecycleBin } from "./misc/MessageBox";
 import { ScamPopup } from "./misc/ScamPopup";
 import { Notepad } from "./notepad/Notepad";
@@ -14,6 +17,7 @@ import { Settings } from "./settings/Settings";
 import { TaskManager } from "./taskmgr/TaskManager";
 import { Achievements } from "../scams/Achievements";
 import { WebVoyager } from "./webvoyager/WebVoyager";
+import { StockApp } from "../storylines/zhuming/StockApp";
 
 export interface AppProps {
   win: Win;
@@ -72,6 +76,26 @@ export const APPS: AppDef[] = [
     component: Chat,
   },
   {
+    id: "phone",
+    title: "Phone",
+    icon: "☎",
+    process: "phone.exe",
+    memK: 900,
+    w: 360,
+    h: 520,
+    component: Phone,
+  },
+  {
+    id: "rbc",
+    title: "RBC Online Banking",
+    icon: "/rbc-logo.svg",
+    process: "rbc.exe",
+    memK: 2_400,
+    w: 440,
+    h: 480,
+    component: RBCApp,
+  },
+  {
     id: "taskmgr",
     title: "VirusHuntOS Task Manager",
     icon: "taskmgr",
@@ -125,8 +149,8 @@ export const APPS: AppDef[] = [
     title: "Achievements",
     icon: "medal",
     process: null,
-    w: 540,
-    h: 470,
+    w: 640,
+    h: 540,
     component: Achievements,
   },
   {
@@ -140,6 +164,17 @@ export const APPS: AppDef[] = [
     component: Antivirus,
   },
   {
+    // USB storyline: the disguised file on E: opens a bland-looking picture viewer.
+    id: "usb-photo",
+    title: "holiday_03.jpg - Windows Picture and Fax Viewer",
+    icon: "image",
+    process: "usbphoto.exe",
+    memK: 4_100,
+    w: 380,
+    h: 300,
+    component: PhotoExe,
+  },
+  {
     // Aaron's storyline: a PhotoWorm pop-up (many can be open at once, keyed "worm:<n>").
     id: "worm-popup",
     title: "Special Offer!",
@@ -149,6 +184,17 @@ export const APPS: AppDef[] = [
     w: 300,
     h: 200,
     component: WormPopup,
+  },
+  {
+    // Zhuming's storyline: the "free trading app" installed from Kevin's link.
+    id: "stockladder",
+    title: "StockLadder Trade",
+    icon: "trophy",
+    process: "stockladder.exe",
+    memK: 4_180,
+    w: 540,
+    h: 500,
+    component: StockApp,
   },
   {
     id: "msgbox",

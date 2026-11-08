@@ -9,6 +9,8 @@ export interface SiteInfo {
   /** Served over https (the browser upgrades http:// automatically and shows a padlock). */
   secure: boolean;
   favorite?: boolean;
+  /** Shorter label for the Favorites bar (defaults to `name`). */
+  favLabel?: string;
 }
 
 export interface IndexEntry {
@@ -37,7 +39,7 @@ export const SITE_INFO: SiteInfo[] = [
   {
     host: "mail.hotpost.com",
     aliases: ["hotpost.com", "www.hotpost.com"],
-    name: "HotPost Mail",
+    name: "E-mail",
     icon: "mail",
     secure: true,
     favorite: true,
@@ -49,6 +51,7 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "bank",
     secure: true,
     favorite: true,
+    favLabel: "Bank",
   },
   {
     host: "www.friendspace.com",
@@ -73,11 +76,31 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "news",
     secure: true,
   },
-  // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
+  // Zhuming's storyline: the "free trading app" download page Kevin sends over PingMe.
+  // Plain http, not a favourite, not in the search index.
   {
-    host: "friendspace.com.photo-album.net",
-    name: "FriendSpace",
-    icon: "social",
+    host: "www.stockladder-trade.com",
+    aliases: ["stockladder-trade.com"],
+    name: "StockLadder Trade",
+    icon: "trophy",
+    secure: false,
+  },
+  // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
+  // Stage 2's bank. Reached from the link Marcus gives, never from the bookmarks bar.
+  {
+    host: "www.rbc.com",
+    aliases: ["rbc.com"],
+    name: "RBC Online Banking",
+    icon: "bank",
+    secure: true,
+  },
+  // Aaron's storyline: where Mum's hacked "photos" link goes. Shady download site, plain http. Not a favourite.
+  {
+    host: "get-photoviewer.net",
+    // The old fake-album address: Mum's post in saves from before this change still links there.
+    aliases: ["www.get-photoviewer.net", "friendspace.com.photo-album.net"],
+    name: "PhotoViewer - Free Download",
+    icon: "download",
     secure: false,
   },
 ];
@@ -87,10 +110,10 @@ export const findSiteInfo = (host: string) =>
 
 export const SEARCH_INDEX: IndexEntry[] = [
   {
-    title: "HotPost Mail - Free web-based email",
+    title: "E-mail - Free web-based email",
     url: "https://mail.hotpost.com/",
     description:
-      "Sign in to HotPost Mail. Free email with 25 MB of storage, accessible from anywhere.",
+      "Sign in to your E-mail. Free email with 25 MB of storage, accessible from anywhere.",
     keywords: ["email", "mail", "hotpost", "inbox", "webmail", "sign in"],
   },
   {
@@ -99,6 +122,13 @@ export const SEARCH_INDEX: IndexEntry[] = [
     description:
       "Online banking from Copperleaf Bank. Check your balance, view statements and transfer money.",
     keywords: ["bank", "banking", "copperleaf", "money", "account", "savings", "transfer"],
+  },
+  {
+    title: "RBC Online Banking - switch in minutes",
+    url: "https://www.rbc.com/",
+    description:
+      "RBC holds payments that don't fit your usual pattern and rings you before money leaves.",
+    keywords: ["rbc", "bank", "banking", "switch", "payments", "alerts"],
   },
   {
     title: "FriendSpace - a place for friends",
