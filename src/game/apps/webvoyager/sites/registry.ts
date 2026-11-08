@@ -10,7 +10,6 @@ import { Searchly } from "./Searchly";
 import { RBC } from "./RBC";
 import { VideoVault } from "./VideoVault";
 import { DownloadSite } from "../../../storylines/aaron/DownloadSite";
-import { PhishingSite } from "../../../storylines/aaron/PhishingSite";
 
 export const SITE_COMPONENTS: Record<string, ComponentType<{ url: PageUrl }>> = {
   "www.adrewards.com": AdRewards,
@@ -21,6 +20,5 @@ export const SITE_COMPONENTS: Record<string, ComponentType<{ url: PageUrl }>> = 
   "www.dailybyte.com": DailyByte,
   "www.videovault-tv.com": VideoVault,
   "www.rbc.com": RBC,
-  "friendspace.com.photo-album.net": PhishingSite,
   "get-photoviewer.net": DownloadSite,
 };

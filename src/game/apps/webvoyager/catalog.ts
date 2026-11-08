@@ -85,14 +85,7 @@ export const SITE_INFO: SiteInfo[] = [
     secure: true,
     favorite: true,
   },
-  // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
-  {
-    host: "friendspace.com.photo-album.net",
-    name: "FriendSpace",
-    icon: "social",
-    secure: false,
-  },
-  // ...which sends you to a separate shady download site for the "PhotoViewer" (the worm installer).
+  // Aaron's storyline: where Mum's hacked "photos" link goes. Shady download site, plain http. Not a favourite.
   {
     host: "get-photoviewer.net",
     aliases: ["www.get-photoviewer.net"],

@@ -51,8 +51,8 @@ describe("Aaron — PhotoWorm escalation", () => {
     expect(isSwarm(SWARM_AT)).toBe(true);
   });
 
-  it("uses a classic phishing link: brand as a subdomain, plain http", () => {
-    expect(PHISH_HOST.startsWith("friendspace.com.")).toBe(true);
+  it("Mum's link goes to a download site that isn't FriendSpace, over plain http", () => {
+    expect(PHISH_HOST).not.toContain("friendspace.com");
     expect(PHISH_URL.startsWith("http://")).toBe(true);
   });
 });
