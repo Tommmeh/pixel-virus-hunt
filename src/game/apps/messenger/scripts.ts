@@ -18,6 +18,11 @@ export interface ChatScript {
   start: string;
   /** If set, the contact starts the conversation this many ms after logging in. */
   opensAfterMs?: number;
+  /**
+   * Extra entry points for later beats with the same contact. These are only reached via
+   * `continueConversation`, never by tapping through the conversation.
+   */
+  entries?: string[];
   nodes: ChatNode[];
 }
 
@@ -167,6 +172,7 @@ export const SCRIPTS: ChatScript[] = [
   {
     contact: "emma",
     start: "rent",
+    entries: ["rent2"],
     nodes: [
       {
         id: "rent",
@@ -211,6 +217,117 @@ export const SCRIPTS: ChatScript[] = [
         id: "goodnight",
         them: ["Thank you ❤️", "I'm off to bed. Don't be up too late x"],
         choices: [{ text: "Night, love you", next: null }],
+      },
+      // Second beat, started by VideoVault's sign-in (see shell/QuestFlow.tsx): the prize mail
+      // only arrives once Jamie has been through this and still won't take Marcus's money.
+      {
+        id: "rent2",
+        them: [
+          "Jamie. Are you still up?",
+          "I rang Marcus this afternoon. I asked him to lend us the money.",
+          "He said yes straight away. He'd have done it weeks ago if it was him asking.",
+        ],
+        nudge: true,
+        choices: [
+          { text: "You went behind my back?", next: "behind" },
+          { text: "I told you I'd sort it", next: "sort" },
+        ],
+      },
+      {
+        id: "behind",
+        them: [
+          "Behind your back? I'm trying to keep a roof over our heads.",
+          "He's your best friend, Jamie. He's not a stranger and he's not a charity case.",
+        ],
+        choices: [
+          { text: "I don't want people knowing our business", next: "knows" },
+          { text: "I know. I'm sorry", next: "sorry" },
+        ],
+      },
+      {
+        id: "sort",
+        them: [
+          "Sort it how? You said that last month and the month before.",
+          "I've been through the account twice tonight. There's nothing left to move.",
+        ],
+        choices: [
+          { text: "I've got a way to get the money", next: "way" },
+          { text: "I'll find something. I always do", next: "find" },
+        ],
+      },
+      {
+        id: "knows",
+        them: [
+          "What business? We're £340 short and the rent's already bounced.",
+          "Everyone already knows. The only person pretending otherwise is you.",
+        ],
+        choices: [{ text: "That's not fair", next: "worried" }],
+      },
+      {
+        id: "sorry",
+        them: [
+          "Don't be sorry, be sensible. Sorry doesn't pay the landlord.",
+          "He's sat on £400 he doesn't need. He offered it before I even finished asking.",
+        ],
+        choices: [{ text: "I'll think about it", next: "worried" }],
+      },
+      {
+        id: "way",
+        them: [
+          "What way? What have you done?",
+          "Jamie, tell me you haven't signed up for something stupid.",
+        ],
+        choices: [{ text: "It's nothing. It's fine", next: "worried" }],
+      },
+      {
+        id: "find",
+        them: [
+          "Find it from where? There's nothing left to sell and I'm not asking my mum again.",
+          "I'm not being cruel. I'm frightened, that's all.",
+        ],
+        choices: [{ text: "It'll be alright", next: "worried" }],
+      },
+      {
+        id: "worried",
+        them: [
+          "I lay awake last night adding it up again. It doesn't work. However I do it, it doesn't work.",
+          "I'm not shouting at you. I'm scared, and I'm tired of being the only one who says so.",
+        ],
+        choices: [
+          { text: "Don't worry. I've got it covered", next: "stubborn" },
+          { text: "I'm scared too, you know", next: "soft" },
+        ],
+      },
+      {
+        id: "stubborn",
+        them: [
+          "You always say that. Then you sit at that computer until 2am and nothing changes.",
+          "Help is right there, Jamie. Marcus is right there. He's not going to think less of you.",
+        ],
+        choices: [
+          { text: "I'm not taking his money", next: "final" },
+          { text: "It's my job to provide. I'll handle it", next: "final" },
+        ],
+      },
+      {
+        id: "soft",
+        them: [
+          "Then let him help us. Please. It's one phone call.",
+          "He's not keeping score. He's known you fifteen years.",
+        ],
+        choices: [
+          { text: "I said no. I'll sort it myself", next: "final" },
+          { text: "Alright. I'll think about it", next: "final" },
+        ],
+      },
+      {
+        id: "final",
+        them: [
+          "Fine. Have it your way.",
+          "But if it's not in by Friday I'm ringing him myself, and I won't be asking this time.",
+          "Goodnight. I love you, even when you're impossible.",
+        ],
+        choices: [{ text: "Night, Emma. Love you too", next: null }],
       },
     ],
   },

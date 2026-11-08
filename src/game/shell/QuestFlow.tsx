@@ -1,6 +1,7 @@
 // Watches the messenger and fires the next scam email once its conversation has played out.
 // Emma finishes talking about the rent -> the Amazing gift-card phish arrives.
 // Marcus finishes offering to lend money -> the VideoVault free-trial offer arrives.
+// Emma's second conversation, which starts after the VideoVault sign-in -> the $500 prize mail.
 import { useEffect } from "react";
 import { chatStore } from "../apps/messenger/store";
 import { receiveMail } from "../apps/webvoyager/sites/hotpost/store";
@@ -51,12 +52,34 @@ function sendTrialEmail() {
   });
 }
 
+/** Same scammers, next hook — sent only once Jamie has heard Emma out about Marcus's offer. */
+function sendPrizeEmail() {
+  questStore.set((s: QuestFlags) => ({ ...s, prizeEmailSent: true }));
+  receiveMail({
+    fromName: "VideoVault Media",
+    from: "billing@videovault-tv.com",
+    subject: "🎉 You're our 1000th sign-up — win $500!",
+    body:
+      "Hi Jamie Taylor,\n\n" +
+      "Congratulations! You are the 1000th person to sign up to VideoVault Player Pro, so you are now in the draw to win $500.00!\n\n" +
+      "Prize:     $500.00\n" +
+      "Entry:     1000th sign-up\n" +
+      "Draw:      Friday\n\n" +
+      "To confirm your entry, sign in and verify your bank account again:\n" +
+      "https://www.videovault-tv.com/win\n\n" +
+      "Entry closes at midnight — don't miss your chance to win!\n\n" +
+      "— The VideoVault Team\n" +
+      "billing@videovault-tv.com",
+  });
+}
+
 export function QuestFlow() {
   useEffect(() => {
     const tick = setInterval(() => {
       const q = questStore.get();
       if (!q.amazingEmailSent && finished("emma")) sendAmazingEmail();
       if (!q.trialEmailSent && finished("marcus")) sendTrialEmail();
+      if (!q.prizeEmailSent && q.wifeFollowUpStarted && finished("emma")) sendPrizeEmail();
     }, 600);
     return () => clearInterval(tick);
   }, []);

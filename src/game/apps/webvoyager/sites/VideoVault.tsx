@@ -1,6 +1,7 @@
 import { useState, type CSSProperties, type FormEvent } from "react";
 import { PROFILE } from "../../../system/profile";
 import { questStore, type QuestFlags } from "../../../system/quests";
+import { continueConversation } from "../../messenger/store";
 import { useBrowser } from "../BrowserContext";
 import type { PageUrl } from "../url";
 import { deposit, drainAccounts } from "./copperleaf/store";
@@ -62,26 +63,6 @@ function sendBankAlert() {
       "If you recognise this activity, no action is needed.\n\n" +
       "You can view the transaction in Online Banking:\nhttps://www.copperleafbank.com/accounts\n\n" +
       "Copperleaf Bank — helping you keep track of your money.",
-  });
-}
-
-/** Same scammers, next hook: the "1000th sign-up" prize draw. */
-function sendPrizeEmail() {
-  receiveMail({
-    fromName: "VideoVault Media",
-    from: "billing@videovault-tv.com",
-    subject: "🎉 You're our 1000th sign-up — win $500!",
-    body:
-      "Hi Jamie Taylor,\n\n" +
-      "Congratulations! You are the 1000th person to sign up to VideoVault Player Pro, so you are now in the draw to win $500.00!\n\n" +
-      "Prize:     $500.00\n" +
-      "Entry:     1000th sign-up\n" +
-      "Draw:      Friday\n\n" +
-      "To confirm your entry, sign in and verify your bank account again:\n" +
-      "https://www.videovault-tv.com/win\n\n" +
-      "Entry closes at midnight — don't miss your chance to win!\n\n" +
-      "— The VideoVault Team\n" +
-      "billing@videovault-tv.com",
   });
 }
 
@@ -199,10 +180,13 @@ function Login() {
     deposit({ account: "chk", amount: BONUS, desc: "VIDEOVAULT SIGN-UP BONUS" });
     sendBankAlert();
 
-    // The prize draw mail follows the sign-up itself, once the details are in.
-    if (!questStore.get().prizeEmailSent) {
-      questStore.set((s: QuestFlags) => ({ ...s, prizeEmailSent: true }));
-      setTimeout(() => sendPrizeEmail(), 8_000);
+    // Emma finds out what he signed up to. The prize draw mail only arrives once that
+    // conversation has played out and he still won't take Marcus's money — see shell/QuestFlow.
+    if (!questStore.get().wifeFollowUpStarted) {
+      setTimeout(() => {
+        continueConversation("emma", "rent2");
+        questStore.set((s: QuestFlags) => ({ ...s, wifeFollowUpStarted: true }));
+      }, 6_000);
     }
   }
 
