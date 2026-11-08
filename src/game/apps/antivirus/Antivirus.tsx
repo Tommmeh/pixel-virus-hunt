@@ -91,6 +91,7 @@ export function Antivirus() {
               </div>
               <button
                 className="nes-btn is-error"
+                data-tour="pg-remove"
                 onClick={() => {
                   // Remove everything on the PC right now, not just the rows this scan collected:
                   // a second threat can arrive while the results screen is up (e.g. installing
@@ -113,6 +114,7 @@ export function Antivirus() {
       <div className="pg-actions">
         <button
           className="nes-btn is-primary"
+          data-tour="pg-scan"
           disabled={scanning}
           onClick={() => {
             setPct(0);

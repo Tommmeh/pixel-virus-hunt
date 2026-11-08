@@ -4,6 +4,7 @@ import { scamStore } from "../scams/store";
 import { aaronStore, infect, post } from "../storylines/aaron/story";
 import { threatStore } from "../system/threats";
 import { windowStore, wm } from "../system/windows";
+import { startTutorial, tutorialProgress, tutorialSession } from "../tutorial/store";
 import { resetStory } from "./startOver";
 
 describe("resetStory", () => {
@@ -20,5 +21,13 @@ describe("resetStory", () => {
     expect(socialStore.get().posts.some((p) => p.id === "aaron-mum-photos")).toBe(false);
     expect(Object.keys(scamStore.get().unlocked)).toEqual([]);
     expect(windowStore.get().wins).toEqual([]);
+  });
+
+  it("brings Scout's tour back, even if it was finished or skipped", () => {
+    tutorialProgress.set({ done: true });
+    startTutorial();
+    resetStory();
+    expect(tutorialProgress.get().done).toBe(false);
+    expect(tutorialSession.get().active).toBe(false);
   });
 });

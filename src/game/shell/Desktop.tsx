@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { getApp } from "../apps/registry";
 import { openPath } from "../apps/explorer/open";
 import { MessengerService } from "../apps/messenger/MessengerService";
 import { QuestFlow } from "./QuestFlow";
 import { ScamPopups } from "./ScamPopups";
+import { ThreeDaysLater } from "./ThreeDaysLater";
+import { useShake } from "./shake";
+import { questStore } from "../system/quests";
 import { AaronService } from "../storylines/aaron/AaronService";
 import { ZhumingService } from "../storylines/zhuming/ZhumingService";
 import { useZhuming } from "../storylines/zhuming/story";
+import { DemoGuide } from "../demo/DemoGuide";
+import { useDemo } from "../demo/store";
 import { TutorialGuide } from "../tutorial/TutorialGuide";
 import { startTutorial } from "../tutorial/store";
 import { PixelIcon } from "../components/PixelIcon";
@@ -42,6 +47,7 @@ const SHORTCUTS: Shortcut[] = [
   { id: "recycle", label: "Recycle Bin", icon: "bin", open: () => wm.open("recycle") },
   { id: "webvoyager", label: "WebVoyager", icon: "browser", open: () => wm.open("webvoyager") },
   { id: "pingme", label: "PingMe Messenger", icon: "buddy", open: () => wm.open("messenger") },
+  { id: "phone", label: "Phone", icon: "☎", open: () => wm.open("phone") },
   { id: "mines", label: "Mines", icon: "mine", open: () => wm.open("mines") },
   { id: "paneguard", label: "PaneGuard", icon: "shield", open: () => wm.open("antivirus") },
   { id: "scout", label: "Scout's Tips", icon: "scout", open: startTutorial },
@@ -59,6 +65,13 @@ const STORY_SHORTCUT: Shortcut = {
   label: "StockLadder",
   icon: "trophy",
   open: () => wm.open("stockladder"),
+}；
+
+const RBC_SHORTCUT: Shortcut = {
+  id: "rbc",
+  label: "RBC Online Banking",
+  icon: "/rbc-logo.svg",
+  open: () => wm.open("rbc"),
 };
 
 function AppView({ app, win }: { app: string; win: Win }) {
@@ -70,12 +83,16 @@ function AppView({ app, win }: { app: string; win: Win }) {
 
 export function Desktop() {
   const settings = useSettings();
+  const demo = useDemo();
   const wmState = useWindows();
   const { files } = useFs();
   const active = activeKey(wmState);
   const [startOpen, setStartOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const { stage: storyStage } = useZhuming();
+  const quake = useShake();
+  const quaking = quake > 0;
+  const rbcInstalled = questStore.use().rbcInstalled;
 
   const desktopFiles: Shortcut[] = listDir(DESKTOP_DIR, files).map((n) => {
     const path = joinPath(DESKTOP_DIR, n.name);
@@ -91,17 +108,27 @@ export function Desktop() {
 
   return (
     <div
-      className="os desktop"
+      className={`os desktop${quaking ? " is-quaking" : ""}`}
       data-theme={resolveTheme(settings.theme)}
       data-wallpaper={settings.wallpaper}
-      style={{ backgroundImage: wallpaperUrl(settings.wallpaper) ?? undefined }}
+      style={
+        {
+          backgroundImage: wallpaperUrl(settings.wallpaper) ?? undefined,
+          "--quake": quake,
+        } as CSSProperties
+      }
       onPointerDown={() => {
         setStartOpen(false);
         setSelected(null);
       }}
     >
       <div className="desk-icons" data-tour="desktop-icons">
-        {[...SHORTCUTS, ...storyShortcuts, ...desktopFiles].map((s) => (
+        {[
+          ...SHORTCUTS.filter((s) => !(demo && s.id === "scout")),
+          ...(rbcInstalled ? [RBC_SHORTCUT] : []),
+         ...storyShortcuts,
+          ...desktopFiles,
+        ].map((s) => (
           <button
             key={s.id}
             data-tour={`icon-${s.id}`}
@@ -114,7 +141,7 @@ export function Desktop() {
             onDoubleClick={s.open}
             onKeyDown={(e) => e.key === "Enter" && s.open()}
           >
-            <PixelIcon name={s.icon} size={32} />
+            <PixelIcon name={s.icon} size={40} />
             <span>{s.label}</span>
           </button>
         ))}
@@ -132,12 +159,14 @@ export function Desktop() {
 
       {startOpen && <StartMenu onClose={() => setStartOpen(false)} />}
       <Balloons />
-      <MessengerService />
-      <QuestFlow />
-      <ScamPopups />
+      {/* The guided demo keeps the desktop quiet: only Aaron's PhotoWorm runs, narrated by Scout. */}
+      {!demo && <MessengerService />}
+      {!demo && <QuestFlow />}
+      {!demo && <ScamPopups />}
+      <ThreeDaysLater />
       <AaronService />
       <ZhumingService />
-      <TutorialGuide />
+      {demo ? <DemoGuide /> : <TutorialGuide />}
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>
   );

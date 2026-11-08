@@ -5,6 +5,7 @@ import { PROFILE } from "../../../../system/profile";
 import { useSettings } from "../../../../system/settings";
 import { A, useBrowser } from "../../BrowserContext";
 import type { PageUrl } from "../../url";
+import { questStore, type QuestFlags } from "../../../../system/quests";
 import { bankSession, bankStore, transfer } from "./store";
 
 const BASE = "https://www.copperleafbank.com";
@@ -34,7 +35,13 @@ function Header({ signedIn }: { signedIn: boolean }) {
   );
 }
 
-function Login() {
+/** The review mail's link is the only way into the bad ending, so the flag is one-way. */
+function markReviewMailOpened() {
+  if (!questStore.get().reviewLinkOpened)
+    questStore.set((s: QuestFlags) => ({ ...s, reviewLinkOpened: true }));
+}
+
+function Login({ reviewRef }: { reviewRef: boolean }) {
   const { navigate } = useBrowser();
   const [user, setUser] = useState(PROFILE.bankUser);
   const [pw, setPw] = useState("");
@@ -52,6 +59,7 @@ function Login() {
             return;
           }
           bankSession.set({ signedIn: true });
+          if (reviewRef) markReviewMailOpened();
           navigate(`${BASE}/accounts`);
         }}
       >
@@ -266,9 +274,14 @@ function SignOut() {
 
 export function Copperleaf({ url }: { url: PageUrl }) {
   const { signedIn } = bankSession.use();
+  const fromReviewMail = url.query.get("ref") === "review";
+  // Landing on the review link while already signed in counts too; nothing else does.
+  useEffect(() => {
+    if (fromReviewMail && signedIn) markReviewMailOpened();
+  }, [fromReviewMail, signedIn]);
   let page;
   if (url.path === "/signout") page = <SignOut />;
-  else if (!signedIn) page = <Login />;
+  else if (!signedIn) page = <Login reviewRef={fromReviewMail} />;
   else if (url.path === "/transfer") page = <Transfer />;
   else page = <Accounts />;
   return (

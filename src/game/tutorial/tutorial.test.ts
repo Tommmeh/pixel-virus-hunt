@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { mailStore } from "../apps/webvoyager/sites/hotpost/store";
-import { initialWm, windowStore } from "../system/windows";
+import { initialWm, windowStore, type Win } from "../system/windows";
 import { SCOUT_FRAMES, SCOUT_PALETTE, SIZE } from "./scoutSprite";
 import { STEPS, TOUR_TARGETS } from "./steps";
 import {
@@ -9,10 +9,26 @@ import {
   prevStep,
   skipTutorial,
   startTutorial,
+  stepBack,
   tutorialProgress,
   tutorialSession,
 } from "./store";
 
+const fakeWin: Win = {
+  key: "w",
+  app: "w",
+  title: "",
+  icon: "",
+  x: 0,
+  y: 0,
+  w: 100,
+  h: 100,
+  z: 1,
+  min: false,
+  max: false,
+  flash: false,
+  shake: 0,
+};
 const stepId = () => STEPS[tutorialSession.get().step]!.id;
 const goTo = (id: string) => {
   while (tutorialSession.get().active && stepId() !== id) nextStep();
@@ -38,8 +54,17 @@ describe("tutorial script", () => {
       .toLowerCase();
     expect(all).toContain("pretend");
     expect(all).toContain("hunt");
-    expect(STEPS.at(-1)!.id).toBe("done");
-    expect(STEPS.at(-2)!.id).toBe("sign-in");
+    expect(STEPS.at(-1)!.id).toBe("sign-in");
+    expect(STEPS.at(-1)!.after?.title).toBe("You've got mail!");
+  });
+
+  it("is short: 7 cards that still cover the essentials", () => {
+    expect(STEPS).toHaveLength(7);
+    const all = STEPS.map((s) => [s.title, ...s.text].join(" "))
+      .join(" ")
+      .toLowerCase();
+    for (const topic of ["fake", "trophy", "paneguard", "start", "double-click", "notes.txt"])
+      expect(all, topic).toContain(topic);
   });
 
   it("every 'do it yourself' step tells the player what to do", () => {
@@ -64,12 +89,12 @@ describe("Scout sprite", () => {
 describe("tutorial flow", () => {
   it("starts, steps forward and back, and finishes", () => {
     startTutorial();
-    expect(tutorialSession.get()).toEqual({ active: true, step: 0 });
+    expect(tutorialSession.get()).toEqual({ active: true, step: 0, script: "tour" });
     nextStep();
     nextStep();
-    expect(stepId()).toBe("mission");
+    expect(stepId()).toBe("paneguard");
     prevStep();
-    expect(stepId()).toBe("pretend");
+    expect(stepId()).toBe("achievements");
     finishTutorial();
     expect(tutorialSession.get().active).toBe(false);
     expect(tutorialProgress.get().done).toBe(true);
@@ -84,11 +109,26 @@ describe("tutorial flow", () => {
     expect(tutorialSession.get().step).toBe(0);
   });
 
-  it("skips steps that are already done", () => {
-    mailStore.set((s) => ({ ...s, signedIn: true }));
+  it("steps back with the player when they undo a step (e.g. close the browser)", () => {
+    windowStore.set({ ...initialWm, wins: [{ ...fakeWin, key: "webvoyager", app: "webvoyager" }] });
     startTutorial();
     goTo("open-mail");
-    nextStep(); // already signed in → jumps straight to the end
-    expect(stepId()).toBe("done");
+    expect(STEPS.find((s) => s.id === "open-mail")!.undoIf?.()).toBe(false);
+    windowStore.set(initialWm); // browser closed
+    expect(STEPS.find((s) => s.id === "open-mail")!.undoIf?.()).toBe(true);
+    stepBack();
+    expect(stepId()).toBe("open-browser");
+  });
+
+  it("skips the browser step if it's already open, and knows when sign-in is already done", () => {
+    windowStore.set({ ...initialWm, wins: [{ ...fakeWin, key: "webvoyager", app: "webvoyager" }] });
+    startTutorial();
+    goTo("taskbar");
+    nextStep();
+    expect(stepId()).toBe("open-mail");
+    const signIn = STEPS.find((s) => s.id === "sign-in")!;
+    expect(signIn.doneIf?.()).toBe(false);
+    mailStore.set((s) => ({ ...s, signedIn: true }));
+    expect(signIn.doneIf?.()).toBe(true); // Scout goes straight to the send-off
   });
 });

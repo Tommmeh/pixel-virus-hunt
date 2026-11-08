@@ -3,10 +3,20 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { authEnabled } from "@/auth/config";
 import { PixelIcon } from "../components/PixelIcon";
+import { leaveDemoMode, startDemo } from "../demo/store";
 import { playShutdown, playStartup } from "../components/sound";
 import { logIn, setPhase, usePhase } from "../system/session";
 import { updateSettings, useSettings } from "../system/settings";
 import { resetStory } from "./startOver";
+import {
+  nextSponsorIndex,
+  sponsorAt,
+  sponsorBackground,
+  sponsorBgStore,
+  WATERMARK_GAP,
+  WATERMARK_ROWS,
+  watermarkRow,
+} from "./sponsors";
 
 function Logo({ size = 48 }: { size?: number }) {
   return (
@@ -51,8 +61,55 @@ const TOOLS = [
   { name: "Google Gemini", role: "AI chatbot" },
 ];
 
+/** The team, alphabetical. */
+const TEAM = ["Aaron Liddle", "Anish Khosla", "Filipe Braga", "Zhuming Mai"];
+
+/** The easter egg: click it to cycle the home screen through sponsor backgrounds. */
+function SponsorEgg() {
+  const { index } = sponsorBgStore.use();
+  const [shaking, setShaking] = useState(false);
+  const sponsor = sponsorAt(index);
+  return (
+    <div className="egg-corner">
+      <button
+        className={`egg-btn ${shaking ? "is-shaking" : ""}`}
+        aria-label="Easter egg"
+        title="?"
+        onClick={() => {
+          setShaking(true);
+          setTimeout(() => setShaking(false), 300);
+          sponsorBgStore.set({ index: nextSponsorIndex(index) });
+        }}
+      >
+        <PixelIcon name="egg" size={32} />
+      </button>
+      {sponsor && (
+        <span className="sponsor-caption">★ Thanks to {sponsor.name} · HackCamp 2026</span>
+      )}
+    </div>
+  );
+}
+
+/** The sponsor's name repeated in big pixel letters behind the panels. */
+function SponsorMark({ name, ink }: { name: string; ink: string }) {
+  // Same density for every sponsor: rows long enough to cover any screen, staggered by half a name
+  // (like bricks) so the pattern looks even whether the name is "RBC" or "Google Gemini".
+  const row = watermarkRow(name);
+  const half = (name.length + WATERMARK_GAP.length) / 2;
+  return (
+    <div className="sponsor-mark" style={{ color: ink }} aria-hidden>
+      {Array.from({ length: WATERMARK_ROWS }, (_, i) => (
+        <span key={i} style={{ marginLeft: `${(i % 2) * -half}em` }}>
+          {row}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function Welcome() {
   const s = useSettings();
+  const sponsor = sponsorAt(sponsorBgStore.use().index);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const [resetDone, setResetDone] = useState(false);
   // Without Auth0 configured there's no provider: useAuth0() returns defaults and we ignore it.
@@ -70,11 +127,117 @@ function Welcome() {
         : "CLICK YOUR NAME TO START";
 
   return (
-    <div className="welcome-screen">
-      <div className="welcome-mid">
+    <div
+      className="welcome-screen"
+      style={sponsor ? { background: sponsorBackground(sponsor) } : undefined}
+    >
+      {/* Sponsor background + watermark sit on the fixed screen, so they cover it all, even while scrolling. */}
+      {sponsor && <SponsorMark name={sponsor.name} ink={sponsor.colors.ink} />}
+      <SponsorEgg />
+      <div className="welcome-mid" data-sponsor={sponsor?.id}>
         <Logo />
         <p className="welcome-tagline">A SAFE PC FOR PRACTISING AGAINST SCAMS &amp; MALWARE</p>
-        <div className="welcome-grid">
+        <div className="welcome-stack">
+          {/* 1. What to click — first thing on screen. */}
+          <section className="welcome-panel welcome-actions">
+            <p className="welcome-panel-title">START HERE</p>
+            <div className="welcome-demo">
+              {/* No account needed to watch the demo; the full game still asks you to sign in. */}
+              <button
+                className="nes-btn is-success"
+                onClick={() => {
+                  if (authEnabled && authName) updateSettings({ userName: authName });
+                  startDemo();
+                }}
+              >
+                ▶ Guided demo
+              </button>
+              <p className="welcome-demo-cap">
+                3 minutes. Scout walks you through catching (and cleaning) one virus.
+              </p>
+            </div>
+            <p className="welcome-or">OR PLAY THE FULL GAME</p>
+            <p className="welcome-hint">{hint}</p>
+            <button
+              className="user-tile"
+              disabled={loading}
+              onClick={() => {
+                if (needsSignIn) {
+                  void loginWithRedirect();
+                  return;
+                }
+                if (authEnabled && authName) updateSettings({ userName: authName });
+                leaveDemoMode();
+                playStartup();
+                logIn();
+              }}
+            >
+              <span className="user-tile-pic">{s.avatar}</span>
+              {/* Shows the PC's user name; it becomes the Auth0 name once signed in. */}
+              <span className="user-tile-name">
+                {authEnabled && authName ? authName : s.userName}
+              </span>
+              {/* A span styled as a button: the whole tile is the real button. */}
+              <span className="nes-btn is-success is-small user-tile-go" aria-hidden>
+                {needsSignIn ? "Sign in" : "Play ▶"}
+              </span>
+            </button>
+            {resetDone && (
+              <p className="welcome-hint">STORY RESET — THE $5 AD EMAIL IS BACK IN YOUR INBOX</p>
+            )}
+            {/* Account row: start the story again, or sign out of Auth0. */}
+            <div className="welcome-account">
+              <button
+                className="link-btn welcome-reset"
+                onClick={() => {
+                  setResetDone(false);
+                  setConfirmingReset(true);
+                }}
+              >
+                ↺ Start a new game
+              </button>
+              {authEnabled && isAuthenticated && (
+                <>
+                  <span className="welcome-account-sep" aria-hidden>
+                    ·
+                  </span>
+                  <button
+                    className="link-btn welcome-reset is-signout"
+                    onClick={() =>
+                      void logout({ logoutParams: { returnTo: window.location.origin } })
+                    }
+                  >
+                    ⏏ Sign out
+                  </button>
+                </>
+              )}
+            </div>
+            {confirmingReset && (
+              <div className="mt-3">
+                <p className="welcome-fine">
+                  Reset the whole story? Mail, chats, bank balance, trophies and Scout&apos;s tour
+                  all start again.
+                </p>
+                <div className="flex gap-2 mt-2 justify-center">
+                  <button
+                    className="nes-btn is-warning is-small"
+                    onClick={() => {
+                      resetStory();
+                      setConfirmingReset(false);
+                      setResetDone(true);
+                    }}
+                  >
+                    Yes, reset
+                  </button>
+                  <button className="nes-btn is-small" onClick={() => setConfirmingReset(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* 2. What it is. */}
           <section className="welcome-panel welcome-about">
             <p className="welcome-panel-title">ABOUT</p>
             <p>
@@ -96,101 +259,33 @@ function Welcome() {
               leaves your browser.
             </p>
           </section>
-          <div className="welcome-side">
-            <div className="welcome-panel welcome-box">
-              <p className="welcome-panel-title">LOG IN</p>
-              <p className="welcome-hint">{hint}</p>
-              <button
-                className="user-tile"
-                disabled={loading}
-                onClick={() => {
-                  if (needsSignIn) {
-                    void loginWithRedirect();
-                    return;
-                  }
-                  if (authEnabled && authName) updateSettings({ userName: authName });
-                  playStartup();
-                  logIn();
-                }}
-              >
-                <span className="user-tile-pic">{s.avatar}</span>
-                <span className="user-tile-name">
-                  {needsSignIn ? "Sign in" : authEnabled && authName ? authName : s.userName}
+
+          {/* 3. How it was made, and who made it. */}
+          <section className="welcome-panel welcome-tools">
+            <p className="welcome-panel-title">BUILT WITH</p>
+            <ul>
+              {TOOLS.map((t) => (
+                <li key={t.name}>
+                  <b>{t.name}</b>
+                  <span>{t.role}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="welcome-credits">
+            <p className="welcome-credits-title">CREDITS</p>
+            <p className="welcome-credits-names">
+              {TEAM.map((name, i) => (
+                <span key={name}>
+                  {i > 0 && <span aria-hidden> · </span>}
+                  {name}
                 </span>
-                <span className="user-tile-arrow">▶</span>
-              </button>
-              {resetDone && (
-                <p className="welcome-hint">STORY RESET — THE $5 AD EMAIL IS BACK IN YOUR INBOX</p>
-              )}
-              {confirmingReset ? (
-                <div className="mt-3">
-                  <p className="welcome-fine">
-                    Reset the whole story? Mail, chats, bank balance and rewards all start again —
-                    $5 ad, then the Amazing gift card, then the free trial.
-                  </p>
-                  <div className="flex gap-2 mt-2">
-                    <button
-                      className="nes-btn is-warning is-small"
-                      onClick={() => {
-                        resetStory();
-                        setConfirmingReset(false);
-                        setResetDone(true);
-                      }}
-                    >
-                      Yes, reset
-                    </button>
-                    <button className="nes-btn is-small" onClick={() => setConfirmingReset(false)}>
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  className="nes-btn is-small mt-3"
-                  onClick={() => {
-                    setResetDone(false);
-                    setConfirmingReset(true);
-                  }}
-                >
-                  Start over from the beginning
-                </button>
-              )}
-            </div>
-            <div className="welcome-panel welcome-tools">
-              <p className="welcome-panel-title">BUILT WITH</p>
-              <ul>
-                {TOOLS.map((t) => (
-                  <li key={t.name}>
-                    <b>{t.name}</b>
-                    <span>{t.role}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+              ))}
+            </p>
+            <p className="welcome-credits-event">HACKCAMP 2026</p>
+          </section>
         </div>
-      </div>
-      <div className="welcome-bottom">
-        <div className="flex gap-3">
-          <button
-            className="nes-btn is-error"
-            onClick={() => {
-              playShutdown();
-              setPhase("shutdown");
-            }}
-          >
-            Turn off computer
-          </button>
-          {authEnabled && isAuthenticated && (
-            <button
-              className="nes-btn"
-              onClick={() => void logout({ logoutParams: { returnTo: window.location.origin } })}
-            >
-              Sign out
-            </button>
-          )}
-        </div>
-        <span className="welcome-note">VirusHuntOS · HackCamp 2026 · Nothing here is real.</span>
       </div>
     </div>
   );

@@ -7,6 +7,8 @@ import { Messenger } from "./messenger/Messenger";
 import { WormPopup } from "../storylines/aaron/WormPopup";
 import { Antivirus } from "./antivirus/Antivirus";
 import { Mines } from "./mines/Mines";
+import { Phone } from "./phone/Phone";
+import { RBCApp } from "./rbc/RBCApp";
 import { MessageBox, RecycleBin } from "./misc/MessageBox";
 import { ScamPopup } from "./misc/ScamPopup";
 import { Notepad } from "./notepad/Notepad";
@@ -73,6 +75,26 @@ export const APPS: AppDef[] = [
     component: Chat,
   },
   {
+    id: "phone",
+    title: "Phone",
+    icon: "☎",
+    process: "phone.exe",
+    memK: 900,
+    w: 360,
+    h: 520,
+    component: Phone,
+  },
+  {
+    id: "rbc",
+    title: "RBC Online Banking",
+    icon: "/rbc-logo.svg",
+    process: "rbc.exe",
+    memK: 2_400,
+    w: 440,
+    h: 480,
+    component: RBCApp,
+  },
+  {
     id: "taskmgr",
     title: "VirusHuntOS Task Manager",
     icon: "taskmgr",
@@ -126,8 +148,8 @@ export const APPS: AppDef[] = [
     title: "Achievements",
     icon: "medal",
     process: null,
-    w: 540,
-    h: 470,
+    w: 640,
+    h: 540,
     component: Achievements,
   },
   {

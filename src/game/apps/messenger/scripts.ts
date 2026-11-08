@@ -336,6 +336,7 @@ export const SCRIPTS: ChatScript[] = [
   {
     contact: "marcus",
     start: "lend",
+    entries: ["threeDays", "checkin"],
     nodes: [
       {
         id: "lend",
@@ -410,6 +411,87 @@ export const SCRIPTS: ChatScript[] = [
         id: "goodbye",
         them: ["no worries. look after yourself, yeah?", "and say hi to Emma for me"],
         choices: [{ text: "Will do. See you", next: null }],
+      },
+      // Stage 2, started after the bad ending (see shell/QuestFlow.tsx).
+      {
+        id: "threeDays",
+        them: [
+          "morning mate. you about?",
+          "emma rang me. she told me what happened to the account",
+          "i'm not going to say i told you so. i'm just sorry",
+          "listen — email your bank. don't ring them. you want it in writing",
+        ],
+        nudge: true,
+        choices: [
+          { text: "What do I even say to them?", next: "saywhat" },
+          { text: "They'll just say it's my own fault", next: "fault" },
+        ],
+      },
+      {
+        id: "saywhat",
+        them: [
+          "short and boring. what happened, when, how much, and ask for their fraud team",
+          "and don't send it to an address you got second-hand. take it off their own contact page",
+          "it's support@copperleafbank.com — that's the one printed on their site",
+          "then be a pain about it. they only move when you don't go away",
+        ],
+        choices: [{ text: "Alright. I'll email them now", next: "after" }],
+      },
+      {
+        id: "fault",
+        them: [
+          "maybe. they'll try that on, they always do",
+          "email them anyway and ask for the fraud team. support@copperleafbank.com, off their contact page",
+          "keep every reply. don't let them close it quietly",
+        ],
+        choices: [{ text: "Okay. Email, not phone", next: "after" }],
+      },
+      {
+        id: "after",
+        them: [
+          "good. and for what it's worth, they'll probably only give you part of it back",
+          "take it anyway. then we talk about banks",
+        ],
+        choices: [{ text: "Thanks Marcus", next: null }],
+      },
+      {
+        id: "checkin",
+        them: [
+          "did the bank ever ring you?",
+          "been thinking about it all morning, didn't want to nag",
+        ],
+        choices: [{ text: "They gave me some of it back", next: "back" }],
+      },
+      {
+        id: "back",
+        them: [
+          "how much?",
+          "45%? that's more than i thought you'd get out of them",
+          "right. switch accounts. rbc would never let that happen — they ring you before money leaves, not three days after",
+          "install it from here and set it up properly: www.rbc.com/switch",
+        ],
+        choices: [
+          { text: "Installing it now", next: "install" },
+          { text: "You really think it'll make a difference?", next: "difference" },
+        ],
+      },
+      {
+        id: "install",
+        them: [
+          "good. do it before you talk yourself out of it",
+          "once it's installed it sits on your desktop — open it and sign in with the same details as before",
+          "and next time you're short on rent, just ask me. that's all i've been trying to say",
+        ],
+        choices: [{ text: "I will. Thanks mate", next: null }],
+      },
+      {
+        id: "difference",
+        them: [
+          "yeah. rbc checks payments it doesn't recognise and rings you first",
+          "it's slower where it matters. that's the whole point",
+          "www.rbc.com/switch — install it and i'll stop going on about it",
+        ],
+        choices: [{ text: "Alright, installing it", next: null }],
       },
     ],
   },
