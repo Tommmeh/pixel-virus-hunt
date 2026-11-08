@@ -30,3 +30,4 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - Game content (scenarios, malware, decoy items) lives as data in src/game/data.ts and all game state in the single reducer in src/game/state.tsx, so new scenarios need no component changes.
+- Public Auth0 configuration defaults live in the shared auth configuration with VITE_ overrides, so hosted sign-in does not depend on server-only secrets.
