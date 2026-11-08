@@ -28,10 +28,11 @@ describe("messenger scripts", () => {
     }
   });
 
-  it("every node is reachable from the start", () => {
+  it("every node is reachable from an entry point", () => {
     for (const s of SCRIPTS) {
       const seen = new Set<string>();
-      const stack = [s.start];
+      // Later beats with the same contact are entered directly, not by tapping through.
+      const stack = [s.start, ...(s.entries ?? [])];
       while (stack.length) {
         const id = stack.pop()!;
         if (seen.has(id)) continue;
