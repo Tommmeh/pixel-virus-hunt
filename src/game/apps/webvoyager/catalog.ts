@@ -103,6 +103,17 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "download",
     secure: false,
   },
+  // Easter egg: the "leaked GTA6 beta" bookmark pinned at the right-hand end of the Favorites bar.
+  // What downloads is a music video. Not in the search index, so it can only be found here.
+  {
+    host: "www.gta6-beta.com",
+    aliases: ["gta6-beta.com"],
+    name: "GTA6",
+    icon: "download",
+    secure: false,
+    favorite: true,
+    favLabel: "GTA6",
+  },
 ];
 
 export const findSiteInfo = (host: string) =>

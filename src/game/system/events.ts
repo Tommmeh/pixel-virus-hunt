@@ -20,6 +20,8 @@ export type SystemEvent =
   | { type: "settings.change"; key: string }
   | { type: "session.login" }
   | { type: "session.logoff" }
+  // --- Minigames ---
+  | { type: "mines.clear"; level: number }
   // --- Storylines (Stage 2) ---
   | { type: "threat.detected"; id: string }
   | { type: "threat.removed"; id: string }

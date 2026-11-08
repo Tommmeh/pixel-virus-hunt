@@ -19,6 +19,7 @@ import { Quests } from "../scams/Quests";
 import { AchievementsApp } from "../achievements/AchievementsApp";
 import { WebVoyager } from "./webvoyager/WebVoyager";
 import { StockApp } from "../storylines/zhuming/StockApp";
+import { Rickroll } from "./gta6/Rickroll";
 
 export interface AppProps {
   win: Win;
@@ -205,6 +206,17 @@ export const APPS: AppDef[] = [
     w: 540,
     h: 500,
     component: StockApp,
+  },
+  {
+    // Easter egg: what GTA6_BETA.exe actually is — a media player with one clip.
+    id: "rickroll",
+    title: "GTA6 BETA - Media Player",
+    icon: "download",
+    process: "gta6.exe",
+    memK: 12_500,
+    w: 460,
+    h: 380,
+    component: Rickroll,
   },
   {
     id: "msgbox",

@@ -128,3 +128,23 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
   Lovable, ready for your next prompt.
 
 `main` syncs to Lovable — keep it working and never force-push.
+
+## Credits
+
+Built at **HackCamp 2026** by:
+
+- Aaron Liddle
+- Anish Khosla
+- Felipe Braga
+- Zhuming Mai
+
+With thanks to the sponsors who made it possible:
+
+- **Lovable** — the build platform, and the AI gateway the live scammer chats run through
+- **Freebuff** — the coding agent the team built the game with
+- **Auth0** — sign-in
+- **Google Gemini** — the model writing the live conversations
+- **RBC** — the bank, for project reference
+
+HACKCAMP 2026.
+
