@@ -1,4 +1,4 @@
-// Balloon notifications above the system tray (e.g. "Alex says: hey!").
+// Balloon notifications above the system tray (e.g. "Mum says: hello love!").
 import { createStore } from "./store";
 import type { AppArgs } from "./windows";
 

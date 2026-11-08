@@ -5,6 +5,7 @@
 import { AARON_CARDS, AARON_CARD_IDS } from "../storylines/aaron/cards";
 import { ANISH_CARDS, ANISH_CARD_IDS } from "../storylines/anish/cards";
 import { USB_CARDS, USB_CARD_IDS } from "../storylines/usb/cards";
+import { ZHUMING_CARDS, ZHUMING_CARD_IDS } from "../storylines/zhuming/cards";
 import { AI_PERSONAS } from "./ai";
 
 export interface QuestLine {
@@ -59,6 +60,12 @@ export const QUEST_LINES: QuestLine[] = [
     teaser: "There's a new file next to your photos...",
     cardIds: USB_CARDS.map((c) => c.id),
     completeWhen: USB_CARD_IDS.cleaned,
+    id: "stocks",
+    name: "The Hot Stock Tip",
+    icon: "taskmgr",
+    teaser: "A stock that's about to go to the moon...",
+    cardIds: ZHUMING_CARDS.map((c) => c.id),
+    completeWhen: ZHUMING_CARD_IDS.cleaned,
   },
   ...AI_PERSONAS.map((p) => ({
     id: p.id,

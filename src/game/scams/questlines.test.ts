@@ -10,6 +10,7 @@ describe("quest lines (trophies)", () => {
       "photoworm",
       "bank",
       "usb",
+      "stocks",
       "ai-techsupport",
       "ai-friend-abroad",
       "ai-romance",

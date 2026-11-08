@@ -10,6 +10,15 @@ import { logIn, setPhase, usePhase } from "../system/session";
 import { updateSettings, useSettings } from "../system/settings";
 import { resetStory } from "./startOver";
 import { CrashScreen } from "../storylines/usb/CrashScreen";
+import {
+  nextSponsorIndex,
+  sponsorAt,
+  sponsorBackground,
+  sponsorBgStore,
+  WATERMARK_GAP,
+  WATERMARK_ROWS,
+  watermarkRow,
+} from "./sponsors";
 
 function Logo({ size = 48 }: { size?: number }) {
   return (
@@ -59,8 +68,52 @@ const TOOLS = [
 /** The team, alphabetical. */
 const TEAM = ["Aaron Liddle", "Anish Khosla", "Filipe Braga", "Zhuming Mai"];
 
+/** The easter egg: click it to cycle the home screen through sponsor backgrounds. */
+function SponsorEgg() {
+  const { index } = sponsorBgStore.use();
+  const [shaking, setShaking] = useState(false);
+  const sponsor = sponsorAt(index);
+  return (
+    <div className="egg-corner">
+      <button
+        className={`egg-btn ${shaking ? "is-shaking" : ""}`}
+        aria-label="Easter egg"
+        title="?"
+        onClick={() => {
+          setShaking(true);
+          setTimeout(() => setShaking(false), 300);
+          sponsorBgStore.set({ index: nextSponsorIndex(index) });
+        }}
+      >
+        <PixelIcon name="egg" size={32} />
+      </button>
+      {sponsor && (
+        <span className="sponsor-caption">★ Thanks to {sponsor.name} · HackCamp 2026</span>
+      )}
+    </div>
+  );
+}
+
+/** The sponsor's name repeated in big pixel letters behind the panels. */
+function SponsorMark({ name, ink }: { name: string; ink: string }) {
+  // Same density for every sponsor: rows long enough to cover any screen, staggered by half a name
+  // (like bricks) so the pattern looks even whether the name is "RBC" or "Google Gemini".
+  const row = watermarkRow(name);
+  const half = (name.length + WATERMARK_GAP.length) / 2;
+  return (
+    <div className="sponsor-mark" style={{ color: ink }} aria-hidden>
+      {Array.from({ length: WATERMARK_ROWS }, (_, i) => (
+        <span key={i} style={{ marginLeft: `${(i % 2) * -half}em` }}>
+          {row}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function Welcome() {
   const s = useSettings();
+  const sponsor = sponsorAt(sponsorBgStore.use().index);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const [resetDone, setResetDone] = useState(false);
   // Without Auth0 configured there's no provider: useAuth0() returns defaults and we ignore it.
@@ -78,8 +131,14 @@ function Welcome() {
         : "CLICK YOUR NAME TO START";
 
   return (
-    <div className="welcome-screen">
-      <div className="welcome-mid">
+    <div
+      className="welcome-screen"
+      style={sponsor ? { background: sponsorBackground(sponsor) } : undefined}
+    >
+      {/* Sponsor background + watermark sit on the fixed screen, so they cover it all, even while scrolling. */}
+      {sponsor && <SponsorMark name={sponsor.name} ink={sponsor.colors.ink} />}
+      <SponsorEgg />
+      <div className="welcome-mid" data-sponsor={sponsor?.id}>
         <Logo />
         <p className="welcome-tagline">A SAFE PC FOR PRACTISING AGAINST SCAMS &amp; MALWARE</p>
         <div className="welcome-stack">
@@ -119,7 +178,9 @@ function Welcome() {
             >
               <span className="user-tile-pic">{s.avatar}</span>
               {/* Shows the PC's user name; it becomes the Auth0 name once signed in. */}
-              <span className="user-tile-name">{authEnabled && authName ? authName : s.userName}</span>
+              <span className="user-tile-name">
+                {authEnabled && authName ? authName : s.userName}
+              </span>
               {/* A span styled as a button: the whole tile is the real button. */}
               <span className="nes-btn is-success is-small user-tile-go" aria-hidden>
                 {needsSignIn ? "Sign in" : "Play ▶"}
@@ -158,8 +219,8 @@ function Welcome() {
             {confirmingReset && (
               <div className="mt-3">
                 <p className="welcome-fine">
-                  Reset the whole story? Mail, chats, bank balance, trophies and Scout&apos;s tour all
-                  start again.
+                  Reset the whole story? Mail, chats, bank balance, trophies and Scout&apos;s tour
+                  all start again.
                 </p>
                 <div className="flex gap-2 mt-2 justify-center">
                   <button

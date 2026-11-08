@@ -93,7 +93,11 @@ export function Antivirus() {
                 className="nes-btn is-error"
                 data-tour="pg-remove"
                 onClick={() => {
-                  found.forEach((t) => removeThreat(t.id));
+                  // Remove everything on the PC right now, not just the rows this scan collected:
+                  // a second threat can arrive while the results screen is up (e.g. installing
+                  // another storyline's program), and it has to be cleared in the same go.
+                  for (const t of threatStore.get().threats) removeThreat(t.id);
+                  setFound(threatStore.get().threats);
                   setPhase("removed");
                 }}
               >

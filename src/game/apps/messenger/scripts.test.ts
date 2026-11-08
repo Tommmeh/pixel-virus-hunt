@@ -44,14 +44,18 @@ describe("messenger scripts", () => {
   });
 
   it("plays a conversation with typing delays", () => {
-    startConversation("alex", 0);
-    let t = chatStore.get().threads["alex"]!;
+    // A conversation where the contact speaks first (so there is a "typing..." phase).
+    const script = SCRIPTS.find((x) => getNode(x, x.start)!.them.length > 0)!;
+    const c = script.contact;
+    const firstChoice = getNode(script, script.start)!.choices[0]!;
+    startConversation(c, 0);
+    let t = chatStore.get().threads[c]!;
     expect(visible(t, 0)).toHaveLength(0);
     expect(isTyping(t, 0)).toBe(true);
     expect(visible(t, 10_000).length).toBeGreaterThan(0);
-    choose("alex", 0, 10_000);
-    t = chatStore.get().threads["alex"]!;
-    expect(t.node).toBe("boss");
+    choose(c, 0, 10_000);
+    t = chatStore.get().threads[c]!;
+    expect(t.node).toBe(firstChoice.next);
     expect(t.msgs.filter((m) => m.from === "me")).toHaveLength(1);
   });
 });

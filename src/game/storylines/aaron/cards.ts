@@ -19,7 +19,7 @@ export const AARON_CARDS: LessonCard[] = [
       "The link didn't really come from Mum: her FriendSpace account had been hacked and the post went out to all her friends. Scammers use trusted accounts because you click without thinking.",
     redFlags: [
       "An out-of-character message: 'OMG is this you??'",
-      "The address starts with friendspace.com, but the real site is photo-album.net",
+      "The link went to get-photoviewer.net, not FriendSpace",
       "No padlock: plain http",
       "An embarrassing hook to make you click fast",
     ],
@@ -33,7 +33,7 @@ export const AARON_CARDS: LessonCard[] = [
       "Real photo sites show pictures in your browser and never need you to install a viewer. PhotoViewer_setup.exe was a worm installer disguised as a helpful plug-in.",
     redFlags: [
       "A website demanding you install software to see something",
-      "An .exe file from a site you didn't recognise",
+      "A friend's link went straight to a program download",
       "A 'free' viewer from an unknown publisher",
       "The photos still didn't load afterwards",
     ],

@@ -59,10 +59,10 @@ export const DEMO_STEPS: TutorialStep[] = [
   },
   {
     id: "demo-http",
-    title: "Clue #1: http, not https",
+    title: "Clue #1: this isn't FriendSpace",
     text: [
-      "Look at the start of the address. No 's' means no padlock and no encryption: anything you type here can be read or changed on the way.",
-      "The real FriendSpace is always https. And read the whole name: this site is photo-album.net. 'friendspace.com' is just a costume at the front.",
+      "Look where Mum's link took you: get-photoviewer.net, a site you've never heard of, not FriendSpace.",
+      "And it starts with http, not https: no padlock, no encryption. Anything you type here can be read or changed on the way.",
     ],
     target: "addr-http",
     skipIf: () => !stageIs("idle", "posted", "clicked"),
@@ -71,18 +71,18 @@ export const DEMO_STEPS: TutorialStep[] = [
     id: "demo-download",
     title: "They want you to install something",
     text: [
-      "The photos are 'private', so you need their PhotoViewer. Go on, click Download, then Open.",
+      "Mum's 'photos' won't open unless you install their PhotoViewer program first. Go on: click Download now, then Open.",
     ],
     target: ["phish-open", "phish-download"],
     waitFor: (e) => e.type === "story.stage" && e.story === STORY && e.stage === "infected",
-    hint: "Click 'Download PhotoViewer', then 'Open'",
+    hint: "Click 'Download now', then 'Open'",
     skipIf: () => stageIs("infected", "swarm", "cleaned"),
   },
   {
     id: "demo-infected",
-    title: "Clue #2: a website wanted a program",
+    title: "Clue #2: a link that wanted a program",
     text: [
-      "Real sites never need you to install anything just to see photos.",
+      "Photos open in your browser. A friend's link that makes you install something first is a trap.",
       "'Could not be loaded'? It loaded fine... for the hacker. You're infected. Watch the screen...",
     ],
     waitFor: (e) => e.type === "app.open" && e.app === "worm-popup",

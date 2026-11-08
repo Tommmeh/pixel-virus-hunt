@@ -37,6 +37,9 @@ export function AaronService() {
 
   // 1b + 5. React to what the player does.
   useSystemEvent((e) => {
+    // Opening FriendSpace before the timer: Mum's post is already at the top of the feed ("Just now").
+    if (e.type === "site.visit" && e.host === "www.friendspace.com" && !demo)
+      post(Date.now(), false);
     if (e.type === "site.visit" && e.host === PHISH_HOST) click();
     if (e.type === "threat.removed" && e.id === THREAT_ID) clean();
   });

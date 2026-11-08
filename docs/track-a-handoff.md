@@ -96,3 +96,64 @@ path with it (`src/game/scams/ai.test.ts`, "the API key never reaches the browse
 - Every chat turn emits nothing new — no edits to `system/events.ts` were needed. If Stage 2 wants
   quest hooks, `chat.reply` still fires exactly as before for scripted chats; a suggested addition
   is `{ type: "scam.fell"; cardId }` emitted from `AiChat` once you own the event union.
+
+## 6. Zhuming's storyline (RAM Capital) — shared-file edits
+
+Everything new lives in `src/game/storylines/zhuming/`. Eleven shared files gained small additive
+edits, listed here so nobody loses track of them in a merge:
+
+- `apps/webvoyager/catalog.ts` — one `SITE_INFO` entry for `www.stockladder-trade.com` (plain http,
+  not a favourite, not in the search index).
+- `apps/webvoyager/sites/registry.ts` — one host → `StockSite` mapping.
+- `apps/webvoyager/sites/DailyByte.tsx` — renders the sponsored post from `article.ts` once `story.ts`
+  has published it, plus the "Add … on PingMe" button on its article page. The five real articles are
+  unchanged.
+- `apps/messenger/scripts.ts` — `ALL_SCRIPTS = [...SCRIPTS, ...ZHUMING_SCRIPTS]`; `getScript` searches
+  that. No existing script or node was touched.
+- `apps/messenger/Messenger.tsx` — a "Recent" group with Kevin, shown only after the player adds him
+  from the article (stage past `posted`). The existing Online/Offline/Unknown groups are unchanged.
+- `system/people.ts` — `getPerson` falls back to `storyPeople()`, so the chat window and its title can
+  find a contact a storyline introduces. `PEOPLE` itself is untouched: he is never in the buddy list
+  before the add, and no real contact changed.
+- `apps/registry.ts` — one app entry (`stockladder`).
+- `scams/cards.ts` + `scams/cards.test.ts` — Zhuming's four cards appended to `LESSON_CARDS`; the
+  length and prefix assertions now cover both storylines.
+- `shell/Desktop.tsx` — mounts `<ZhumingService />` and shows the StockLadder desktop icon while the
+  app is installed.
+- `shell/startOver.ts` — resets `zhumingStore` and `marketStore` (`vh-stockladder`: the fake broker's
+  cash, positions and the bank link it collected) alongside the other storylines.
+- `storylines/zhuming/bank.ts` reads and debits `bankStore` (`vh-bank`, Copperleaf's own store)
+  rather than editing Copperleaf: each StockLadder purchase debits the chequing account and adds a
+  `STOCKLADDER TRADE <ticker>` line to its history. The board re-prices every 10s (`tick`): RAMH
+  climbs 10p → 30p (+100% → +500%, from Kevin's 5p quote) and ordinary shares drift down to a 30p
+  floor.
+- `apps/messenger/scripts.ts` — Jordan Reyes (`jordan`, the player's friend) gained a `stock` entry
+  node: once the player has spent £200 or banked £250 in StockLadder, `story.noteTrade` starts it
+  and he warns them about the app (with the option to ignore him). The base script is otherwise
+  untouched.
+- Zhuming's later beats live in `story.ts`: `noteTrade` (threshold alert), `emergency` (Kevin's
+  "invest everything" message), `wipe` (drains both Copperleaf accounts via `bank.drainEverything`,
+  goes all-in on RAMH in `market.allIn`, and charges 9× the total as `STOCKLADDER MARGIN CALL`), and
+  `sendWifeMail` (Emma's mail, sent 20 s later, with a clickable link to
+  `https://www.copperleafbank.com/accounts`; mail bodies already auto-link http URLs).
+  `ZhumingService` sends Kevin's emergency 5 s after the player answers J-Reyes' warning, then wipes
+  unconditionally 10 s later — the all-in no longer depends on the player agreeing or closing the
+  app, and only uninstalling it in that window stops it. The ending is `endStockStory`, called after
+  5 s on the Copperleaf accounts page (tracked from `site.visit` plus `bankSession.signedIn`, no
+  longer gated on Emma's mail), which renders `StockEndGame`. `Stage` gained `wiped`, and `ZhumingState` gained `spent`, `earned`,
+  `jordanAlerted`, `linkPosted`, `emergencyAt`, `wipedAt`, `wifeMailId`, `endingAt`. After any reply
+  in Kevin's first conversation, `postInstallLink` pushes the `link` node once the pitch is over
+  (thread at `waiting` or closed), so the download address arrives whether the player declined,
+  stalled or agreed.
+- `apps/antivirus/Antivirus.tsx` — "Remove threats" now removes every threat currently in
+  `threatStore` instead of only the rows captured when the scan finished, and refreshes its list from
+  the store. Before this, a threat installed while the results screen was up (the stock app going in
+  next to Aaron's worm) was left running while PaneGuard reported the PC clean. Zhuming's `clean()`
+  also now accepts the `wiped` stage, so the app can be uninstalled after the accounts have already
+  been emptied instead of the request being silently ignored.
+- `styles.css` — the `.db-kicker` / `.db-sponsored*` rules and the `.sl-*` / `.st-*` blocks only.
+
+Flow: post → balloon → article (card) → add on PingMe (card) → chat → download page → install
+(threat + app window + desktop icon, card) → PaneGuard removal (card + `story.complete`). As with the
+PhotoWorm story, no warning is ever shown at the moment of the mistake — the lessons only appear in
+Achievements.
