@@ -4,6 +4,7 @@ import { PEOPLE, type Presence } from "../../system/people";
 import { updateSettings, useSettings, type Settings } from "../../system/settings";
 import { wm } from "../../system/windows";
 import { chatKey, chatTitle, startConversation, theirVisibleCount, useChat } from "./store";
+import { AI_PERSONAS } from "../../scams/ai";
 
 const STATUS_LABEL: Record<Presence, string> = {
   online: "Online",
@@ -15,6 +16,16 @@ const STATUS_LABEL: Record<Presence, string> = {
 export function openChat(contact: string) {
   startConversation(contact);
   wm.open("chat", { contact }, { key: chatKey(contact), title: chatTitle(contact) });
+}
+
+/** Open a conversation with one of the ai- scammers (no script: the reply comes from Gemini). */
+export function openScamChat(personaId: string) {
+  const p = AI_PERSONAS.find((x) => x.id === personaId);
+  wm.open(
+    "chat",
+    { contact: personaId },
+    { key: `chat:${personaId}`, title: `${p?.screenName ?? personaId} - Conversation` },
+  );
 }
 
 /** The PingMe buddy list. */
@@ -77,6 +88,23 @@ export function Messenger() {
             })}
           </div>
         ))}
+        <div>
+          <div className="pm-group">▾ Unknown ({AI_PERSONAS.length})</div>
+          {AI_PERSONAS.map((p) => (
+            <button
+              key={p.id}
+              className="pm-contact"
+              onDoubleClick={() => openScamChat(p.id)}
+              onKeyDown={(e) => e.key === "Enter" && openScamChat(p.id)}
+              title={`${p.screenName} <${p.email}>`}
+            >
+              <span className="pm-dot is-online" />
+              <span className="pm-name">
+                {p.screenName} <small>(Online) - {p.blurb}</small>
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
       <div className="pm-foot">
         <PixelIcon name="buddy" size={16} /> Double-click a contact to chat

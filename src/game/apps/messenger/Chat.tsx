@@ -14,10 +14,20 @@ import {
   useChat,
   visible,
 } from "./store";
+import { AiChat } from "./AiChat";
+import { isScamContact } from "../../scams/ai";
 
-/** One conversation window with a contact. */
+/** One conversation window: live scammer chats, otherwise the scripted PingMe script. */
 export function Chat({ win }: { win: Win }) {
   const contact = win.args?.["contact"] ?? "";
+  return isScamContact(contact) ? (
+    <AiChat contact={contact} />
+  ) : (
+    <ScriptedChat win={win} contact={contact} />
+  );
+}
+
+function ScriptedChat({ win, contact }: { win: Win; contact: string }) {
   const person = getPerson(contact);
   const s = useSettings();
   const { threads } = useChat();

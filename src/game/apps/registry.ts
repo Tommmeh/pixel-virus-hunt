@@ -9,6 +9,7 @@ import { MessageBox, RecycleBin } from "./misc/MessageBox";
 import { Notepad } from "./notepad/Notepad";
 import { Settings } from "./settings/Settings";
 import { TaskManager } from "./taskmgr/TaskManager";
+import { Achievements } from "../scams/Achievements";
 import { WebVoyager } from "./webvoyager/WebVoyager";
 
 export interface AppProps {
@@ -115,6 +116,15 @@ export const APPS: AppDef[] = [
     w: 480,
     h: 320,
     component: RecycleBin,
+  },
+  {
+    id: "achievements",
+    title: "Achievements",
+    icon: "info",
+    process: null,
+    w: 540,
+    h: 470,
+    component: Achievements,
   },
   {
     id: "msgbox",
