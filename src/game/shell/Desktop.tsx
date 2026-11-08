@@ -8,6 +8,8 @@ import { ThreeDaysLater } from "./ThreeDaysLater";
 import { useShake } from "./shake";
 import { questStore } from "../system/quests";
 import { AaronService } from "../storylines/aaron/AaronService";
+import { ZhumingService } from "../storylines/zhuming/ZhumingService";
+import { useZhuming } from "../storylines/zhuming/story";
 import { DemoGuide } from "../demo/DemoGuide";
 import { useDemo } from "../demo/store";
 import { TutorialGuide } from "../tutorial/TutorialGuide";
@@ -57,6 +59,14 @@ const SHORTCUTS: Shortcut[] = [
   },
 ];
 
+/** Zhuming's storyline: StockLadder only gets a desktop icon once it has been installed. */
+const STORY_SHORTCUT: Shortcut = {
+  id: "stockladder",
+  label: "StockLadder",
+  icon: "trophy",
+  open: () => wm.open("stockladder"),
+}；
+
 const RBC_SHORTCUT: Shortcut = {
   id: "rbc",
   label: "RBC Online Banking",
@@ -79,6 +89,7 @@ export function Desktop() {
   const active = activeKey(wmState);
   const [startOpen, setStartOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const { stage: storyStage } = useZhuming();
   const quake = useShake();
   const quaking = quake > 0;
   const rbcInstalled = questStore.use().rbcInstalled;
@@ -92,6 +103,8 @@ export function Desktop() {
       open: () => openPath(path),
     };
   });
+
+  const storyShortcuts = storyStage === "installed" ? [STORY_SHORTCUT] : [];
 
   return (
     <div
@@ -113,6 +126,7 @@ export function Desktop() {
         {[
           ...SHORTCUTS.filter((s) => !(demo && s.id === "scout")),
           ...(rbcInstalled ? [RBC_SHORTCUT] : []),
+         ...storyShortcuts,
           ...desktopFiles,
         ].map((s) => (
           <button
@@ -151,6 +165,7 @@ export function Desktop() {
       {!demo && <ScamPopups />}
       <ThreeDaysLater />
       <AaronService />
+      <ZhumingService />
       {demo ? <DemoGuide /> : <TutorialGuide />}
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>

@@ -1,13 +1,16 @@
 // Every lesson card (Gemini chats + storylines) must be unique and complete for the Achievements app.
 import { describe, expect, it } from "vitest";
 import { AARON_CARDS } from "../storylines/aaron/cards";
+import { ZHUMING_CARDS } from "../storylines/zhuming/cards";
 import { ANISH_CARDS } from "../storylines/anish/cards";
 import { AI_SCAMS } from "./ai";
 import { LESSON_CARDS } from "./cards";
 
+const STORYLINE_CARDS = [...AARON_CARDS, ...ZHUMING_CARDS];
+
 describe("lesson cards", () => {
   it("include the chat scams and every storyline", () => {
-    expect(LESSON_CARDS).toHaveLength(AI_SCAMS.length + AARON_CARDS.length + ANISH_CARDS.length);
+    expect(LESSON_CARDS).toHaveLength(AI_SCAMS.length + AARON_CARDS.length + ANISH_CARDS.length + STORYLINE_CARDS.length);
   });
 
   it("have unique ids", () => {
@@ -27,5 +30,6 @@ describe("lesson cards", () => {
 
   it("storyline cards are prefixed with their storyline", () => {
     for (const c of AARON_CARDS) expect(c.id.startsWith("aaron-"), c.id).toBe(true);
+    for (const c of ZHUMING_CARDS) expect(c.id.startsWith("zhuming-"), c.id).toBe(true);
   });
 });

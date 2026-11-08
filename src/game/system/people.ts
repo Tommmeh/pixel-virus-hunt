@@ -1,4 +1,6 @@
 // The player's contacts. Shared by PingMe Messenger, HotPost Mail and FriendSpace.
+import { storyPeople } from "../storylines/zhuming/contact";
+
 export type Presence = "online" | "away" | "busy" | "offline";
 
 export interface Person {
@@ -94,6 +96,8 @@ export const PEOPLE: Person[] = [
   },
 ];
 
-export const getPerson = (id: string) => PEOPLE.find((p) => p.id === id);
+/** Real contacts first, then the ones a storyline introduces (e.g. Zhuming's "stock guru"). */
+export const getPerson = (id: string) =>
+  PEOPLE.find((p) => p.id === id) ?? storyPeople().find((p) => p.id === id);
 export const personByEmail = (email: string) =>
   PEOPLE.find((p) => p.email.toLowerCase() === email.trim().toLowerCase());
