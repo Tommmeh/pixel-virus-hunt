@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Check, Select, formatMoney } from "../../../../components/ui";
 import { emit } from "../../../../system/events";
 import { PROFILE } from "../../../../system/profile";
+import { useSettings } from "../../../../system/settings";
 import { A, useBrowser } from "../../BrowserContext";
 import type { PageUrl } from "../../url";
 import { bankSession, bankStore, transfer } from "./store";
@@ -89,9 +90,10 @@ function Login() {
 
 function Accounts() {
   const bank = bankStore.use();
+  const name = useSettings().userName;
   return (
     <div className="cl-page">
-      <h2>Welcome back, {PROFILE.fullName}</h2>
+      <h2>Welcome back, {name}</h2>
       <table className="cl-table">
         <thead>
           <tr>

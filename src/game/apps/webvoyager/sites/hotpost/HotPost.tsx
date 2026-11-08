@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { emit } from "../../../../system/events";
 import { PEOPLE } from "../../../../system/people";
-import { PROFILE } from "../../../../system/profile";
+import { personalize, PROFILE } from "../../../../system/profile";
 import { A, useBrowser } from "../../BrowserContext";
 import type { PageUrl } from "../../url";
 import { mailStore, markRead, sendMail, useMail, type Mail } from "./store";
@@ -40,6 +40,7 @@ function SignIn() {
           <input
             className="nes-input"
             type="password"
+            data-tour="mail-password"
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             autoFocus
@@ -98,7 +99,7 @@ function ReadMail({ mail }: { mail: Mail | undefined }) {
           <b>Date:</b> {mail.date}
         </p>
       </div>
-      <pre className="hp-body">{mail.body}</pre>
+      <pre className="hp-body">{personalize(mail.body)}</pre>
       {mail.from !== PROFILE.email && (
         <button
           className="nes-btn is-primary"

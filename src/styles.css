@@ -788,3 +788,23 @@ body { font-family: var(--font-sans); background: #000; }
 .pg-ok { color: #4aa52e; }
 .pg-bad { color: #ce372b; font: 9px var(--font-sans); }
 .pg-actions { display: flex; justify-content: flex-end; padding: 8px 10px; border-top: 4px solid var(--border); }
+
+/* ---------- Tutorial: Scout ---------- */
+.tour-spot { position: absolute; z-index: 5300; pointer-events: none; transition: left 0.2s steps(3), top 0.2s steps(3), width 0.2s steps(3), height 0.2s steps(3);
+  box-shadow: 0 0 0 4px #f7d51d, 0 0 0 8px #212529, 0 0 0 9999px rgb(0 0 0 / 35%); animation: tour-pulse 1s steps(1) infinite; }
+@keyframes tour-pulse { 50% { box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px #212529, 0 0 0 9999px rgb(0 0 0 / 35%); } }
+.scout-box { position: absolute; right: 12px; bottom: 50px; z-index: 5400; display: flex; align-items: flex-end; gap: 0; max-width: calc(100% - 24px); pointer-events: none; }
+.scout-box > * { pointer-events: auto; }
+.os .scout-balloon { width: min(400px, calc(100vw - 150px)); margin: 0 4px 60px 0; padding: 10px 14px; color: #212529; font: 20px/1.15 var(--font-body); }
+.scout-balloon p { margin: 0 0 6px; }
+.scout-title { font: 10px/1.5 var(--font-sans) !important; color: #209cee; margin-bottom: 8px !important; }
+.scout-hint { color: #c25e00; animation: blink 1.2s steps(1) infinite; }
+.scout-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.scout-skip { margin-right: auto; font: 16px var(--font-body); color: #6c7a89 !important; }
+.scout-count { font: 8px var(--font-sans); color: #6c7a89; }
+.scout-sprite { flex: none; animation: scout-bob 1.4s steps(2) infinite; filter: drop-shadow(4px 4px 0 rgb(0 0 0 / 35%)); }
+.scout { display: block; image-rendering: pixelated; }
+@keyframes scout-bob { 50% { transform: translateY(-4px); } }
+@media (max-width: 700px) { .scout-sprite .scout { width: 64px; height: 64px; } }
+.tour-spot.is-soft { box-shadow: 0 0 0 4px #f7d51d, 0 0 0 8px #212529; animation: tour-pulse-soft 1s steps(1) infinite; }
+@keyframes tour-pulse-soft { 50% { box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px #212529; } }

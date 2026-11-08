@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { playNudge } from "../../components/sound";
 import { useNow } from "../../components/ui";
 import { getPerson } from "../../system/people";
+import { personalize } from "../../system/profile";
 import { useSettings } from "../../system/settings";
 import { activeKey, useWindows, wm, type Win } from "../../system/windows";
 import { getNode, getScript } from "./scripts";
@@ -66,7 +67,7 @@ function ScriptedChat({ win, contact }: { win: Win; contact: string }) {
               </span>
               <span className={`nes-balloon ${m.from === "me" ? "from-right" : "from-left"}`}>
                 {m.nudge && <i>[{person.screenName} sent you a nudge!] </i>}
-                {m.text}
+                {personalize(m.text)}
               </span>
             </div>
           ))}

@@ -25,7 +25,7 @@ function Clock({ h24 }: { h24: boolean }) {
 function Tray() {
   const s = useSettings();
   return (
-    <div className="tray">
+    <div className="tray" data-tour="tray">
       <button
         className="tray-icon"
         title={`PingMe Messenger (${s.chatStatus})`}
@@ -66,6 +66,7 @@ export function Taskbar({ startOpen, onStart }: { startOpen: boolean; onStart: (
   return (
     <div className="taskbar">
       <button
+        data-tour="start"
         className={`nes-btn is-success start-btn ${startOpen ? "is-open" : ""}`}
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onStart}
@@ -73,7 +74,7 @@ export function Taskbar({ startOpen, onStart }: { startOpen: boolean; onStart: (
         <PixelIcon name="logo" size={18} />
         <span>START</span>
       </button>
-      <div className="task-list">
+      <div className="task-list" data-tour="taskbar">
         {state.wins.map((w) => (
           <button
             key={w.key}

@@ -1,5 +1,6 @@
 // Virtual file system: drives C: and E: as data, plus a persisted overlay of files the user saves.
 import { emit } from "./events";
+import { personalize } from "./profile";
 import { createStore } from "./store";
 
 export type FileKind = "text" | "image" | "audio" | "doc" | "program" | "system";
@@ -74,7 +75,7 @@ const WIN_INI = `; for 16-bit app support
 MAPI=1
 `;
 
-const README_USB = `This USB stick belongs to Jamie Taylor.
+const README_USB = `This USB stick belongs to {name}.
 If found, please hand it in at the school office. Thanks!
 `;
 
@@ -267,7 +268,7 @@ export function listDir(path: string, files: Files = fsStore.get().files): FsNod
 
 export function readFile(path: string, files: Files = fsStore.get().files): string | null {
   const n = getNode(path, files);
-  return n && n.type === "file" && n.kind === "text" ? (n.content ?? "") : null;
+  return n && n.type === "file" && n.kind === "text" ? personalize(n.content ?? "") : null;
 }
 
 /** Can the user save files into this folder? (Not system folders, not into files.) */

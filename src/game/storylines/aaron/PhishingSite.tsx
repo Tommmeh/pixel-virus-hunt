@@ -1,12 +1,13 @@
 // The lookalike "FriendSpace photo album" page at friendspace.com.photo-album.net (no padlock).
 // Downloading and opening the "PhotoViewer" infects the PC — silently, with a bland error afterwards.
 import { useEffect, useState } from "react";
-import { PROFILE } from "../../system/profile";
+import { useSettings } from "../../system/settings";
 import { infect, PHISH_HOST } from "./story";
 
 type Phase = "page" | "dialog" | "installing" | "failed";
 
 export function PhishingSite() {
+  const name = useSettings().userName;
   const [phase, setPhase] = useState<Phase>("page");
   const [pct, setPct] = useState(0);
 
@@ -37,7 +38,7 @@ export function PhishingSite() {
       </div>
 
       <div className="phish-album">
-        <h2>{PROFILE.fullName} was tagged in 12 photos</h2>
+        <h2>{name} was tagged in 12 photos</h2>
         <p>Album: "lol remember this?? 😂" · shared by Linda Taylor</p>
         <div className="phish-thumbs" aria-hidden>
           {Array.from({ length: 12 }).map((_, i) => (
