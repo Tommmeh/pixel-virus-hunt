@@ -2,7 +2,8 @@
 // they are being scammed, and finds out what happened only here, after the fact.
 import { useState } from "react";
 import { askItGuy } from "../ai.functions";
-import { AI_SCAMS, itGuyFallback, type LessonCard } from "./ai";
+import { itGuyFallback, type LessonCard } from "./ai";
+import { LESSON_CARDS } from "./cards";
 import { useScams } from "./store";
 
 function CardView({ card }: { card: LessonCard }) {
@@ -58,12 +59,12 @@ function CardView({ card }: { card: LessonCard }) {
  * met yet. */
 export function Achievements() {
   const state = useScams();
-  const unlocked = AI_SCAMS.filter((c) => c.id in state.unlocked);
+  const unlocked = LESSON_CARDS.filter((c) => c.id in state.unlocked);
 
   return (
     <div className="p-2">
       <p className="mb-2">
-        <b>Scam lessons learned:</b> {unlocked.length} / {AI_SCAMS.length}
+        <b>Scam lessons learned:</b> {unlocked.length} / {LESSON_CARDS.length}
       </p>
       {unlocked.length === 0 ? (
         <p>

@@ -4,6 +4,8 @@ import { setAppCatalog, type Win } from "../system/windows";
 import { Explorer } from "./explorer/Explorer";
 import { Chat } from "./messenger/Chat";
 import { Messenger } from "./messenger/Messenger";
+import { WormPopup } from "../storylines/aaron/WormPopup";
+import { Antivirus } from "./antivirus/Antivirus";
 import { Mines } from "./mines/Mines";
 import { MessageBox, RecycleBin } from "./misc/MessageBox";
 import { Notepad } from "./notepad/Notepad";
@@ -120,11 +122,32 @@ export const APPS: AppDef[] = [
   {
     id: "achievements",
     title: "Achievements",
-    icon: "info",
+    icon: "medal",
     process: null,
     w: 540,
     h: 470,
     component: Achievements,
+  },
+  {
+    id: "antivirus",
+    title: "PaneGuard Antivirus",
+    icon: "shield",
+    process: "paneguard.exe",
+    memK: 7_420,
+    w: 520,
+    h: 420,
+    component: Antivirus,
+  },
+  {
+    // Aaron's storyline: a PhotoWorm pop-up (many can be open at once, keyed "worm:<n>").
+    id: "worm-popup",
+    title: "Special Offer!",
+    icon: "warning",
+    process: "photoviewer.exe",
+    memK: 3_300,
+    w: 300,
+    h: 200,
+    component: WormPopup,
   },
   {
     id: "msgbox",

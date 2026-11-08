@@ -6,6 +6,7 @@ import { DailyByte } from "./DailyByte";
 import { FriendSpace } from "./friendspace/FriendSpace";
 import { HotPost } from "./hotpost/HotPost";
 import { Searchly } from "./Searchly";
+import { PhishingSite } from "../../../storylines/aaron/PhishingSite";
 
 export const SITE_COMPONENTS: Record<string, ComponentType<{ url: PageUrl }>> = {
   "www.searchly.com": Searchly,
@@ -13,4 +14,5 @@ export const SITE_COMPONENTS: Record<string, ComponentType<{ url: PageUrl }>> = 
   "www.copperleafbank.com": Copperleaf,
   "www.friendspace.com": FriendSpace,
   "www.dailybyte.com": DailyByte,
+  "friendspace.com.photo-album.net": PhishingSite,
 };

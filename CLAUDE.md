@@ -81,6 +81,19 @@ session.logoff` — see `system/events.ts`. Subscribe with `onEvent()` / `useSys
 `vh-settings`, `vh-fs`, `vh-mail`, `vh-bank`, `vh-social`, `vh-chat`. Windows, session phase and bank login are
 session-only. Settings → Reset clears everything (`resetAllStores()`).
 
+### Storylines (Stage 2)
+
+Each virus storyline lives in its own folder, `src/game/storylines/<name>/`, with a small `story.ts` (persisted
+stage + transitions), a `<Name>Service.tsx` mounted in `shell/Desktop.tsx` (timers, event listeners) and its own
+pages/windows. Shared files only get small additive registrations (app registry, site catalog, desktop/Start menu).
+- **Aaron — PhotoWorm** (`storylines/aaron/`, `vh-aaron`): Mum's FriendSpace post links to the lookalike
+  `friendspace.com.photo-album.net` → "PhotoViewer" download → escalating pop-ups → swarm (closing one spawns two,
+  capped at 24) → cleared by PaneGuard Antivirus.
+- **Threats** (`system/threats.ts`, `vh-threats`): storylines `addThreat()` when the PC gets infected; **PaneGuard
+  Antivirus** (`apps/antivirus/`) scans and `removeThreat()`s them, which emits `threat.removed` for the storyline.
+- Achievements aren't wired yet: each storyline marks the spot with `// TODO(achievements)` and emits
+  `story.complete` when solved.
+
 ## Conventions
 
 - **Fictional brands only:** VirusHuntOS, WebVoyager, PingMe, Searchly, HotPost, Copperleaf Bank, FriendSpace, The
