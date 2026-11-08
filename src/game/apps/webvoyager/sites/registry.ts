@@ -11,6 +11,7 @@ import { RBC } from "./RBC";
 import { VideoVault } from "./VideoVault";
 import { StockSite } from "../../../storylines/zhuming/StockSite";
 import { DownloadSite } from "../../../storylines/aaron/DownloadSite";
+import { Gta6Site } from "../../gta6/Gta6Site";
 
 export const SITE_COMPONENTS: Record<string, ComponentType<{ url: PageUrl }>> = {
   "www.adrewards.com": AdRewards,
@@ -23,4 +24,5 @@ export const SITE_COMPONENTS: Record<string, ComponentType<{ url: PageUrl }>> = 
   "www.stockladder-trade.com": StockSite,
   "www.rbc.com": RBC,
   "get-photoviewer.net": DownloadSite,
+  "www.gta6-beta.com": Gta6Site,
 };

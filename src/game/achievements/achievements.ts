@@ -11,6 +11,8 @@ export interface Achievement {
   /** What to do, shown on the badge (also the hint before it's unlocked). */
   description: string;
   icon: string;
+  /** Shown as "???" until it's earned — for badges that would spoil the joke. */
+  hidden?: boolean;
   when: (e: SystemEvent) => boolean;
 }
 
@@ -98,6 +100,21 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: "Change a setting",
     icon: "gear",
     when: (e) => e.type === "settings.change",
+  },
+  {
+    id: "mine-pro",
+    name: "Mine Pro",
+    description: "Clear all three Mines fields: 10, 25 and 50 mines",
+    icon: "mine",
+    when: (e) => e.type === "mines.clear" && e.level >= 3,
+  },
+  {
+    id: "rickroll",
+    name: "Rickroll",
+    description: "You got rickrolled before GTA6",
+    icon: "download",
+    hidden: true,
+    when: (e) => e.type === "app.open" && e.app === "rickroll",
   },
   {
     id: "exterminator",

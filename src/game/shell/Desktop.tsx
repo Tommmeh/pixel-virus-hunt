@@ -16,6 +16,7 @@ import { useZhuming } from "../storylines/zhuming/story";
 import { DemoGuide } from "../demo/DemoGuide";
 import { useDemo } from "../demo/store";
 import { AchievementService } from "../achievements/AchievementService";
+import { gta6Store } from "../apps/gta6/install";
 import { VirusHud } from "./VirusHud";
 import { PixelIcon } from "../components/PixelIcon";
 import { DESKTOP_DIR, ICON_FOR_KIND, MY_DOCUMENTS, joinPath, listDir, useFs } from "../system/fs";
@@ -69,6 +70,14 @@ const STORY_SHORTCUT: Shortcut = {
   open: () => wm.open("stockladder"),
 };
 
+/** Easter egg: GTA6 only appears once its "beta" installer has finished. */
+const GTA6_SHORTCUT: Shortcut = {
+  id: "gta6",
+  label: "GTA6 BETA",
+  icon: "download",
+  open: () => wm.open("rickroll"),
+};
+
 const RBC_SHORTCUT: Shortcut = {
   id: "rbc",
   label: "RBC Online Banking",
@@ -95,6 +104,7 @@ export function Desktop() {
   const quake = useShake();
   const quaking = quake > 0;
   const rbcInstalled = questStore.use().rbcInstalled;
+  const gta6Installed = gta6Store.use().installed;
 
   const desktopFiles: Shortcut[] = listDir(DESKTOP_DIR, files).map((n) => {
     const path = joinPath(DESKTOP_DIR, n.name);
@@ -129,6 +139,7 @@ export function Desktop() {
           ...SHORTCUTS,
           ...(rbcInstalled ? [RBC_SHORTCUT] : []),
           ...storyShortcuts,
+          ...(gta6Installed ? [GTA6_SHORTCUT] : []),
           ...desktopFiles,
         ].map((s) => (
           <button

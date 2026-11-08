@@ -15,6 +15,29 @@ export interface Board {
   state: "ready" | "playing" | "won" | "lost";
 }
 
+export interface MinesLevel {
+  /** Shown under the field. */
+  label: string;
+  w: number;
+  h: number;
+  mines: number;
+}
+
+/** The three fields, easiest first. Clearing one offers the next. */
+export const LEVELS: MinesLevel[] = [
+  { label: "Easy", w: 9, h: 9, mines: 10 },
+  { label: "Hard", w: 12, h: 12, mines: 25 },
+  { label: "Expert", w: 16, h: 16, mines: 50 },
+];
+
+/** Which field, clamped to the ones that exist. */
+export const levelIndex = (i: number) => Math.max(0, Math.min(LEVELS.length - 1, i));
+
+export const newBoardFor = (level: number): Board => {
+  const l = LEVELS[levelIndex(level)]!;
+  return newBoard(l.w, l.h, l.mines);
+};
+
 export const newBoard = (w = 9, h = 9, mines = 10): Board => ({
   w,
   h,

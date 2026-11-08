@@ -151,7 +151,25 @@ edits, listed here so nobody loses track of them in a merge:
   screen. This reuses dev's existing RBC app/`rbcInstalled` flag, so the desktop shortcut and
   `RBCApp` work unchanged; only the Zhuming reaction to the flag is new. Note the deliberate
   exception to the no-early-warnings rule: Frank's tip is the only way into this ending, so it reads
-  as an anecdote about his own bank rather than advice about the app. `Stage` gained `wiped`, and `ZhumingState` gained `spent`, `earned`,
+  as an anecdote about his own bank rather than advice about the app.
+
+**Mines difficulty ramp (shared files).** `apps/mines` now has three fields (`LEVELS` in
+  `logic.ts`: 9×9/10, 12×12/25, 16×16/50). Clearing one offers the next button; the window is
+  resized with `wm.resize` and progress persists in `vh-mines`. Shared edits: a `mines.clear`
+  event in `system/events.ts`, a `mine-pro` achievement in `achievements/achievements.ts`, and two
+  `.mines-*` rules in `styles.css`.
+
+  **GTA6 easter egg (shared files).** A sixth Favorites bookmark (`www.gta6-beta.com`, last in
+  `SITE_INFO` so it sits on the far right) offers `GTA6_BETA.exe`; installing it registers the
+  `rickroll` app, drops a `GTA6 BETA` desktop shortcut and starts the pixel music video, which is
+  also the achievement trigger. Shared edits: the catalog entry + `sites/registry.ts` mapping (the
+  sites test requires the two to match), the `rickroll` entry in `apps/registry.ts`, the shortcut in
+  `shell/Desktop.tsx`, a `hidden?: boolean` flag on achievements plus the `rickroll` badge, the
+  hide-until-earned rendering in `AchievementsApp.tsx`, and `playRickroll()` in `components/sound.ts`.
+  The player uses a real clip if `public/gta6/rickroll.mp4` exists and falls back to the pixel clip
+  on load error, so the egg works with or without the asset. The install itself lives in a
+  session-only store (`vh-`-less, so no localStorage): a restart or log-off removes the program and
+  its desktop shortcut, and `resetStory()` clears it too. `Stage` gained `wiped`, and `ZhumingState` gained `spent`, `earned`,
   `jordanAlerted`, `linkPosted`, `emergencyAt`, `wipedAt`, `wifeMailId`, `endingAt`. After any reply
   in Kevin's first conversation, `postInstallLink` pushes the `link` node once the pitch is over
   (thread at `waiting` or closed), so the download address arrives whether the player declined,

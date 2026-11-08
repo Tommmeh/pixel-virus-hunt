@@ -54,5 +54,14 @@ export const playDing = () => play([880, 1320], 0.09, "sine");
 export const playError = () => play([440, 330], 0.12, "square", 0.04);
 /** Messenger nudge buzz. */
 export const playNudge = () => play([150, 0, 150, 0, 150], 0.06, "sawtooth", 0.05);
+/** The one thing GTA6_BETA.exe plays: the opening phrase of a certain 1987 hit, in chiptune. */
+export const playRickroll = () =>
+  play(
+    [587, 659, 880, 659, 740, 740, 659, 587, 587, 659, 880, 659, 784, 740, 659, 587],
+    0.19,
+    "triangle",
+    0.06,
+  );
+
 /** Log off / shut down. */
 export const playShutdown = () => play([784, 659, 523, 392], 0.16, "triangle");

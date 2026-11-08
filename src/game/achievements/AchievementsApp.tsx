@@ -22,17 +22,22 @@ export function AchievementsApp() {
       <ul className="badge-list">
         {ACHIEVEMENTS.map((a) => {
           const got = a.id in unlocked;
+          // Hidden badges keep the joke until they're earned: no name, no hint.
+          const secret = !!a.hidden && !got;
           return (
             <li key={a.id} className={`badge ${got ? "is-got" : "is-locked"}`}>
               <span className="badge-icon">
-                <PixelIcon name={a.icon} size={32} />
+                <PixelIcon name={secret ? "info" : a.icon} size={32} />
               </span>
               <span className="badge-text">
-                <b>{a.name}</b>
-                <span>{a.description}</span>
+                <b>{secret ? "???" : a.name}</b>
+                <span>{secret ? "Hidden achievement" : a.description}</span>
               </span>
-              <span className="badge-mark" aria-label={got ? "Earned" : "Not yet"}>
-                {got ? "✓" : ""}
+              <span
+                className="badge-mark"
+                aria-label={got ? "Earned" : secret ? "Hidden" : "Not yet"}
+              >
+                {got ? "✓" : secret ? "?" : ""}
               </span>
             </li>
           );
