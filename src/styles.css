@@ -615,15 +615,39 @@ body { font-family: var(--font-sans); background: #000; }
 .pm-chat-to { padding: 6px 10px; border-bottom: 4px solid var(--border); font: 18px var(--font-body); }
 .pm-chat-body { flex: 1; min-height: 0; display: flex; gap: 8px; padding: 8px; }
 .pm-log { flex: 1; overflow: auto; padding: 6px 2px; background: #fff; color: #212529; user-select: text; box-shadow: 0 0 0 3px var(--border); }
-.pm-msg { display: flex; flex-direction: column; align-items: flex-start; }
+.pm-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* the NES balloon draws its tail *below* the box: reserve room so it never
+     overlaps the next speaker's name, and leave a clear gap between messages */
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+}
 .pm-msg.is-me { align-items: flex-end; }
-.pm-msg-who { padding: 0 12px; font: 7px var(--font-sans); color: #6c7a89; }
+.pm-msg-who { padding: 0 14px 6px; font: 10px var(--font-sans); color: #6c7a89; line-height: 1.5; }
 .pm-hint { padding: 8px; font: 18px var(--font-body); opacity: 0.7; }
 .pm-pics { display: flex; flex-direction: column; justify-content: space-between; }
 .pm-pic { width: 60px; height: 60px; display: grid; place-items: center; font-size: 34px; background: #fff; box-shadow: 0 0 0 3px #212529; }
 .pm-typing { min-height: 22px; padding: 0 10px; font: 18px var(--font-body); opacity: 0.8; }
 .pm-reply { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; padding: 8px; border-top: 4px solid var(--border); }
+/* Chat balloons: hug their text instead of stretching, and keep clear of the edges. */
+.pm-log .nes-balloon {
+  margin: 0 14px;
+  max-width: min(78%, 420px);
+  overflow-wrap: anywhere;
+}
 .os .pm-choice { flex: 1 1 45%; text-align: left; font: 18px/1.1 var(--font-body); padding: 4px 10px; }
+/* Reply choices: an extra class of specificity so NES.css .is-small cannot win the tie.
+   flex-basis 0 + stretch makes the choices match each other in width and height even when one
+   label wraps to more lines; the stretch is on the choices only so Nudge keeps its own size. */
+.os .pm-reply .pm-choice {
+  flex: 1 1 0;
+  min-width: 0;
+  align-self: stretch;
+  font: 21px/1.15 var(--font-body);
+  padding: 4px 10px;
+}
 .pm-ended { flex: 1; margin: 0; padding: 4px; font: 18px var(--font-body); opacity: 0.7; }
 .pm-nudge { margin-left: auto; }
 
