@@ -31,6 +31,7 @@ export const TOUR_TARGETS = [
   "fav-www.friendspace.com",
   "fs-phish-link",
   "addr-http",
+  "phish-get",
   "phish-download",
   "phish-open",
   "pg-scan",

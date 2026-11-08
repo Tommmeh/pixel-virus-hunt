@@ -71,11 +71,11 @@ export const DEMO_STEPS: TutorialStep[] = [
     id: "demo-download",
     title: "They want you to install something",
     text: [
-      "The photos are 'private', so you need their PhotoViewer. Go on, click Download, then Open.",
+      "The photos are 'private', so you need their PhotoViewer, from yet another website. Go on: get it, download it, and open it.",
     ],
-    target: ["phish-open", "phish-download"],
+    target: ["phish-open", "phish-download", "phish-get"],
     waitFor: (e) => e.type === "story.stage" && e.story === STORY && e.stage === "infected",
-    hint: "Click 'Download PhotoViewer', then 'Open'",
+    hint: "Get PhotoViewer, then Download now, then Open",
     skipIf: () => stageIs("infected", "swarm", "cleaned"),
   },
   {

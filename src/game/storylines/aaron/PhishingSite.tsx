@@ -1,13 +1,11 @@
 // The lookalike "FriendSpace photo album" at friendspace.com.photo-album.net (no padlock).
-// It reads as "Mum shared embarrassing photos of you": a few blurred previews, a private-album lock, and one big
-// ask — install the "PhotoViewer". Downloading and opening it infects the PC, silently, with a bland error afterwards.
+// It reads as "Mum shared embarrassing photos of you": a few blurred previews, a private-album lock, and a link
+// to go and get the "PhotoViewer" — on a separate download site (DownloadSite.tsx), where the infection happens.
 // No warnings here: the clues are the address, the http, and a website wanting you to install a program.
-import { useEffect, useState } from "react";
+import { useBrowser } from "../../apps/webvoyager/BrowserContext";
 import { getPerson } from "../../system/people";
 import { useSettings } from "../../system/settings";
-import { infect, PHISH_HOST } from "./story";
-
-type Phase = "page" | "dialog" | "installing" | "failed";
+import { aaronStore, DOWNLOAD_URL } from "./story";
 
 /** Blurred "photos" you can almost make out. */
 const PREVIEWS = [
@@ -19,21 +17,10 @@ const PREVIEWS = [
 export function PhishingSite() {
   const name = useSettings().userName;
   const mum = getPerson("mum");
-  const [phase, setPhase] = useState<Phase>("page");
-  const [pct, setPct] = useState(0);
-
-  useEffect(() => {
-    if (phase !== "installing") return;
-    const t = setInterval(() => setPct((p) => Math.min(100, p + 10)), 200);
-    return () => clearInterval(t);
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase === "installing" && pct >= 100) {
-      infect();
-      setPhase("failed");
-    }
-  }, [phase, pct]);
+  const { navigate } = useBrowser();
+  // Once the "viewer" has been installed, the album still never opens.
+  const { stage } = aaronStore.use();
+  const installed = stage === "infected" || stage === "swarm" || stage === "cleaned";
 
   return (
     <div className="friendspace phish">
@@ -76,75 +63,27 @@ export function PhishingSite() {
         </div>
 
         <div className="phish-ask">
-          {phase === "failed" ? (
+          {installed ? (
             <p className="phish-error">
               Sorry, these photos could not be loaded. Please try again later.
             </p>
-          ) : phase === "installing" ? (
-            <div className="phish-install">
-              <p>Installing FriendSpace PhotoViewer...</p>
-              <progress className="nes-progress is-primary" value={pct} max={100} />
-            </div>
           ) : (
             <>
               <p>
-                Only friends with <b>FriendSpace PhotoViewer</b> can open private albums. It&apos;s
-                free and takes 10 seconds.
+                This album is private. To view it, you need <b>PhotoViewer</b>, the free photo
+                viewer for FriendSpace.
               </p>
               <button
                 className="nes-btn is-primary phish-download"
-                data-tour="phish-download"
-                onClick={() => setPhase("dialog")}
+                data-tour="phish-get"
+                onClick={() => navigate(DOWNLOAD_URL)}
               >
-                Download PhotoViewer
+                Get PhotoViewer (free)
               </button>
-              <small>PhotoViewer_setup.exe · 412 KB · Free</small>
             </>
           )}
         </div>
       </div>
-
-      {phase === "dialog" && (
-        <div className="dl-overlay">
-          <div className="dl-box" role="dialog" aria-label="File Download">
-            <div className="dl-title">File Download</div>
-            <div className="dl-body">
-              <p>Do you want to open or save this file?</p>
-              <table>
-                <tbody>
-                  <tr>
-                    <td>Name:</td>
-                    <td>PhotoViewer_setup.exe</td>
-                  </tr>
-                  <tr>
-                    <td>Type:</td>
-                    <td>Application, 412 KB</td>
-                  </tr>
-                  <tr>
-                    <td>From:</td>
-                    <td>{PHISH_HOST}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div className="dl-actions">
-                <button
-                  className="nes-btn is-small is-primary"
-                  data-tour="phish-open"
-                  onClick={() => {
-                    setPct(0);
-                    setPhase("installing");
-                  }}
-                >
-                  Open
-                </button>
-                <button className="nes-btn is-small" onClick={() => setPhase("page")}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

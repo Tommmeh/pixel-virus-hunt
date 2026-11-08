@@ -21,6 +21,9 @@ export type Stage = "idle" | "posted" | "clicked" | "infected" | "swarm" | "clea
 /** Brand name used as a subdomain of someone else's site, over plain http — a classic phishing link. */
 export const PHISH_HOST = "friendspace.com.photo-album.net";
 export const PHISH_URL = `http://${PHISH_HOST}/p/jamie_t`;
+/** The fake album sends you to a separate (even shadier) site for the "viewer" download. */
+export const DOWNLOAD_HOST = "get-photoviewer.net";
+export const DOWNLOAD_URL = `http://${DOWNLOAD_HOST}/download`;
 export const THREAT_ID = "aaron-photoworm";
 export const POPUP_APP = "worm-popup";
 

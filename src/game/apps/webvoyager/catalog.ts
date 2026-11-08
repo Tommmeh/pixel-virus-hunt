@@ -92,6 +92,14 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "social",
     secure: false,
   },
+  // ...which sends you to a separate shady download site for the "PhotoViewer" (the worm installer).
+  {
+    host: "get-photoviewer.net",
+    aliases: ["www.get-photoviewer.net"],
+    name: "PhotoViewer - Free Download",
+    icon: "download",
+    secure: false,
+  },
 ];
 
 export const findSiteInfo = (host: string) =>

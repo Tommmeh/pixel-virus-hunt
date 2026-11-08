@@ -33,7 +33,7 @@ export const AARON_CARDS: LessonCard[] = [
       "Real photo sites show pictures in your browser and never need you to install a viewer. PhotoViewer_setup.exe was a worm installer disguised as a helpful plug-in.",
     redFlags: [
       "A website demanding you install software to see something",
-      "An .exe file from a site you didn't recognise",
+      "The album sent you to a different website (get-photoviewer.net) for an .exe file",
       "A 'free' viewer from an unknown publisher",
       "The photos still didn't load afterwards",
     ],
