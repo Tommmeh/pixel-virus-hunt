@@ -721,8 +721,11 @@ body { font-family: var(--font-sans); background: #000; }
 .welcome-stack { width: min(560px, 100%); display: flex; flex-direction: column; gap: 20px; }
 .welcome-stack > .welcome-panel { margin: 8px 4px; }
 .welcome-actions { text-align: center; }
-.welcome-reset { margin-top: 12px; font: 19px var(--font-body); color: #fff !important; }
+.welcome-account { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-top: 12px; }
+.welcome-reset { font: 19px var(--font-body); color: #fff !important; }
 .welcome-reset:hover { color: #f7d51d !important; }
+.welcome-reset.is-signout:hover { color: #e76e55 !important; }
+.welcome-account-sep { font: 19px var(--font-body); color: #6c7a89; }
 .welcome-credits { padding: 4px 0 8px; text-align: center; text-shadow: 2px 2px 0 #000; }
 .welcome-credits p { margin: 0; }
 .welcome-credits-title { font: 10px var(--font-sans); color: #f7d51d; margin-bottom: 10px !important; }
@@ -747,8 +750,6 @@ body { font-family: var(--font-sans); background: #000; }
 .user-tile-pic { width: 60px; height: 60px; display: grid; place-items: center; font-size: 36px; background: #fff; box-shadow: 0 0 0 4px #f7d51d; }
 .user-tile-name { flex: 1; text-align: left; }
 .user-tile-go { flex: none; margin: 0; pointer-events: none; }
-.welcome-bottom { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 12px 24px; background: #212529; border-top: 4px solid #000; }
-.welcome-note { color: #adafbc; font-size: 8px; text-align: right; }
 .shutdown-text { font-size: 12px; animation: blink 0.8s steps(1) infinite; }
 .off-screen p { color: #f7d51d; font-size: 12px; text-align: center; line-height: 1.8; padding: 0 16px; }
 
@@ -839,3 +840,37 @@ body { font-family: var(--font-sans); background: #000; }
 .demo-end-head { margin: 0 0 10px; font: 10px var(--font-sans); color: #fff; }
 .demo-end-note { margin: 0; max-width: 620px; font: 18px var(--font-body); color: #9a9a9a; }
 .demo-end-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+/* ---------- Achievements: trophy shelf ---------- */
+.trophy-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.trophy-head p { margin: 0; white-space: nowrap; font: 10px var(--font-sans); }
+.trophy-head .nes-progress { flex: 1; height: 20px; margin: 0; }
+.trophy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+.trophy-tile { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; min-height: 170px; padding: 14px 10px 10px;
+  text-align: center; color: var(--text); background: var(--pane-bg); border: 0; box-shadow: 0 0 0 4px var(--border); font: 18px/1.1 var(--font-body); }
+.trophy-art { position: relative; display: inline-flex; flex-direction: column; align-items: center; }
+.trophy-art .trophy-emblem { margin-top: -6px; }
+.trophy-name { font: 9px/1.5 var(--font-sans); font-weight: normal; }
+.trophy-teaser { font: 17px/1.1 var(--font-body); opacity: 0.85; }
+.trophy-progress { margin-top: auto; font: 8px var(--font-sans); opacity: 0.8; }
+/* Locked: the trophy and its emblem are a black silhouette, no spoilers. */
+.trophy-tile.is-locked { cursor: help; }
+.trophy-tile.is-locked .trophy-art { filter: brightness(0); opacity: 0.85; }
+.trophy-tile.is-locked .trophy-name { letter-spacing: 3px; }
+.trophy-tile.is-done { cursor: pointer; box-shadow: 0 0 0 4px #d08a10, 0 0 0 8px var(--border); background: #fff7d6; color: #212529; }
+.trophy-tile.is-done:hover { background: #ffeaa0; }
+.trophy-tile.is-done:hover .trophy-art { animation: scout-bob 0.6s steps(2) infinite; }
+.trophy-new { position: absolute; top: -8px; right: -6px; padding: 3px 6px; font: 8px var(--font-sans); color: #fff; background: #e76e55; box-shadow: 0 0 0 3px #212529; animation: blink 1s steps(1) infinite; }
+.trophy-foot { margin: 16px 0 0; font: 17px/1.2 var(--font-body); opacity: 0.85; }
+.trophy-detail { display: flex; flex-direction: column; gap: 12px; }
+.trophy-detail > .nes-btn { align-self: flex-start; }
+.trophy-detail-head { display: flex; align-items: center; gap: 16px; padding: 8px 4px; }
+.trophy-detail-head p { margin: 0; }
+.trophy-detail-title { font: 12px/1.5 var(--font-sans); color: #d08a10; }
+.trophy-detail-sub { font: 18px var(--font-body); opacity: 0.85; }
+/* Lesson cards: readable body font, bullets inside the box. */
+.trophy-detail .nes-container { font: 19px/1.25 var(--font-body); }
+.trophy-detail .nes-container b { font: 10px/1.6 var(--font-sans); font-weight: normal; }
+.trophy-detail .nes-container small { font: 17px var(--font-body); opacity: 0.8; }
+.trophy-detail .nes-list { padding-left: 22px; }
+.trophy-detail .nes-balloon { color: #212529; }

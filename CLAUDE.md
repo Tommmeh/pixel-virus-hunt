@@ -95,6 +95,10 @@ pages/windows. Shared files only get small additive registrations (app registry,
   Antivirus** (`apps/antivirus/`) scans and `removeThreat()`s them, which emits `threat.removed` for the storyline.
 - **Achievements:** each storyline defines `LessonCard`s in its folder (e.g. `storylines/aaron/cards.ts`), adds them
   to `scams/cards.ts`, and unlocks them silently with `unlockScam(id)` at the matching stage.
+  The Achievements app is a **trophy shelf**: one trophy per quest line (`scams/questlines.ts`). Locked trophies are
+  black silhouettes with a vague teaser and "x/y clues found"; a trophy unlocks when its line's `completeWhen` card is
+  unlocked, and clicking it shows that line's cards. New quest line = cards + one `QUEST_LINES` entry (each Gemini
+  persona is its own line automatically). Bank line cards: `storylines/anish/cards.ts`.
 
 ### Tutorial — Scout (`src/game/tutorial/`)
 

@@ -124,7 +124,34 @@ function Welcome() {
             {resetDone && (
               <p className="welcome-hint">STORY RESET — THE $5 AD EMAIL IS BACK IN YOUR INBOX</p>
             )}
-            {confirmingReset ? (
+            {/* Account row: start the story again, or sign out of Auth0. */}
+            <div className="welcome-account">
+              <button
+                className="link-btn welcome-reset"
+                onClick={() => {
+                  setResetDone(false);
+                  setConfirmingReset(true);
+                }}
+              >
+                ↺ Start a new game
+              </button>
+              {authEnabled && isAuthenticated && (
+                <>
+                  <span className="welcome-account-sep" aria-hidden>
+                    ·
+                  </span>
+                  <button
+                    className="link-btn welcome-reset is-signout"
+                    onClick={() =>
+                      void logout({ logoutParams: { returnTo: window.location.origin } })
+                    }
+                  >
+                    ⏏ Sign out
+                  </button>
+                </>
+              )}
+            </div>
+            {confirmingReset && (
               <div className="mt-3">
                 <p className="welcome-fine">
                   Reset the whole story? Mail, chats, bank balance and rewards all start again — $5
@@ -146,16 +173,6 @@ function Welcome() {
                   </button>
                 </div>
               </div>
-            ) : (
-              <button
-                className="link-btn welcome-reset"
-                onClick={() => {
-                  setResetDone(false);
-                  setConfirmingReset(true);
-                }}
-              >
-                ↺ Start a new game
-              </button>
             )}
           </section>
 
@@ -208,28 +225,6 @@ function Welcome() {
             <p className="welcome-credits-event">HACKCAMP 2026</p>
           </section>
         </div>
-      </div>
-      <div className="welcome-bottom">
-        <div className="flex gap-3">
-          <button
-            className="nes-btn is-error"
-            onClick={() => {
-              playShutdown();
-              setPhase("shutdown");
-            }}
-          >
-            Turn off computer
-          </button>
-          {authEnabled && isAuthenticated && (
-            <button
-              className="nes-btn"
-              onClick={() => void logout({ logoutParams: { returnTo: window.location.origin } })}
-            >
-              Sign out
-            </button>
-          )}
-        </div>
-        <span className="welcome-note">VirusHuntOS · HackCamp 2026 · Nothing here is real.</span>
       </div>
     </div>
   );

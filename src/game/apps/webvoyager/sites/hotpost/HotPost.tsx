@@ -3,6 +3,8 @@ import { emit } from "../../../../system/events";
 import { PEOPLE } from "../../../../system/people";
 import { PROFILE } from "../../../../system/profile";
 import { questStore, type QuestFlags } from "../../../../system/quests";
+import { unlockScam } from "../../../../scams/store";
+import { ANISH_CARD_IDS } from "../../../../storylines/anish/cards";
 import { startConversation } from "../../../messenger/store";
 import { A, useBrowser } from "../../BrowserContext";
 import type { PageUrl } from "../../url";
@@ -161,6 +163,7 @@ function AmazingSignIn({ mail }: { mail: Mail }) {
           }
           // Mark done so we can't fire twice
           questStore.set((s: QuestFlags) => ({ ...s, amazingSignedIn: true }));
+          unlockScam(ANISH_CARD_IDS.giftCard); // silent: the lesson waits in Achievements
           setSignedIn(true);
 
           // 1) FriendSpace login alert (arrives quickly)
