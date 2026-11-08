@@ -106,6 +106,7 @@ export function WebVoyager({ win }: { win: Win }) {
           <button
             key={s.host}
             className="wv-fav"
+            data-tour={`fav-${s.host}`}
             onClick={() => navigate(`${s.secure ? "https" : "http"}://${s.host}/`)}
           >
             <PixelIcon name={s.icon} size={14} /> {s.name}

@@ -42,6 +42,7 @@ function SignIn() {
           <input
             className="nes-input"
             type="password"
+            data-tour="mail-password"
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             autoFocus
