@@ -88,8 +88,8 @@ session-only. Settings → Reset clears everything (`resetAllStores()`).
 Each virus storyline lives in its own folder, `src/game/storylines/<name>/`, with a small `story.ts` (persisted
 stage + transitions), a `<Name>Service.tsx` mounted in `shell/Desktop.tsx` (timers, event listeners) and its own
 pages/windows. Shared files only get small additive registrations (app registry, site catalog, desktop/Start menu).
-- **Aaron — PhotoWorm** (`storylines/aaron/`, `vh-aaron`): Mum's FriendSpace post links to the lookalike
-  `friendspace.com.photo-album.net` → "PhotoViewer" download → escalating pop-ups → swarm (closing one spawns two,
+- **Aaron — PhotoWorm** (`storylines/aaron/`, `vh-aaron`): Mum's FriendSpace post links straight to the shady
+  download site `get-photoviewer.net` (http) → "PhotoViewer" download → escalating pop-ups → swarm (closing one spawns two,
   capped at 24) → cleared by PaneGuard Antivirus.
 - **Threats** (`system/threats.ts`, `vh-threats`): storylines `addThreat()` when the PC gets infected; **PaneGuard
   Antivirus** (`apps/antivirus/`) scans and `removeThreat()`s them, which emits `threat.removed` for the storyline.

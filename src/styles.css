@@ -781,17 +781,35 @@ body { font-family: var(--font-sans); background: #000; }
 .worm-body p { margin: 0; white-space: pre-line; font: 19px/1.1 var(--font-body); }
 .worm-popup.is-virus .worm-body p { animation: blink 1s steps(1) infinite; }
 .worm-actions { display: flex; justify-content: flex-end; gap: 8px; }
-.phish { position: relative; }
-.phish .fs-header nav span { cursor: pointer; }
-.phish-album { max-width: 620px; margin: 16px auto; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; background: #fff;
-  box-shadow: 0 -3px 0 0 #212529, 0 3px 0 0 #212529, -3px 0 0 0 #212529, 3px 0 0 0 #212529; }
-.phish-album h2 { font-size: 10px; color: #6b4bb0; }
-.phish-album p { margin: 0; }
-.phish-thumbs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; width: 100%; }
-.phish-thumb { aspect-ratio: 1; display: grid; place-items: center; font-size: 18px; background: repeating-conic-gradient(#d8cff0 0 25%, #c4b6e8 0 50%) 0 0 / 8px 8px; box-shadow: 0 0 0 2px #212529; filter: blur(0.5px); }
-.phish-install { width: 100%; display: flex; flex-direction: column; gap: 6px; }
-.phish-install .nes-progress { height: 18px; margin: 0; }
+.phish-strip { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; height: 96px; padding: 6px; background: #fff;
+  box-shadow: 0 -3px 0 0 #212529, 0 3px 0 0 #212529, -3px 0 0 0 #212529, 3px 0 0 0 #212529; overflow: hidden; }
+.phish-photo { display: grid; place-items: center; overflow: hidden; }
+.phish-photo > span { font-size: 40px; filter: blur(5px) saturate(1.2); }
+.phish-photo:not(.is-more) { filter: blur(3px); }
+.phish-photo.is-more { background: #6b4bb0; }
+.phish-photo.is-more > span { filter: none; color: #fff; font: 16px var(--font-sans); }
+.phish-private { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 6px 12px; white-space: nowrap;
+  font: 10px var(--font-sans); color: #fff; background: rgb(33 37 41 / 85%); box-shadow: 0 0 0 3px #fff; }
 .phish-error { color: #8c2022; }
+/* get-photoviewer.net: a generic 2004 "free download" site. */
+.pvdl { position: relative; min-height: 100%; background: #e8f4e0; color: #212529; }
+.pvdl-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; background: #1e7a2a; color: #fff; border-bottom: 4px solid #212529; }
+.pvdl-logo { font: 14px var(--font-sans); text-shadow: 2px 2px 0 #212529; }
+.pvdl-logo b { color: #f7d51d; font-weight: normal; }
+.pvdl-logo small { font: 8px var(--font-sans); color: #c8f0c0; }
+.pvdl-tag { padding: 4px 8px; font: 8px var(--font-sans); color: #212529; background: #f7d51d; box-shadow: 0 0 0 3px #212529; animation: blink 1.2s steps(1) infinite; }
+.pvdl-main { padding: 14px 12px; display: flex; flex-direction: column; gap: 14px; }
+.pvdl-album { max-width: 480px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+.pvdl-album p { margin: 0; }
+.pvdl-card { max-width: 480px; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; background: #fff;
+  box-shadow: 0 -3px 0 0 #212529, 0 3px 0 0 #212529, -3px 0 0 0 #212529, 3px 0 0 0 #212529; }
+.pvdl-card h2 { margin: 0; font-size: 12px; color: #1e7a2a; }
+.pvdl-card p { margin: 0; }
+.pvdl-stars { color: #d08a10; }
+.pvdl-btn { min-width: 260px; font-size: 12px; }
+.pvdl-status { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.pvdl-status .nes-progress { height: 18px; margin: 0; }
+.pvdl-small { font: 16px var(--font-body); color: #6c7a89; }
 .dl-overlay { position: absolute; inset: 0; display: grid; place-items: center; background: rgb(0 0 0 / 25%); }
 .dl-box { width: 360px; max-width: calc(100% - 20px); background: #fff; color: #212529;
   box-shadow: 0 -4px 0 0 #212529, 0 4px 0 0 #212529, -4px 0 0 0 #212529, 4px 0 0 0 #212529, 8px 8px 0 0 rgb(0 0 0 / 35%); }

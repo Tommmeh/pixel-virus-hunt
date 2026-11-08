@@ -84,11 +84,13 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "bank",
     secure: true,
   },
-  // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
+  // Aaron's storyline: where Mum's hacked "photos" link goes. Shady download site, plain http. Not a favourite.
   {
-    host: "friendspace.com.photo-album.net",
-    name: "FriendSpace",
-    icon: "social",
+    host: "get-photoviewer.net",
+    // The old fake-album address: Mum's post in saves from before this change still links there.
+    aliases: ["www.get-photoviewer.net", "friendspace.com.photo-album.net"],
+    name: "PhotoViewer - Free Download",
+    icon: "download",
     secure: false,
   },
 ];

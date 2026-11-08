@@ -3,8 +3,8 @@ import { Scout } from "../tutorial/Scout";
 import { exitDemo, startDemo } from "./store";
 
 const WHAT_HAPPENED = [
-  "A hacked friend's account posted a lookalike link.",
-  "The fake site wanted you to install a program to see some photos.",
+  "A hacked friend's account posted a link to a fake photo viewer.",
+  "The site wanted you to install a program to see some photos.",
   "The pop-ups got worse: free prizes, then 'your PC is slow', then fake virus alerts.",
   "It was a worm: it copied itself every time you closed a window.",
   "Only a real antivirus scan got rid of it.",
