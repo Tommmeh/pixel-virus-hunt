@@ -7,6 +7,7 @@ export const ZHUMING_CARD_IDS = {
   dm: "zhuming-cold-dm",
   app: "zhuming-stock-app",
   cleaned: "zhuming-cleaned",
+  saved: "zhuming-saved",
 } as const;
 
 export const ZHUMING_CARDS: LessonCard[] = [
@@ -52,6 +53,19 @@ export const ZHUMING_CARDS: LessonCard[] = [
       "A balance that appears out of nowhere and can't actually be withdrawn",
     ],
     tip: "Only install software from the official publisher, and never type your banking login into anything except your bank's own site.",
+  },
+  {
+    id: ZHUMING_CARD_IDS.saved,
+    name: "The Payment That Never Left",
+    type: "Payment protection / good ending",
+    whatHappened:
+      "StockLadder tried to take everything in both accounts at once and send it to a broker nobody had ever heard of. The bank held the payment because it didn't fit the account's usual pattern, rang before releasing it, and nothing left. RAM Holdings collapsed to pennies the same week; the tip was worthless either way.",
+    redFlags: [
+      "A payment that moves every penny you have to a company you met this week",
+      "A 'broker' who wants it done tonight, before anyone can check",
+      "An app that keeps your bank login on file so trades stay 'instant'",
+    ],
+    tip: "A bank that stops an unusual payment and rings you first is worth more than one that apologises three days later. Ask a bank how it handles a payment that looks wrong before you need it.",
   },
   {
     id: ZHUMING_CARD_IDS.cleaned,

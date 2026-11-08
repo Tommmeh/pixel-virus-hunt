@@ -136,11 +136,22 @@ edits, listed here so nobody loses track of them in a merge:
   goes all-in on RAMH in `market.allIn`, and charges 9× the total as `STOCKLADDER MARGIN CALL`), and
   `sendWifeMail` (Emma's mail, sent 20 s later, with a clickable link to
   `https://www.copperleafbank.com/accounts`; mail bodies already auto-link http URLs).
-  `ZhumingService` sends Kevin's emergency 5 s after the player answers J-Reyes' warning, then wipes
+  `ZhumingService` sends Kevin's emergency 30 s after the player answers J-Reyes' warning, then wipes
   unconditionally 10 s later — the all-in no longer depends on the player agreeing or closing the
   app, and only uninstalling it in that window stops it. The ending is `endStockStory`, called after
   5 s on the Copperleaf accounts page (tracked from `site.visit` plus `bankSession.signedIn`, no
-  longer gated on Emma's mail), which renders `StockEndGame`. `Stage` gained `wiped`, and `ZhumingState` gained `spent`, `earned`,
+  longer gated on Emma's mail), which renders  `StockEndGame`.
+
+  **Good ending (RBC).** Answering J-Reyes also wakes Frank (`FRANK_AFTER_MS`, 1.5 s before Kevin's
+  emergency): a story-only PingMe contact (`contact.ts` `FRANK_PERSON`, script in `chat.ts`). Only
+  his chat opens — the address (`www.rbc.com/switch`) is in the message and the player has to open
+  the site and install RBC themselves, nothing pops up. If `questStore.rbcInstalled`
+  is set when the all-in fires, `wipe()` hands off to `holdAllIn()` instead: the market crashes, the
+  accounts keep every penny, no margin call, stage becomes `saved` and `StockGoodEnd` takes over the
+  screen. This reuses dev's existing RBC app/`rbcInstalled` flag, so the desktop shortcut and
+  `RBCApp` work unchanged; only the Zhuming reaction to the flag is new. Note the deliberate
+  exception to the no-early-warnings rule: Frank's tip is the only way into this ending, so it reads
+  as an anecdote about his own bank rather than advice about the app. `Stage` gained `wiped`, and `ZhumingState` gained `spent`, `earned`,
   `jordanAlerted`, `linkPosted`, `emergencyAt`, `wipedAt`, `wifeMailId`, `endingAt`. After any reply
   in Kevin's first conversation, `postInstallLink` pushes the `link` node once the pitch is over
   (thread at `waiting` or closed), so the download address arrives whether the player declined,

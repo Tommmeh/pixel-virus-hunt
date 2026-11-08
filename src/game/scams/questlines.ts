@@ -60,6 +60,8 @@ export const QUEST_LINES: QuestLine[] = [
     teaser: "There's a new file next to your photos...",
     cardIds: USB_CARDS.map((c) => c.id),
     completeWhen: USB_CARD_IDS.cleaned,
+  },
+  {
     id: "stocks",
     name: "The Hot Stock Tip",
     icon: "taskmgr",
