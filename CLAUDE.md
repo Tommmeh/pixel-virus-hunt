@@ -107,7 +107,10 @@ replayed from Start → Tutorial or the "Scout's Tips" desktop icon. Story text 
 (`personalize()` in `system/profile.ts`). The script is data in `steps.ts`: each step can spotlight a `data-tour="..."`
 element (add the attribute in the UI and the id to `TOUR_TARGETS`) and/or wait for a system event (`waitFor`).
 It explains the layout and purpose, then walks the player into the HotPost inbox — the start of Anish's bank
-storyline — and leaves before any scam (never warn at the moment of the mistake).
+storyline — and leaves before any scam (never warn at the moment of the mistake). The intro is 7 cards; the last hands-on
+step uses `after` for the send-off. Scout picks his own screen corner (`tutorial/placement.ts`): never over the
+spotlighted target, avoiding pop-ups, the active window and notifications, nearest the target otherwise. Worm pop-ups
+also avoid spawning under him.
 
 ### Guided demo (`src/game/demo/`)
 

@@ -198,10 +198,19 @@ export function spawnPopup(vw = 1280, vh = 800): boolean {
 
   const w = 300;
   const h = 200;
-  // Keep the cure reachable: new pop-ups avoid an open (non-maximized) antivirus window.
+  // Keep the cure and the guide reachable: new pop-ups avoid an open (non-maximized) antivirus window
+  // and Scout, if he's on screen (guided demo / tutorial).
+  const keepClear: { x: number; y: number; w: number; h: number }[] = [];
   const av = windowStore.get().wins.find((x) => x.app === "antivirus" && !x.min && !x.max);
+  if (av) keepClear.push(av);
+  const scout =
+    typeof document === "undefined"
+      ? null
+      : document.querySelector(".scout-box")?.getBoundingClientRect();
+  if (scout && scout.width > 0)
+    keepClear.push({ x: scout.left, y: scout.top, w: scout.width, h: scout.height });
   const hitsAv = (x: number, y: number) =>
-    !!av && x < av.x + av.w && av.x < x + w && y < av.y + av.h && av.y < y + h;
+    keepClear.some((r) => x < r.x + r.w && r.x < x + w && y < r.y + r.h && r.y < y + h);
   const randomSpot = () => ({
     x: 120 + Math.random() * Math.max(0, vw - w - 160),
     y: 10 + Math.random() * Math.max(0, vh - h - 70),
@@ -214,7 +223,7 @@ export function spawnPopup(vw = 1280, vh = 800): boolean {
       stackPos.x === 0 || next.x + w > vw - 20 || next.y + h > vh - 60 || hitsAv(next.x, next.y);
     if (restart) {
       let start = { x: 140 + Math.random() * 120, y: 20 + Math.random() * 60 };
-      for (let i = 0; i < 12 && hitsAv(start.x, start.y); i++) start = randomSpot();
+      for (let i = 0; i < 30 && hitsAv(start.x, start.y); i++) start = randomSpot();
       stackPos = start;
     } else {
       stackPos = next;
@@ -222,7 +231,7 @@ export function spawnPopup(vw = 1280, vh = 800): boolean {
     pos = stackPos;
   } else {
     pos = randomSpot();
-    for (let i = 0; i < 12 && hitsAv(pos.x, pos.y); i++) pos = randomSpot();
+    for (let i = 0; i < 30 && hitsAv(pos.x, pos.y); i++) pos = randomSpot();
   }
   wm.move(key, pos.x, pos.y);
 
