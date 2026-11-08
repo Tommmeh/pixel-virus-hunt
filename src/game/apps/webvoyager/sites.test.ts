@@ -22,7 +22,7 @@ describe("WebVoyager sites", () => {
     const names = SITE_INFO.map((s) => s.name).join(" ");
     expect(names).toMatch(/Bank/);
     expect(names).toMatch(/FriendSpace/);
-    expect(names).toMatch(/Mail/);
+    expect(names).toMatch(/E-mail/);
   });
 
   it("turns typed text into URLs or searches", () => {

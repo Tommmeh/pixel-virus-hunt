@@ -9,6 +9,8 @@ export interface SiteInfo {
   /** Served over https (the browser upgrades http:// automatically and shows a padlock). */
   secure: boolean;
   favorite?: boolean;
+  /** Shorter label for the Favorites bar (defaults to `name`). */
+  favLabel?: string;
 }
 
 export interface IndexEntry {
@@ -37,7 +39,7 @@ export const SITE_INFO: SiteInfo[] = [
   {
     host: "mail.hotpost.com",
     aliases: ["hotpost.com", "www.hotpost.com"],
-    name: "HotPost Mail",
+    name: "E-mail",
     icon: "mail",
     secure: true,
     favorite: true,
@@ -49,6 +51,7 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "bank",
     secure: true,
     favorite: true,
+    favLabel: "Bank",
   },
   {
     host: "www.friendspace.com",
@@ -96,10 +99,10 @@ export const findSiteInfo = (host: string) =>
 
 export const SEARCH_INDEX: IndexEntry[] = [
   {
-    title: "HotPost Mail - Free web-based email",
+    title: "E-mail - Free web-based email",
     url: "https://mail.hotpost.com/",
     description:
-      "Sign in to HotPost Mail. Free email with 25 MB of storage, accessible from anywhere.",
+      "Sign in to your E-mail. Free email with 25 MB of storage, accessible from anywhere.",
     keywords: ["email", "mail", "hotpost", "inbox", "webmail", "sign in"],
   },
   {

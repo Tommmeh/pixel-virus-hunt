@@ -32,60 +32,6 @@ export const SEED_INBOX: Mail[] = [
     body: "★ SPECIAL SPONSOR PROMOTION ★\n\nWatch 5 minutes of Ad for 5 dollars!\n\nWe pay you instant cash for your attention! Watch our 5-minute sponsor advertisement, and $5.00 will be credited directly to your Copperleaf Bank checking account.\n\nClick the link below to watch the ad and claim your $5:\nhttp://www.adrewards.com/watch\n\nOffer limited to one payout per customer.",
     date: "Tue 14/09/2004",
   },
-  {
-    id: "seed-mum",
-    fromName: "Mum",
-    from: "linda.taylor@hotpost.com",
-    to: PROFILE.email,
-    subject: "Sunday lunch",
-    body: "Hi love,\n\nGrandma is coming for lunch on Sunday so please be home by 1. Sam's family is coming too.\n\nLove, Mum x",
-    date: "Mon 13/09/2004",
-  },
-  {
-    id: "seed-alex",
-    fromName: "Alex Chen",
-    from: "alex.chen@hotpost.com",
-    to: PROFILE.email,
-    subject: "galaxy blasters level 7",
-    body: "dude i finally beat level 7!!! the trick is to save your shields for the boss. come online later and i'll tell you the rest",
-    date: "Sun 12/09/2004",
-  },
-  {
-    id: "seed-priya",
-    fromName: "Priya Patel",
-    from: "priya.patel@hotpost.com",
-    to: PROFILE.email,
-    subject: "Art project - group ideas",
-    body: "Hi {name},\n\nFor the group project I was thinking we could do a mural of the town. Can you bring the photos from the trip? They're on your USB stick I think.\n\nPriya",
-    date: "Sat 11/09/2004",
-  },
-  {
-    id: "seed-bank",
-    fromName: "Copperleaf Bank",
-    from: "statements@copperleafbank.com",
-    to: PROFILE.email,
-    subject: "Your September statement is ready",
-    body: "Dear {name},\n\nYour monthly statement for Everyday Checking (ending 4821) is ready to view in Online Banking.\n\nFor your security, we will never ask for your password by email.\n\nCopperleaf Bank",
-    date: "Fri 10/09/2004",
-  },
-  {
-    id: "seed-dailybyte",
-    fromName: "The Daily Byte",
-    from: "newsletter@dailybyte.com",
-    to: PROFILE.email,
-    subject: "This week: MP3 players, broadband & more",
-    body: "This week on The Daily Byte:\n- New MP3 players hold 1,000 songs\n- Broadband reaches more homes\n- 5 tips to keep your PC running smoothly\n\nRead more at www.dailybyte.com",
-    date: "Thu 09/09/2004",
-  },
-  {
-    id: "seed-welcome",
-    fromName: "HotPost Team",
-    from: "welcome@hotpost.com",
-    to: PROFILE.email,
-    subject: "Welcome to HotPost Mail!",
-    body: "Welcome to HotPost Mail!\n\nYour free account comes with 25 MB of storage. Keep your password secret and never share it with anyone.\n\nThe HotPost Team",
-    date: "Mon 06/09/2004",
-  },
 ];
 
 export interface MailState {
@@ -117,7 +63,7 @@ export function receiveMail(mail: Omit<Mail, "id" | "date" | "to">) {
   mailStore.set((s) => ({ ...s, inbox: [m, ...s.inbox] }));
   playDing();
   notify({
-    title: "HotPost Mail",
+    title: "E-mail",
     text: `New message from ${m.fromName}: ${m.subject}`,
     icon: "mail",
     open: { app: "webvoyager", args: { url: "https://mail.hotpost.com/" } },
@@ -153,7 +99,7 @@ export function sendMail(to: string, subject: string, body: string) {
     setTimeout(
       () =>
         receiveMail({
-          fromName: "HotPost Mail Delivery",
+          fromName: "E-mail Delivery",
           from: "postmaster@hotpost.com",
           subject: `Undeliverable: ${m.subject}`,
           body:
@@ -162,7 +108,7 @@ export function sendMail(to: string, subject: string, body: string) {
             `Subject: ${m.subject}\n\n` +
             "This mailbox is not accepting new messages at the moment. Your email was not delivered and has not been read.\n\n" +
             "Please try again later, or contact this person another way.\n\n" +
-            "This is an automated message from HotPost Mail. Please do not reply to it.",
+            "This is an automated message from E-mail. Please do not reply to it.",
         }),
       2500,
     );

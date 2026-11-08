@@ -115,10 +115,10 @@ export const STEPS: TutorialStep[] = [
   {
     id: "open-mail",
     title: "This is WebVoyager",
-    text: ["Click HotPost Mail in the Favorites bar."],
+    text: ["Click E-mail in the Favorites bar."],
     target: "fav-mail.hotpost.com",
     waitFor: (e) => e.type === "site.visit" && e.host === "mail.hotpost.com",
-    hint: "Click 'HotPost Mail' under Favorites",
+    hint: "Click 'E-mail' under Favorites",
     undoIf: () => !wm.isOpen("webvoyager"),
   },
   {
