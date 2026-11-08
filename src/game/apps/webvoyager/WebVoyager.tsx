@@ -149,7 +149,7 @@ export function WebVoyager({ win }: { win: Win }) {
             aria-current={info?.host === s.host ? "page" : undefined}
             onClick={() => navigate(`${s.secure ? "https" : "http"}://${s.host}/`)}
           >
-            <PixelIcon name={s.icon} size={16} /> {s.name}
+            <PixelIcon name={s.icon} size={16} /> {s.favLabel ?? s.name}
           </button>
         ))}
       </div>

@@ -9,6 +9,8 @@ export interface SiteInfo {
   /** Served over https (the browser upgrades http:// automatically and shows a padlock). */
   secure: boolean;
   favorite?: boolean;
+  /** Shorter label for the Favorites bar (defaults to `name`). */
+  favLabel?: string;
 }
 
 export interface IndexEntry {
@@ -49,6 +51,7 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "bank",
     secure: true,
     favorite: true,
+    favLabel: "Bank",
   },
   {
     host: "www.friendspace.com",
