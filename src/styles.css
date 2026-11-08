@@ -721,8 +721,7 @@ body { font-family: var(--font-sans); background: #000; }
 .welcome-mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; padding: 16px;
   background: repeating-linear-gradient(0deg, #209cee 0 8px, #1d91dd 8px 16px); }
 .welcome-mid { overflow-y: auto; gap: 20px; justify-content: safe center; }
-.welcome-goal { margin: 0; display: flex; align-items: center; gap: 10px; padding: 8px 14px; font: 12px/1.4 var(--font-sans); color: #fff; background: #212529; box-shadow: 0 0 0 4px #f7d51d, 6px 8px 0 0 rgb(0 0 0 / 35%); text-align: center; }
-.welcome-tagline { margin: 0; font-size: 9px; line-height: 1.8; text-align: center; color: #f7d51d; text-shadow: 2px 2px 0 #000; }
+.welcome-tagline { margin: 0; font-size: 11px; line-height: 1.8; text-align: center; color: #f7d51d; text-shadow: 2px 2px 0 #000; }
 /* Pixel panel: white 4px border with stepped corners + drop shadow (box-shadows, no border-image). */
 .welcome-panel { position: relative; margin: 8px; padding: 26px 20px 18px; color: #fff; background: #212529;
   box-shadow: 0 -4px #fff, 0 4px #fff, -4px 0 #fff, 4px 0 #fff, 0 12px 0 -4px rgb(0 0 0 / 0.35); }

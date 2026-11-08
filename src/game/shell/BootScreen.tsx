@@ -141,10 +141,7 @@ function Welcome() {
       <SponsorEgg />
       <div className="welcome-mid" data-sponsor={sponsor?.id}>
         <Logo />
-        <p className="welcome-tagline">A SAFE PC FOR PRACTISING AGAINST SCAMS &amp; MALWARE</p>
-        <p className="welcome-goal">
-          <PixelIcon name="worm" size={24} /> YOUR GOAL: CATCH ALL {VIRUS_TOTAL} VIRUSES
-        </p>
+        <p className="welcome-tagline">CATCH ALL {VIRUS_TOTAL} VIRUSES, SAFELY</p>
         <div className="welcome-stack">
           {/* 1. What to click — first thing on screen. */}
           <section className="welcome-panel welcome-actions">
