@@ -41,13 +41,13 @@ function Composer() {
       }}
     >
       <textarea
-        className="xp-input"
+        className="nes-textarea"
         placeholder="What are you up to?"
         value={text}
         onChange={(e) => setText(e.target.value)}
         maxLength={280}
       />
-      <button className="xp-btn fs-btn" type="submit" disabled={!text.trim()}>
+      <button className="nes-btn is-primary fs-btn" type="submit" disabled={!text.trim()}>
         Post
       </button>
     </form>
@@ -143,10 +143,13 @@ export function FriendSpace({ url }: { url: PageUrl }) {
                   <span className="fs-avatar">{p.avatar}</span>
                   <span>{p.name}</span>
                   <span className="flex gap-1">
-                    <button className="xp-btn is-small" onClick={() => answerRequest(id, true)}>
+                    <button
+                      className="nes-btn is-success is-small"
+                      onClick={() => answerRequest(id, true)}
+                    >
                       Accept
                     </button>
-                    <button className="xp-btn is-small" onClick={() => answerRequest(id, false)}>
+                    <button className="nes-btn is-small" onClick={() => answerRequest(id, false)}>
                       Ignore
                     </button>
                   </span>

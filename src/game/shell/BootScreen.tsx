@@ -1,77 +1,196 @@
-// Boot → Welcome (log in) → Desktop; Turn Off → shutting down → "safe to turn off".
-import { useEffect } from "react";
+// Boot → Welcome (log in) → Desktop; Turn Off → shutting down → "safe to turn off". NES.css style.
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect, useState } from "react";
+import { authEnabled } from "@/auth/config";
 import { PixelIcon } from "../components/PixelIcon";
 import { playShutdown, playStartup } from "../components/sound";
 import { logIn, setPhase, usePhase } from "../system/session";
-import { useSettings } from "../system/settings";
+import { updateSettings, useSettings } from "../system/settings";
+import { resetStory } from "./startOver";
 
 function Logo({ size = 48 }: { size?: number }) {
   return (
     <div className="os-logo">
-      <span className="os-logo-mark">
-        <PixelIcon name="logo" size={size} />
-      </span>
+      <PixelIcon name="logo" size={size} />
       <span className="os-logo-text">
-        Pane<b>OS</b>
-        <sup>XP</sup>
+        VIRUSHUNT<b>OS</b>
       </span>
     </div>
   );
 }
 
 function Boot() {
+  const [pct, setPct] = useState(0);
   useEffect(() => {
-    const t = setTimeout(() => setPhase("welcome"), 2400);
-    return () => clearTimeout(t);
+    const t = setInterval(() => setPct((p) => Math.min(100, p + 10)), 200);
+    const done = setTimeout(() => setPhase("welcome"), 2400);
+    return () => {
+      clearInterval(t);
+      clearTimeout(done);
+    };
   }, []);
   return (
     <div className="boot-screen" onClick={() => setPhase("welcome")}>
-      <Logo size={56} />
-      <div className="boot-bar" aria-label="Loading">
-        <span />
-        <span />
-        <span />
-      </div>
-      <p className="boot-foot">Virus Hunt · HackCamp 2026</p>
+      <Logo size={64} />
+      <progress
+        className="nes-progress is-primary boot-bar"
+        value={pct}
+        max={100}
+        aria-label="Loading"
+      />
+      <p className="boot-blink">LOADING...</p>
+      <p className="boot-foot">VIRUS HUNT · HACKCAMP 2026</p>
     </div>
   );
 }
 
+const TOOLS = [
+  { name: "Lovable", role: "app builder & hosting" },
+  { name: "Auth0", role: "sign-in" },
+  { name: "Freebuff", role: "AI coding assistant" },
+  { name: "Google Gemini", role: "AI chatbot" },
+];
+
 function Welcome() {
   const s = useSettings();
+  const [confirmingReset, setConfirmingReset] = useState(false);
+  const [resetDone, setResetDone] = useState(false);
+  // Without Auth0 configured there's no provider: useAuth0() returns defaults and we ignore it.
+  const { isLoading, isAuthenticated, user, error, loginWithRedirect, logout } = useAuth0();
+  const loading = authEnabled && isLoading;
+  const needsSignIn = authEnabled && !isLoading && !isAuthenticated;
+  const authName = (user?.given_name ?? user?.nickname ?? user?.name ?? "").slice(0, 16);
+
+  const hint = loading
+    ? "CONNECTING..."
+    : error
+      ? "SIGN-IN FAILED. TRY AGAIN"
+      : needsSignIn
+        ? "SIGN IN TO START"
+        : "CLICK YOUR NAME TO START";
+
   return (
     <div className="welcome-screen">
-      <div className="welcome-top" />
       <div className="welcome-mid">
-        <div className="welcome-left">
-          <Logo />
-          <p>To begin, click your user name</p>
-        </div>
-        <div className="welcome-divider" />
-        <div className="welcome-right">
-          <button
-            className="user-tile"
-            onClick={() => {
-              playStartup();
-              logIn();
-            }}
-          >
-            <span className="user-tile-pic">{s.avatar}</span>
-            <span className="user-tile-name">{s.userName}</span>
-          </button>
+        <Logo />
+        <p className="welcome-tagline">A SAFE PC FOR PRACTISING AGAINST SCAMS &amp; MALWARE</p>
+        <div className="welcome-grid">
+          <section className="welcome-panel welcome-about">
+            <p className="welcome-panel-title">ABOUT</p>
+            <p>
+              Scammers and viruses only need you to slip once — and on a real computer, one wrong
+              click can cost you your money, your accounts or your files.
+            </p>
+            <p>
+              <b>VirusHuntOS</b> is a pretend 2004 PC where you can make those mistakes safely.
+              Browse the web, read your email, chat with friends, check your bank — just like you
+              would at home.
+            </p>
+            <ul className="welcome-list">
+              <li>Use the computer the way you normally would.</li>
+              <li>Some of what you meet won't be what it seems.</li>
+              <li>Afterwards, find out what happened and how to spot it next time.</li>
+            </ul>
+            <p className="welcome-fine">
+              Everything here is fictional: no real websites, money, people or viruses. Nothing
+              leaves your browser.
+            </p>
+          </section>
+          <div className="welcome-side">
+            <div className="welcome-panel welcome-box">
+              <p className="welcome-panel-title">LOG IN</p>
+              <p className="welcome-hint">{hint}</p>
+              <button
+                className="user-tile"
+                disabled={loading}
+                onClick={() => {
+                  if (needsSignIn) {
+                    void loginWithRedirect();
+                    return;
+                  }
+                  if (authEnabled && authName) updateSettings({ userName: authName });
+                  playStartup();
+                  logIn();
+                }}
+              >
+                <span className="user-tile-pic">{s.avatar}</span>
+                <span className="user-tile-name">
+                  {needsSignIn ? "Sign in" : authEnabled && authName ? authName : s.userName}
+                </span>
+                <span className="user-tile-arrow">▶</span>
+              </button>
+              {resetDone && (
+                <p className="welcome-hint">STORY RESET — THE $5 AD EMAIL IS BACK IN YOUR INBOX</p>
+              )}
+              {confirmingReset ? (
+                <div className="mt-3">
+                  <p className="welcome-fine">
+                    Reset the whole story? Mail, chats, bank balance and rewards all start again —
+                    $5 ad, then the Amazing gift card, then the free trial.
+                  </p>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      className="nes-btn is-warning is-small"
+                      onClick={() => {
+                        resetStory();
+                        setConfirmingReset(false);
+                        setResetDone(true);
+                      }}
+                    >
+                      Yes, reset
+                    </button>
+                    <button className="nes-btn is-small" onClick={() => setConfirmingReset(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  className="nes-btn is-small mt-3"
+                  onClick={() => {
+                    setResetDone(false);
+                    setConfirmingReset(true);
+                  }}
+                >
+                  Start over from the beginning
+                </button>
+              )}
+            </div>
+            <div className="welcome-panel welcome-tools">
+              <p className="welcome-panel-title">BUILT WITH</p>
+              <ul>
+                {TOOLS.map((t) => (
+                  <li key={t.name}>
+                    <b>{t.name}</b>
+                    <span>{t.role}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       <div className="welcome-bottom">
-        <button
-          className="welcome-off"
-          onClick={() => {
-            playShutdown();
-            setPhase("shutdown");
-          }}
-        >
-          <span className="welcome-off-icon">⏻</span> Turn off computer
-        </button>
-        <span className="welcome-note">Virus Hunt — a safe practice PC. Nothing here is real.</span>
+        <div className="flex gap-3">
+          <button
+            className="nes-btn is-error"
+            onClick={() => {
+              playShutdown();
+              setPhase("shutdown");
+            }}
+          >
+            Turn off computer
+          </button>
+          {authEnabled && isAuthenticated && (
+            <button
+              className="nes-btn"
+              onClick={() => void logout({ logoutParams: { returnTo: window.location.origin } })}
+            >
+              Sign out
+            </button>
+          )}
+        </div>
+        <span className="welcome-note">VirusHuntOS · HackCamp 2026 · Nothing here is real.</span>
       </div>
     </div>
   );
@@ -85,12 +204,10 @@ function ShuttingDown() {
   }, []);
   return (
     <div className="welcome-screen">
-      <div className="welcome-top" />
-      <div className="welcome-mid is-center">
+      <div className="welcome-mid">
         <Logo />
-        <p className="shutdown-text">PaneOS is shutting down...</p>
+        <p className="shutdown-text">SAVING YOUR SETTINGS...</p>
       </div>
-      <div className="welcome-bottom" />
     </div>
   );
 }
@@ -98,9 +215,9 @@ function ShuttingDown() {
 function Off() {
   return (
     <div className="off-screen">
-      <p>It is now safe to turn off your computer.</p>
-      <button className="power-btn" onClick={() => setPhase("boot")} aria-label="Power on">
-        ⏻
+      <p>IT IS NOW SAFE TO TURN OFF YOUR COMPUTER.</p>
+      <button className="nes-btn is-success" onClick={() => setPhase("boot")}>
+        POWER ON
       </button>
     </div>
   );

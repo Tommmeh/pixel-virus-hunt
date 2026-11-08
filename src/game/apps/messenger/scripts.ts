@@ -165,6 +165,136 @@ export const SCRIPTS: ChatScript[] = [
     ],
   },
   {
+    contact: "emma",
+    start: "rent",
+    nodes: [
+      {
+        id: "rent",
+        them: [
+          "Jamie? Are you at the computer?",
+          "The rent went out this morning and it bounced. We're £340 short.",
+        ],
+        nudge: true,
+        choices: [
+          { text: "What? I thought we had enough this month", next: "enough" },
+          { text: "How bad is it?", next: "bad" },
+        ],
+      },
+      {
+        id: "enough",
+        them: [
+          "So did I. The electric bill came in bigger than we thought.",
+          "I've already spent the shopping money on it and it's only Tuesday.",
+        ],
+        choices: [{ text: "I'm sorry. I'll sort something out", next: "plan" }],
+      },
+      {
+        id: "bad",
+        them: [
+          "£340, plus a £25 late fee if it's not in by Friday.",
+          "I've been moving money around all morning and there's nothing left to move.",
+        ],
+        choices: [{ text: "We'll find it somehow", next: "plan" }],
+      },
+      {
+        id: "plan",
+        them: [
+          "I'm not angry at you. I'm just tired of counting pennies every single week.",
+          "Can you look at the account tonight and see what we've actually got?",
+        ],
+        choices: [
+          { text: "Yeah. I'm on it, I promise", next: "goodnight" },
+          { text: "I'll find the money by Friday", next: "goodnight" },
+        ],
+      },
+      {
+        id: "goodnight",
+        them: ["Thank you ❤️", "I'm off to bed. Don't be up too late x"],
+        choices: [{ text: "Night, love you", next: null }],
+      },
+    ],
+  },
+  {
+    contact: "marcus",
+    start: "lend",
+    nodes: [
+      {
+        id: "lend",
+        them: ["alright mate? you about?", "Emma rang me earlier. Said you're behind on the rent"],
+        nudge: true,
+        choices: [
+          { text: "She told you that?", next: "told" },
+          { text: "We're fine, honestly", next: "fine" },
+        ],
+      },
+      {
+        id: "told",
+        them: [
+          "yeah. she sounded really worried",
+          "look, I've got £400 sat in savings doing nothing. take it, pay me back whenever",
+        ],
+        choices: [
+          { text: "That's kind but we don't need it", next: "refuse" },
+          { text: "No. I'll sort it myself", next: "proud" },
+        ],
+      },
+      {
+        id: "fine",
+        them: [
+          "don't give me that. I know what skint looks like",
+          "I've got £400 I can lend you. seriously, it's no trouble",
+        ],
+        choices: [
+          { text: "No thanks, we'll manage", next: "refuse" },
+          { text: "I appreciate it but no", next: "proud" },
+        ],
+      },
+      {
+        id: "refuse",
+        them: [
+          "mate, it's not charity. it's a loan",
+          "Emma says she doesn't know where the money's coming from",
+        ],
+        choices: [
+          { text: "I'll get it. I've got a plan", next: "plan" },
+          { text: "Just drop it, yeah?", next: "drop" },
+        ],
+      },
+      {
+        id: "proud",
+        them: [
+          "you're doing that thing where you'd rather drown than ask for help",
+          "I've known you fifteen years. just let me help",
+        ],
+        choices: [
+          { text: "I said no. We're fine", next: "plan" },
+          { text: "I'm not taking your money", next: "drop" },
+        ],
+      },
+      {
+        id: "plan",
+        them: [
+          "ok. but the offer doesn't expire",
+          "if it gets to Friday and you're still short, you ring me. promise?",
+        ],
+        choices: [
+          { text: "Fine. I'll ring you", next: "goodbye" },
+          { text: "It won't come to that", next: "goodbye" },
+        ],
+      },
+      {
+        id: "drop",
+        them: ["alright, alright. I'll shut up about it", "but ring me if it changes. I mean it"],
+        choices: [{ text: "Yeah. Thanks, Marcus", next: "goodbye" }],
+      },
+      {
+        id: "goodbye",
+        them: ["no worries. look after yourself, yeah?", "and say hi to Emma for me"],
+        choices: [{ text: "Will do. See you", next: null }],
+      },
+    ],
+  },
+  {
     contact: "jordan",
     start: "open",
     nodes: [

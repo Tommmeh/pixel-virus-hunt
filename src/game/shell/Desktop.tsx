@@ -2,13 +2,16 @@ import { useState } from "react";
 import { getApp } from "../apps/registry";
 import { openPath } from "../apps/explorer/open";
 import { MessengerService } from "../apps/messenger/MessengerService";
+import { QuestFlow } from "./QuestFlow";
+import { ScamPopups } from "./ScamPopups";
 import { PixelIcon } from "../components/PixelIcon";
 import { DESKTOP_DIR, ICON_FOR_KIND, MY_DOCUMENTS, joinPath, listDir, useFs } from "../system/fs";
-import { useSettings } from "../system/settings";
+import { resolveTheme, useSettings } from "../system/settings";
 import { activeKey, useWindows, wm, type Win } from "../system/windows";
 import { Balloons } from "./Balloons";
 import { StartMenu } from "./StartMenu";
 import { Taskbar } from "./Taskbar";
+import { wallpaperUrl } from "./wallpaper";
 import { WindowFrame } from "./WindowFrame";
 
 interface Shortcut {
@@ -65,8 +68,9 @@ export function Desktop() {
   return (
     <div
       className="os desktop"
-      data-theme={settings.theme}
+      data-theme={resolveTheme(settings.theme)}
       data-wallpaper={settings.wallpaper}
+      style={{ backgroundImage: wallpaperUrl(settings.wallpaper) ?? undefined }}
       onPointerDown={() => {
         setStartOpen(false);
         setSelected(null);
@@ -104,6 +108,8 @@ export function Desktop() {
       {startOpen && <StartMenu onClose={() => setStartOpen(false)} />}
       <Balloons />
       <MessengerService />
+      <QuestFlow />
+      <ScamPopups />
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>
   );

@@ -1,20 +1,27 @@
 import { createStore } from "./store";
 
-export type ThemeId = "luna-blue" | "luna-olive" | "luna-silver" | "classic";
+/** NES.css palettes. CSS tokens live on `.os[data-theme]` in src/styles.css. */
+export type ThemeId = "classic" | "night" | "pocket" | "retro";
 export type WallpaperId = "hills" | "azul" | "teal" | "autumn";
 
 export const THEMES: { id: ThemeId; label: string; swatch: string }[] = [
-  { id: "luna-blue", label: "PaneOS (Blue)", swatch: "#0a5fe0" },
-  { id: "luna-olive", label: "PaneOS (Olive Green)", swatch: "#8a9a5b" },
-  { id: "luna-silver", label: "PaneOS (Silver)", swatch: "#b7b9cb" },
-  { id: "classic", label: "Classic", swatch: "#0a246a" },
+  { id: "classic", label: "Classic", swatch: "#209cee" },
+  { id: "night", label: "Night", swatch: "#212529" },
+  { id: "pocket", label: "Pocket Green", swatch: "#8bac0f" },
+  { id: "retro", label: "Retro Red", swatch: "#c4302b" },
 ];
 
+/** Saved settings may hold an old/unknown theme id (e.g. the XP-era "luna-blue"): fall back to Classic. */
+export function resolveTheme(id: string | undefined): ThemeId {
+  return THEMES.some((t) => t.id === id) ? (id as ThemeId) : "classic";
+}
+
+// Ids kept for saved-settings compatibility; the art is NES-style pixel scenery.
 export const WALLPAPERS: { id: WallpaperId; label: string }[] = [
-  { id: "hills", label: "Green Hills" },
-  { id: "azul", label: "Azul" },
+  { id: "hills", label: "Pixel Hills" },
+  { id: "azul", label: "Night Sky" },
   { id: "teal", label: "Teal" },
-  { id: "autumn", label: "Autumn" },
+  { id: "autumn", label: "Sunset" },
 ];
 
 export const AVATARS = ["🐱", "🚀", "⚽", "🎸", "🌻", "🐢", "🎮", "🦊"];
@@ -32,7 +39,7 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  theme: "luna-blue",
+  theme: "classic",
   wallpaper: "hills",
   userName: "Jamie",
   avatar: "🐱",

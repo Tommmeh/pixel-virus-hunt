@@ -14,10 +14,20 @@ import {
   useChat,
   visible,
 } from "./store";
+import { AiChat } from "./AiChat";
+import { isScamContact } from "../../scams/ai";
 
-/** One conversation window with a contact. */
+/** One conversation window: live scammer chats, otherwise the scripted PingMe script. */
 export function Chat({ win }: { win: Win }) {
   const contact = win.args?.["contact"] ?? "";
+  return isScamContact(contact) ? (
+    <AiChat contact={contact} />
+  ) : (
+    <ScriptedChat win={win} contact={contact} />
+  );
+}
+
+function ScriptedChat({ win, contact }: { win: Win; contact: string }) {
   const person = getPerson(contact);
   const s = useSettings();
   const { threads } = useChat();
@@ -54,7 +64,7 @@ export function Chat({ win }: { win: Win }) {
               <span className="pm-msg-who">
                 {m.from === "me" ? s.userName : person.screenName} says:
               </span>
-              <span className="pm-msg-text">
+              <span className={`nes-balloon ${m.from === "me" ? "from-right" : "from-left"}`}>
                 {m.nudge && <i>[{person.screenName} sent you a nudge!] </i>}
                 {m.text}
               </span>
@@ -75,7 +85,11 @@ export function Chat({ win }: { win: Win }) {
       <div className="pm-reply">
         {canReply ? (
           node!.choices.map((c, i) => (
-            <button key={i} className="pm-choice" onClick={() => choose(contact, i)}>
+            <button
+              key={i}
+              className="nes-btn is-small pm-choice"
+              onClick={() => choose(contact, i)}
+            >
               {c.text}
             </button>
           ))
@@ -85,7 +99,7 @@ export function Chat({ win }: { win: Win }) {
           </p>
         )}
         <button
-          className="xp-btn is-small pm-nudge"
+          className="nes-btn is-warning is-small pm-nudge"
           onClick={() => {
             playNudge();
             wm.shake(win.key);

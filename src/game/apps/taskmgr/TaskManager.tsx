@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { PixelIcon } from "../../components/PixelIcon";
-import { Tabs } from "../../components/ui";
+import { GroupBox, Tabs } from "../../components/ui";
 import { SYSTEM_PROCESSES, type ProcessInfo } from "../../system/processes";
 import { useWindows, wm } from "../../system/windows";
 import { getApp } from "../registry";
@@ -106,7 +106,7 @@ export function TaskManager() {
         {tab === "apps" && (
           <>
             <div className="tm-list">
-              <table className="xp-table">
+              <table className="nes-table is-bordered">
                 <thead>
                   <tr>
                     <th>Task</th>
@@ -134,7 +134,7 @@ export function TaskManager() {
             </div>
             <div className="tm-actions">
               <button
-                className="xp-btn"
+                className="nes-btn is-error"
                 disabled={!sel || !wins.some((w) => w.key === sel)}
                 onClick={() => {
                   if (sel) wm.close(sel);
@@ -144,7 +144,7 @@ export function TaskManager() {
                 End Task
               </button>
               <button
-                className="xp-btn"
+                className="nes-btn"
                 disabled={!sel || !wins.some((w) => w.key === sel)}
                 onClick={() =>
                   sel && wm.open(wins.find((w) => w.key === sel)!.app, undefined, { key: sel })
@@ -158,7 +158,7 @@ export function TaskManager() {
         {tab === "procs" && (
           <>
             <div className="tm-list">
-              <table className="xp-table">
+              <table className="nes-table is-bordered">
                 <thead>
                   <tr>
                     <th>Image Name</th>
@@ -190,7 +190,7 @@ export function TaskManager() {
             </div>
             <div className="tm-actions">
               <button
-                className="xp-btn"
+                className="nes-btn is-error"
                 disabled={!procs.some((p) => p.id === sel)}
                 onClick={() => {
                   const p = procs.find((x) => x.id === sel);
@@ -204,28 +204,24 @@ export function TaskManager() {
         )}
         {tab === "perf" && (
           <div className="tm-perf">
-            <fieldset className="xp-group">
-              <legend>CPU Usage</legend>
+            <GroupBox title="CPU Usage">
               <div className="tm-meter">{cpu}%</div>
-            </fieldset>
-            <fieldset className="xp-group tm-grow">
-              <legend>CPU Usage History</legend>
+            </GroupBox>
+            <GroupBox title="CPU Usage History" className="tm-grow">
               <Graph values={cpuHist} />
-            </fieldset>
-            <fieldset className="xp-group">
-              <legend>Memory</legend>
+            </GroupBox>
+            <GroupBox title="Memory">
               <div className="tm-meter">{Math.round(memK / 1024)} MB</div>
-            </fieldset>
-            <fieldset className="xp-group tm-grow">
-              <legend>Totals</legend>
+            </GroupBox>
+            <GroupBox title="Totals" className="tm-grow">
               <p>Processes: {procs.length}</p>
               <p>Windows open: {appWins.length}</p>
               <p>Physical memory: 512 MB</p>
-            </fieldset>
+            </GroupBox>
           </div>
         )}
       </div>
-      <div className="xp-status">
+      <div className="os-status">
         <span>Processes: {procs.length}</span>
         <span>CPU Usage: {cpu}%</span>
         <span>Commit Charge: {Math.round(memK / 1024)}M / 1246M</span>

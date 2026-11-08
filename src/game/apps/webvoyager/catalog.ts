@@ -20,6 +20,13 @@ export interface IndexEntry {
 
 export const SITE_INFO: SiteInfo[] = [
   {
+    host: "www.adrewards.com",
+    aliases: ["adrewards.com"],
+    name: "AdRewards",
+    icon: "mail",
+    secure: false,
+  },
+  {
     host: "www.searchly.com",
     aliases: ["searchly.com"],
     name: "Searchly",
@@ -58,6 +65,13 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "news",
     secure: false,
     favorite: true,
+  },
+  {
+    host: "www.videovault-tv.com",
+    aliases: ["videovault-tv.com"],
+    name: "VideoVault",
+    icon: "news",
+    secure: true,
   },
 ];
 

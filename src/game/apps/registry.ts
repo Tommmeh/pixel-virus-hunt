@@ -6,9 +6,11 @@ import { Chat } from "./messenger/Chat";
 import { Messenger } from "./messenger/Messenger";
 import { Mines } from "./mines/Mines";
 import { MessageBox, RecycleBin } from "./misc/MessageBox";
+import { ScamPopup } from "./misc/ScamPopup";
 import { Notepad } from "./notepad/Notepad";
 import { Settings } from "./settings/Settings";
 import { TaskManager } from "./taskmgr/TaskManager";
+import { Achievements } from "../scams/Achievements";
 import { WebVoyager } from "./webvoyager/WebVoyager";
 
 export interface AppProps {
@@ -69,7 +71,7 @@ export const APPS: AppDef[] = [
   },
   {
     id: "taskmgr",
-    title: "PaneOS Task Manager",
+    title: "VirusHuntOS Task Manager",
     icon: "taskmgr",
     process: "taskmgr.exe",
     memK: 3_120,
@@ -117,13 +119,32 @@ export const APPS: AppDef[] = [
     component: RecycleBin,
   },
   {
+    id: "achievements",
+    title: "Achievements",
+    icon: "info",
+    process: null,
+    w: 540,
+    h: 470,
+    component: Achievements,
+  },
+  {
     id: "msgbox",
-    title: "PaneOS",
+    title: "VirusHuntOS",
     icon: "info",
     process: null,
     w: 360,
     h: 170,
     component: MessageBox,
+  },
+  {
+    id: "scampopup",
+    title: "Advertisement",
+    icon: "warning",
+    process: "adware.exe",
+    memK: 1_240,
+    w: 340,
+    h: 260,
+    component: ScamPopup,
   },
 ];
 

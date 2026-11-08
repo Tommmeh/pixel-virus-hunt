@@ -11,7 +11,7 @@ export function Balloons() {
       {list.map((b) => (
         <div
           key={b.id}
-          className="balloon"
+          className="nes-balloon from-right balloon"
           role="status"
           onClick={() => {
             dismiss(b.id);

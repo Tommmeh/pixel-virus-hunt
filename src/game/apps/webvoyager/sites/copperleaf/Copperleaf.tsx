@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { formatMoney } from "../../../../components/ui";
+import { Check, Select, formatMoney } from "../../../../components/ui";
 import { emit } from "../../../../system/events";
 import { PROFILE } from "../../../../system/profile";
 import { A, useBrowser } from "../../BrowserContext";
@@ -35,7 +35,7 @@ function Header({ signedIn }: { signedIn: boolean }) {
 
 function Login() {
   const { navigate } = useBrowser();
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(PROFILE.bankUser);
   const [pw, setPw] = useState("");
   const [err, setErr] = useState("");
   return (
@@ -57,19 +57,19 @@ function Login() {
         <h3>Log in to Online Banking</h3>
         <label>
           User ID
-          <input className="xp-input" value={user} onChange={(e) => setUser(e.target.value)} />
+          <input className="nes-input" value={user} onChange={(e) => setUser(e.target.value)} />
         </label>
         <label>
           Password
           <input
-            className="xp-input"
+            className="nes-input"
             type="password"
             value={pw}
             onChange={(e) => setPw(e.target.value)}
           />
         </label>
         {err && <p className="form-error">{err}</p>}
-        <button className="xp-btn cl-btn" type="submit">
+        <button className="nes-btn is-warning cl-btn" type="submit">
           Log in
         </button>
         <small>We will never ask for your password by email or phone.</small>
@@ -172,41 +172,39 @@ function Transfer() {
       >
         <label>
           From
-          <select className="xp-input" value={from} onChange={(e) => setFrom(e.target.value)}>
+          <Select value={from} onChange={(e) => setFrom(e.target.value)}>
             {bank.accounts.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.name} ({formatMoney(a.balance)})
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <fieldset className="cl-radio">
-          <label>
-            <input type="radio" checked={mode === "own"} onChange={() => setMode("own")} /> Between
-            my accounts
-          </label>
-          <label>
-            <input type="radio" checked={mode === "payee"} onChange={() => setMode("payee")} /> Pay
-            someone else
-          </label>
+          <Check radio name="cl-mode" checked={mode === "own"} onChange={() => setMode("own")}>
+            Between my accounts
+          </Check>
+          <Check radio name="cl-mode" checked={mode === "payee"} onChange={() => setMode("payee")}>
+            Pay someone else
+          </Check>
         </fieldset>
         {mode === "own" ? (
           <label>
             To
-            <select className="xp-input" value={toAcc} onChange={(e) => setToAcc(e.target.value)}>
+            <Select value={toAcc} onChange={(e) => setToAcc(e.target.value)}>
               {bank.accounts.map((a) => (
                 <option key={a.id} value={a.id}>
                   {a.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         ) : (
           <>
             <label>
               Payee name
               <input
-                className="xp-input"
+                className="nes-input"
                 value={payee}
                 onChange={(e) => setPayee(e.target.value)}
               />
@@ -214,7 +212,7 @@ function Transfer() {
             <label>
               Sort code
               <input
-                className="xp-input"
+                className="nes-input"
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
                 placeholder="12-34-56"
@@ -223,7 +221,7 @@ function Transfer() {
             <label>
               Account number
               <input
-                className="xp-input"
+                className="nes-input"
                 value={accNo}
                 onChange={(e) => setAccNo(e.target.value)}
                 placeholder="8 digits"
@@ -234,7 +232,7 @@ function Transfer() {
         <label>
           Amount (£)
           <input
-            className="xp-input"
+            className="nes-input"
             inputMode="decimal"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
@@ -242,10 +240,10 @@ function Transfer() {
         </label>
         <label>
           Reference
-          <input className="xp-input" value={ref} onChange={(e) => setRef(e.target.value)} />
+          <input className="nes-input" value={ref} onChange={(e) => setRef(e.target.value)} />
         </label>
         {msg && <p className={msg.ok ? "form-ok" : "form-error"}>{msg.text}</p>}
-        <button className="xp-btn cl-btn" type="submit">
+        <button className="nes-btn is-warning cl-btn" type="submit">
           Send money
         </button>
       </form>

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { PixelIcon } from "../../components/PixelIcon";
 import { playDing } from "../../components/sound";
-import { GroupBox, Tabs, useNow } from "../../components/ui";
+import { Check, GroupBox, Select, Tabs, useNow } from "../../components/ui";
 import { emit } from "../../system/events";
 import { setPhase } from "../../system/session";
 import {
   AVATARS,
   THEMES,
+  resolveTheme,
   WALLPAPERS,
   updateSettings,
   useSettings,
@@ -14,6 +15,7 @@ import {
 } from "../../system/settings";
 import { resetAllStores } from "../../system/store";
 import type { Win } from "../../system/windows";
+import { wallpaperUrl } from "../../shell/wallpaper";
 
 type Tab = "display" | "sound" | "datetime" | "user" | "network" | "reset";
 
@@ -56,7 +58,12 @@ export function Settings({ win }: { win: Win }) {
       <div className="settings-panel">
         {tab === "display" && (
           <>
-            <div className={`monitor-preview`} data-wallpaper={s.wallpaper} data-theme={s.theme}>
+            <div
+              className="monitor-preview"
+              data-wallpaper={s.wallpaper}
+              data-theme={resolveTheme(s.theme)}
+              style={{ backgroundImage: wallpaperUrl(s.wallpaper) ?? undefined }}
+            >
               <div className="mini-win">
                 <div className="mini-title">Active Window</div>
                 <div className="mini-body" />
@@ -68,22 +75,21 @@ export function Settings({ win }: { win: Win }) {
             <GroupBox title="Theme">
               <div className="theme-list">
                 {THEMES.map((t) => (
-                  <label key={t.id} className="radio-row">
-                    <input
-                      type="radio"
-                      name="theme"
-                      checked={s.theme === t.id}
-                      onChange={() => set("theme", t.id)}
-                    />
+                  <Check
+                    key={t.id}
+                    radio
+                    name="theme"
+                    checked={resolveTheme(s.theme) === t.id}
+                    onChange={() => set("theme", t.id)}
+                  >
                     <span className="swatch" style={{ background: t.swatch }} />
                     {t.label}
-                  </label>
+                  </Check>
                 ))}
               </div>
             </GroupBox>
             <GroupBox title="Wallpaper">
-              <select
-                className="xp-input"
+              <Select
                 value={s.wallpaper}
                 onChange={(e) => set("wallpaper", e.target.value as S["wallpaper"])}
                 aria-label="Wallpaper"
@@ -93,25 +99,21 @@ export function Settings({ win }: { win: Win }) {
                     {w.label}
                   </option>
                 ))}
-              </select>
+              </Select>
             </GroupBox>
           </>
         )}
 
         {tab === "sound" && (
           <GroupBox title="Volume">
-            <label className="radio-row">
-              <input
-                type="checkbox"
-                checked={s.muted}
-                onChange={(e) => set("muted", e.target.checked)}
-              />
+            <Check checked={s.muted} onChange={(v) => set("muted", v)}>
               Mute all sounds
-            </label>
+            </Check>
             <label className="slider-row">
               <PixelIcon name="speaker" size={16} />
               <input
                 type="range"
+                className="os-range"
                 min={0}
                 max={100}
                 value={s.volume}
@@ -120,7 +122,7 @@ export function Settings({ win }: { win: Win }) {
               />
               {s.volume}%
             </label>
-            <button className="xp-btn" onClick={playDing}>
+            <button className="nes-btn is-primary" onClick={playDing}>
               Test sound
             </button>
           </GroupBox>
@@ -132,14 +134,9 @@ export function Settings({ win }: { win: Win }) {
               {new Date(now).toLocaleTimeString([], { hour12: !s.clock24 })}
             </div>
             <p>{new Date(now).toLocaleDateString(undefined, { dateStyle: "full" })}</p>
-            <label className="radio-row">
-              <input
-                type="checkbox"
-                checked={s.clock24}
-                onChange={(e) => set("clock24", e.target.checked)}
-              />
+            <Check checked={s.clock24} onChange={(v) => set("clock24", v)}>
               Use 24-hour clock
-            </label>
+            </Check>
           </GroupBox>
         )}
 
@@ -154,11 +151,11 @@ export function Settings({ win }: { win: Win }) {
                 }}
               >
                 <input
-                  className="xp-input"
+                  className="nes-input"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
-                <button className="xp-btn" type="submit">
+                <button className="nes-btn is-primary" type="submit">
                   Apply
                 </button>
               </form>
@@ -193,12 +190,12 @@ export function Settings({ win }: { win: Win }) {
                     {n.name} <small>({n.security})</small>
                   </span>
                   {s.wifi === n.name ? (
-                    <button className="xp-btn is-small" onClick={() => set("wifi", null)}>
+                    <button className="nes-btn is-small" onClick={() => set("wifi", null)}>
                       Disconnect
                     </button>
                   ) : (
                     <button
-                      className="xp-btn is-small"
+                      className="nes-btn is-small"
                       onClick={() => {
                         if (n.needsKey) {
                           setNetMsg(`'${n.name}' needs a network key. Ask the owner for it.`);
@@ -227,7 +224,7 @@ export function Settings({ win }: { win: Win }) {
             {confirmReset ? (
               <span className="flex gap-2">
                 <button
-                  className="xp-btn"
+                  className="nes-btn is-error"
                   onClick={() => {
                     resetAllStores();
                     setPhase("boot");
@@ -235,12 +232,12 @@ export function Settings({ win }: { win: Win }) {
                 >
                   Yes, reset everything
                 </button>
-                <button className="xp-btn" onClick={() => setConfirmReset(false)}>
+                <button className="nes-btn" onClick={() => setConfirmReset(false)}>
                   Cancel
                 </button>
               </span>
             ) : (
-              <button className="xp-btn" onClick={() => setConfirmReset(true)}>
+              <button className="nes-btn" onClick={() => setConfirmReset(true)}>
                 Reset this PC...
               </button>
             )}

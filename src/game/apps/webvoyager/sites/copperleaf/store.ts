@@ -116,3 +116,61 @@ export function transfer(opts: {
   emit({ type: "bank.transfer", to: toName, amount });
   return { ok: true };
 }
+
+/**
+ * Scammer payout: everything they can reach leaves the bank, with pennies left behind.
+ * Checking is left at £2.45 so the player can see exactly what happened when they log in.
+ */
+export function drainAccounts(): void {
+  const s = bankStore.get();
+  const date = today();
+  const out: Tx[] = [];
+  const accounts = s.accounts.map((a) => {
+    const take = a.id === "chk" ? a.balance - 2.45 : a.balance;
+    const amount = Math.round(take * 100) / 100;
+    if (!(amount > 0)) return a;
+    out.push({
+      id: `x${Date.now()}-${++seq}`,
+      date,
+      account: a.id,
+      desc: "TO VIDEOVAULT MEDIA",
+      amount: -amount,
+    });
+    return { ...a, balance: Math.round((a.balance - amount) * 100) / 100 };
+  });
+  if (out.length === 0) return;
+  bankStore.set((st) => ({ accounts, tx: [...out, ...st.tx] }));
+  emit({
+    type: "bank.transfer",
+    to: "VIDEOVAULT MEDIA",
+    amount: out.reduce((sum, t) => sum - t.amount, 0),
+  });
+}
+
+export function deposit(opts: {
+  account?: string;
+  amount: number;
+  desc: string;
+}): void {
+  const s = bankStore.get();
+  const accId = opts.account ?? "chk";
+  const acc = s.accounts.find((a) => a.id === accId) ?? s.accounts[0];
+  if (!acc) return;
+  const amount = Math.round(opts.amount * 100) / 100;
+  if (!Number.isFinite(amount) || amount <= 0) return;
+  const date = today();
+  const newTx: Tx = {
+    id: `x${Date.now()}-${++seq}`,
+    date,
+    account: acc.id,
+    desc: opts.desc.toUpperCase(),
+    amount,
+  };
+  bankStore.set((st) => ({
+    accounts: st.accounts.map((a) =>
+      a.id === acc.id ? { ...a, balance: Math.round((a.balance + amount) * 100) / 100 } : a,
+    ),
+    tx: [newTx, ...st.tx],
+  }));
+  emit({ type: "bank.transfer", to: acc.name, amount });
+}

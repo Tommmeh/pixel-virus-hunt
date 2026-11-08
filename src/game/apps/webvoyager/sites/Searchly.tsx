@@ -38,12 +38,12 @@ function SearchBox({ initial = "" }: { initial?: string }) {
       }}
     >
       <input
-        className="xp-input searchly-input"
+        className="nes-input searchly-input"
         value={q}
         onChange={(e) => setQ(e.target.value)}
         aria-label="Search"
       />
-      <button className="xp-btn" type="submit">
+      <button className="nes-btn is-primary" type="submit">
         Searchly Search
       </button>
     </form>
@@ -101,7 +101,7 @@ export function Searchly({ url }: { url: PageUrl }) {
       <Logo />
       <SearchBox />
       <button
-        className="xp-btn"
+        className="nes-btn"
         onClick={() => {
           const sites = SITE_INFO.filter((s) => s.host !== "www.searchly.com");
           const s = sites[Math.floor(Math.random() * sites.length)]!;

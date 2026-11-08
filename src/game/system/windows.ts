@@ -54,7 +54,7 @@ export type WmAction =
   | { type: "CLOSE_APP"; app: string }
   | { type: "CLOSE_ALL" };
 
-export const TASKBAR_H = 30;
+export const TASKBAR_H = 40;
 export const MIN_W = 220;
 export const MIN_H = 140;
 
@@ -208,7 +208,7 @@ export const wm = {
   shake: (key: string) => dispatch({ type: "SHAKE", key }),
   isOpen: (key: string) => windowStore.get().wins.some((w) => w.key === key),
   isActive: (key: string) => activeKey(windowStore.get()) === key,
-  /** Show a PaneOS message box. */
+  /** Show a VirusHuntOS message box. */
   alert(opts: { title: string; text: string; icon?: "info" | "warning" | "error" }) {
     return wm.open(
       "msgbox",
