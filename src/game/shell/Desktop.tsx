@@ -7,6 +7,8 @@ import { ScamPopups } from "./ScamPopups";
 import { ThreeDaysLater } from "./ThreeDaysLater";
 import { useShake } from "./shake";
 import { AaronService } from "../storylines/aaron/AaronService";
+import { DemoGuide } from "../demo/DemoGuide";
+import { useDemo } from "../demo/store";
 import { TutorialGuide } from "../tutorial/TutorialGuide";
 import { startTutorial } from "../tutorial/store";
 import { PixelIcon } from "../components/PixelIcon";
@@ -63,6 +65,7 @@ function AppView({ app, win }: { app: string; win: Win }) {
 
 export function Desktop() {
   const settings = useSettings();
+  const demo = useDemo();
   const wmState = useWindows();
   const { files } = useFs();
   const active = activeKey(wmState);
@@ -98,7 +101,7 @@ export function Desktop() {
       }}
     >
       <div className="desk-icons" data-tour="desktop-icons">
-        {[...SHORTCUTS, ...desktopFiles].map((s) => (
+        {[...SHORTCUTS.filter((s) => !(demo && s.id === "scout")), ...desktopFiles].map((s) => (
           <button
             key={s.id}
             data-tour={`icon-${s.id}`}
@@ -111,7 +114,7 @@ export function Desktop() {
             onDoubleClick={s.open}
             onKeyDown={(e) => e.key === "Enter" && s.open()}
           >
-            <PixelIcon name={s.icon} size={32} />
+            <PixelIcon name={s.icon} size={40} />
             <span>{s.label}</span>
           </button>
         ))}
@@ -129,12 +132,12 @@ export function Desktop() {
 
       {startOpen && <StartMenu onClose={() => setStartOpen(false)} />}
       <Balloons />
-      <MessengerService />
-      <QuestFlow />
-      <ThreeDaysLater />
-      <ScamPopups />
+      {/* The guided demo keeps the desktop quiet: only Aaron's PhotoWorm runs, narrated by Scout. */}
+      {!demo && <MessengerService />}
+      {!demo && <QuestFlow />}
+      {!demo && <ScamPopups />}
       <AaronService />
-      <TutorialGuide />
+      {demo ? <DemoGuide /> : <TutorialGuide />}
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>
   );

@@ -5,13 +5,13 @@ import { useSystemEvent } from "../system/events";
 import { personalize } from "../system/profile";
 import { useSettings } from "../system/settings";
 import { Scout } from "./Scout";
-import { STEPS } from "./steps";
 import {
   finishTutorial,
   nextStep,
   prevStep,
   skipTutorial,
   startTutorial,
+  stepsFor,
   tutorialProgress,
   tutorialSession,
 } from "./store";
@@ -24,39 +24,49 @@ interface Rect {
 }
 
 /**
- * Live position of a `data-tour` element (re-measured so it follows windows being moved).
- * Once the player engages with it (clicks into it or types in it) or `dismissed` is set, the spotlight
- * goes away for the rest of the step, so it never gets in the way while they're typing or checking Notepad.
+ * Live position of the step's `data-tour` element (re-measured so it follows windows being moved).
+ * A step may list several targets: the first one on screen that the player hasn't clicked yet wins
+ * (e.g. "Full Scan", then "Remove threats" once the scan has found something).
+ * Once the player engages with a target (clicks into it or types in it) or `dismissed` is set, its
+ * spotlight goes away for the rest of the step, so it never gets in the way while they're typing.
  * (Focus alone doesn't count, because fields like the password box autofocus when the page loads.)
  */
-function useTargetRect(target: string | undefined, dismissed: boolean): Rect | null {
+function useTargetRect(
+  target: string | readonly string[] | undefined,
+  dismissed: boolean,
+): Rect | null {
   const [rect, setRect] = useState<Rect | null>(null);
+  const key = target === undefined ? "" : typeof target === "string" ? target : target.join("|");
   useEffect(() => {
-    if (!target || dismissed) {
+    const targets = key ? key.split("|") : [];
+    if (!targets.length || dismissed) {
       setRect(null);
       return;
     }
-    let engaged = false;
-    const inTarget = (e: Event) => {
-      const el = document.querySelector(`[data-tour="${target}"]`);
-      return !!el && e.target instanceof Node && el.contains(e.target);
-    };
+    const engaged = new Set<string>();
+    const find = (t: string) => document.querySelector(`[data-tour="${t}"]`);
     const onInteract = (e: Event) => {
-      if (!engaged && inTarget(e)) {
-        engaged = true;
-        setRect(null);
+      if (!(e.target instanceof Node)) return;
+      for (const t of targets) {
+        if (find(t)?.contains(e.target)) engaged.add(t);
       }
+      measure();
     };
     const measure = () => {
-      const el = document.querySelector(`[data-tour="${target}"]`);
-      if (!el || engaged) return setRect(null);
-      const r = el.getBoundingClientRect();
-      if (r.width === 0 && r.height === 0) return setRect(null);
-      setRect((prev) =>
-        prev && prev.x === r.left && prev.y === r.top && prev.w === r.width && prev.h === r.height
-          ? prev
-          : { x: r.left, y: r.top, w: r.width, h: r.height },
-      );
+      for (const t of targets) {
+        if (engaged.has(t)) continue;
+        const el = find(t);
+        if (!el) continue;
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) continue;
+        setRect((prev) =>
+          prev && prev.x === r.left && prev.y === r.top && prev.w === r.width && prev.h === r.height
+            ? prev
+            : { x: r.left, y: r.top, w: r.width, h: r.height },
+        );
+        return;
+      }
+      setRect(null);
     };
     measure();
     const t = setInterval(measure, 200);
@@ -66,14 +76,30 @@ function useTargetRect(target: string | undefined, dismissed: boolean): Rect | n
       clearInterval(t);
       events.forEach((ev) => document.removeEventListener(ev, onInteract, true));
     };
-  }, [target, dismissed]);
+  }, [key, dismissed]);
   return rect;
 }
 
-export function TutorialGuide() {
+interface GuideProps {
+  /** Start the intro tour by itself on first login. Off for the guided demo, which starts its own script. */
+  autoStart?: boolean;
+  /** The skip link, e.g. "Exit demo". */
+  skipLabel?: string;
+  onSkip?: () => void;
+  /** Show a Back button on read-only steps. */
+  allowBack?: boolean;
+}
+
+export function TutorialGuide({
+  autoStart = true,
+  skipLabel = "Skip tutorial",
+  onSkip = skipTutorial,
+  allowBack = true,
+}: GuideProps = {}) {
   const session = tutorialSession.use();
   const name = useSettings().userName; // re-render when the player's name changes
-  const step = session.active ? STEPS[session.step] : undefined;
+  const steps = stepsFor(session.script);
+  const step = session.active ? steps[session.step] : undefined;
   // Pressing a helper button (e.g. "Show me" → Notepad) means the player is busy: hide the spotlight.
   const [dismissedStep, setDismissedStep] = useState<string | null>(null);
   const rect = useTargetRect(step?.target, dismissedStep === step?.id);
@@ -81,22 +107,22 @@ export function TutorialGuide() {
 
   // First login: Scout pops up by himself (once ever, until the PC is reset).
   useEffect(() => {
-    if (tutorialProgress.get().done || tutorialSession.get().active) return;
+    if (!autoStart || tutorialProgress.get().done || tutorialSession.get().active) return;
     const t = setTimeout(() => {
       if (!tutorialProgress.get().done) startTutorial();
     }, 1200);
     return () => clearTimeout(t);
-  }, []);
+  }, [autoStart]);
 
   // "Do it yourself" steps finish when the player does the thing.
   useSystemEvent((e) => {
     const s = tutorialSession.get();
-    const current = s.active ? STEPS[s.step] : undefined;
+    const current = s.active ? stepsFor(s.script)[s.step] : undefined;
     if (current?.waitFor?.(e)) nextStep();
   });
 
   if (!step) return null;
-  const last = session.step === STEPS.length - 1;
+  const last = session.step === steps.length - 1;
   const pad = 6;
 
   return (
@@ -122,13 +148,13 @@ export function TutorialGuide() {
           ))}
           {step.waitFor && step.hint && <p className="scout-hint">▶ {step.hint}</p>}
           <div className="scout-actions">
-            <button className="link-btn scout-skip" onClick={skipTutorial}>
-              Skip tutorial
+            <button className="link-btn scout-skip" onClick={onSkip}>
+              {skipLabel}
             </button>
             <span className="scout-count">
-              {session.step + 1}/{STEPS.length}
+              {session.step + 1}/{steps.length}
             </span>
-            {session.step > 0 && !step.waitFor && (
+            {allowBack && session.step > 0 && !step.waitFor && (
               <button className="nes-btn is-small" onClick={prevStep}>
                 Back
               </button>

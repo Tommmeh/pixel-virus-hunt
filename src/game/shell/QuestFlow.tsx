@@ -14,6 +14,8 @@ import { questStore, type QuestFlags } from "../system/quests";
 import { endGame } from "../system/session";
 import { wm } from "../system/windows";
 import { setShake } from "./shake";
+import { unlockScam } from "../scams/store";
+import { ANISH_CARD_IDS } from "../storylines/anish/cards";
 
 /** How long after the account is emptied each follow-up mail goes out. */
 const WIFE_DELAY = 8_000;
@@ -163,6 +165,7 @@ export function QuestFlow() {
         if (t >= 1) {
           ended.current = true;
           setShake(0);
+          unlockScam(ANISH_CARD_IDS.aftermath); // completes the bank line's trophy
           endGame();
         }
       }

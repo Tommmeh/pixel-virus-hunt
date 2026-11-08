@@ -29,6 +29,14 @@ export const TOUR_TARGETS = [
   "icon-webvoyager",
   "fav-mail.hotpost.com",
   "mail-password",
+  // Guided demo (game/demo/steps.ts)
+  "fav-www.friendspace.com",
+  "fs-phish-link",
+  "addr-http",
+  "phish-download",
+  "phish-open",
+  "pg-scan",
+  "pg-remove",
 ] as const;
 export type TourTarget = (typeof TOUR_TARGETS)[number];
 
@@ -36,13 +44,16 @@ export interface TutorialStep {
   id: string;
   title: string;
   text: string[];
-  target?: TourTarget;
+  /** One target, or several: the first one on screen (and not yet clicked) gets the spotlight. */
+  target?: TourTarget | TourTarget[];
   /** Finish the step when this event happens (the player has to do it themselves). */
   waitFor?: (e: SystemEvent) => boolean;
   /** Shown while waiting, e.g. "Double-click the WebVoyager icon". Required with waitFor. */
   hint?: string;
   /** Skip this step if it's already done (e.g. the browser is already open). */
   skipIf?: () => boolean;
+  /** Runs when the step becomes the current one (e.g. make something happen in the story). */
+  onEnter?: () => void;
   /** Optional helper button. */
   action?: { label: string; run: () => void };
 }

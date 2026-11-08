@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { PixelIcon } from "../../components/PixelIcon";
 import { emit } from "../../system/events";
 import { wm, type Win } from "../../system/windows";
@@ -20,7 +20,42 @@ function finalHref(input: string) {
   return href;
 }
 
+/**
+ * Invisible box over the "http" at the start of the address bar, so Scout's spotlight can point at exactly
+ * those letters in the guided demo. Only there on insecure (http://) pages, and never visible by itself, so the
+ * full game doesn't gain a warning badge.
+ */
+function HttpMarker({ input, typed }: { input: HTMLInputElement | null; typed: string }) {
+  const [box, setBox] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  useLayoutEffect(() => {
+    if (!input) return;
+    const measure = () => {
+      const cs = getComputedStyle(input);
+      const ctx = document.createElement("canvas").getContext("2d");
+      if (!ctx) return;
+      ctx.font = cs.font;
+      const pad = parseFloat(cs.paddingLeft) + parseFloat(cs.borderLeftWidth);
+      setBox({
+        left: input.offsetLeft + pad - input.scrollLeft,
+        top: input.offsetTop + parseFloat(cs.borderTopWidth),
+        width: ctx.measureText("http").width,
+        height: input.clientHeight,
+      });
+    };
+    measure();
+    void document.fonts?.ready.then(measure);
+  }, [input, typed]);
+  if (!box) return null;
+  return <span className="wv-http-marker" data-tour="addr-http" style={box} aria-hidden />;
+}
+
 export function WebVoyager({ win }: { win: Win }) {
+  const [addressInput, setAddressInput] = useState<HTMLInputElement | null>(null);
   const [hist, setHist] = useState(() => ({
     stack: [finalHref(win.args?.["url"] ?? HOME_URL)],
     i: 0,
@@ -90,6 +125,7 @@ export function WebVoyager({ win }: { win: Win }) {
       >
         <span>Address</span>
         <input
+          ref={setAddressInput}
           className="nes-input"
           value={typed}
           onChange={(e) => setTyped(e.target.value)}
@@ -99,6 +135,9 @@ export function WebVoyager({ win }: { win: Win }) {
         <button className="nes-btn is-small" type="submit">
           Go
         </button>
+        {url && !url.secure && typed.startsWith("http://") && (
+          <HttpMarker input={addressInput} typed={typed} />
+        )}
       </form>
       <div className="wv-favs">
         <span>Favorites:</span>

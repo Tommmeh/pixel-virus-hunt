@@ -18,9 +18,12 @@ function PostCard({ p, liked }: { p: Post; liked: boolean }) {
         <b>{person ? person.name : `${s.userName} Taylor`}</b>
         <p>{p.text}</p>
         {p.link && (
-          <A href={p.link} className="fs-link">
-            {p.link.replace(/^https?:\/\//, "")}
-          </A>
+          // data-tour: Scout points at Mum's link in the guided demo.
+          <span data-tour={p.id === "aaron-mum-photos" ? "fs-phish-link" : undefined}>
+            <A href={p.link} className="fs-link">
+              {p.link.replace(/^https?:\/\//, "")}
+            </A>
+          </span>
         )}
         <span className="fs-meta">
           {p.time} ·{" "}

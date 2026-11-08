@@ -91,6 +91,7 @@ export function Antivirus() {
               </div>
               <button
                 className="nes-btn is-error"
+                data-tour="pg-remove"
                 onClick={() => {
                   found.forEach((t) => removeThreat(t.id));
                   setPhase("removed");
@@ -109,6 +110,7 @@ export function Antivirus() {
       <div className="pg-actions">
         <button
           className="nes-btn is-primary"
+          data-tour="pg-scan"
           disabled={scanning}
           onClick={() => {
             setPct(0);
