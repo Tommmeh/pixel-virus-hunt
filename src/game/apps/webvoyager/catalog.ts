@@ -20,6 +20,13 @@ export interface IndexEntry {
 
 export const SITE_INFO: SiteInfo[] = [
   {
+    host: "www.adrewards.com",
+    aliases: ["adrewards.com"],
+    name: "AdRewards",
+    icon: "mail",
+    secure: false,
+  },
+  {
     host: "www.searchly.com",
     aliases: ["searchly.com"],
     name: "Searchly",
@@ -59,6 +66,12 @@ export const SITE_INFO: SiteInfo[] = [
     secure: false,
     favorite: true,
   },
+  {
+    host: "www.videovault-tv.com",
+    aliases: ["videovault-tv.com"],
+    name: "VideoVault",
+    icon: "news",
+    secure: true,
   // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
   {
     host: "friendspace.com.photo-album.net",

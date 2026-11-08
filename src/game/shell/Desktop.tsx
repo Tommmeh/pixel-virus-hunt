@@ -2,6 +2,8 @@ import { useState } from "react";
 import { getApp } from "../apps/registry";
 import { openPath } from "../apps/explorer/open";
 import { MessengerService } from "../apps/messenger/MessengerService";
+import { QuestFlow } from "./QuestFlow";
+import { ScamPopups } from "./ScamPopups";
 import { AaronService } from "../storylines/aaron/AaronService";
 import { TutorialGuide } from "../tutorial/TutorialGuide";
 import { startTutorial } from "../tutorial/store";
@@ -118,6 +120,8 @@ export function Desktop() {
       {startOpen && <StartMenu onClose={() => setStartOpen(false)} />}
       <Balloons />
       <MessengerService />
+      <QuestFlow />
+      <ScamPopups />
       <AaronService />
       <TutorialGuide />
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />

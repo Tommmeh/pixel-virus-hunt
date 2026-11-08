@@ -55,6 +55,20 @@ export function startConversation(contact: string, now = Date.now()) {
   });
 }
 
+/** Picks up an existing thread again with a later script node (a second beat with the same person). */
+export function continueConversation(contact: string, nodeId: string, now = Date.now()) {
+  const script = getScript(contact);
+  if (!script) return;
+  chatStore.set((s) => {
+    const t = s.threads[contact] ?? emptyThread();
+    if (t.node === nodeId) return s;
+    const msgs = [...t.msgs, ...queueLines(contact, nodeId, now)];
+    return {
+      threads: { ...s.threads, [contact]: { ...t, started: true, node: nodeId, msgs } },
+    };
+  });
+}
+
 export function choose(contact: string, index: number, now = Date.now()) {
   const script = getScript(contact);
   const t = chatStore.get().threads[contact];

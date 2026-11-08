@@ -18,6 +18,15 @@ export interface Mail {
 
 export const SEED_INBOX: Mail[] = [
   {
+    id: "seed-adrewards",
+    fromName: "AdRewards Official",
+    from: "rewards@adrewards.com",
+    to: PROFILE.email,
+    subject: "Watch 5 minutes of Ad for 5 dollars",
+    body: "★ SPECIAL SPONSOR PROMOTION ★\n\nWatch 5 minutes of Ad for 5 dollars!\n\nWe pay you instant cash for your attention! Watch our 5-minute sponsor advertisement, and $5.00 will be credited directly to your Copperleaf Bank checking account.\n\nClick the link below to watch the ad and claim your $5:\nhttp://www.adrewards.com/watch\n\nOffer limited to one payout per customer.",
+    date: "Tue 14/09/2004",
+  },
+  {
     id: "seed-mum",
     fromName: "Mum",
     from: "linda.taylor@hotpost.com",

@@ -8,6 +8,7 @@ import { WormPopup } from "../storylines/aaron/WormPopup";
 import { Antivirus } from "./antivirus/Antivirus";
 import { Mines } from "./mines/Mines";
 import { MessageBox, RecycleBin } from "./misc/MessageBox";
+import { ScamPopup } from "./misc/ScamPopup";
 import { Notepad } from "./notepad/Notepad";
 import { Settings } from "./settings/Settings";
 import { TaskManager } from "./taskmgr/TaskManager";
@@ -157,6 +158,16 @@ export const APPS: AppDef[] = [
     w: 360,
     h: 170,
     component: MessageBox,
+  },
+  {
+    id: "scampopup",
+    title: "Advertisement",
+    icon: "warning",
+    process: "adware.exe",
+    memK: 1_240,
+    w: 340,
+    h: 260,
+    component: ScamPopup,
   },
 ];
 

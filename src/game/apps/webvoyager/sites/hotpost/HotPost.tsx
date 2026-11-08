@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { emit } from "../../../../system/events";
 import { PEOPLE } from "../../../../system/people";
-import { personalize, PROFILE } from "../../../../system/profile";
+import { PROFILE } from "../../../../system/profile";
+import { questStore, type QuestFlags } from "../../../../system/quests";
+import { startConversation } from "../../../messenger/store";
 import { A, useBrowser } from "../../BrowserContext";
 import type { PageUrl } from "../../url";
-import { mailStore, markRead, sendMail, useMail, type Mail } from "./store";
+import { mailStore, markRead, receiveMail, sendMail, useMail, type Mail } from "./store";
 
 const BASE = "https://mail.hotpost.com";
 
@@ -82,9 +84,186 @@ function MailList({ list, read, folder }: { list: Mail[]; read: string[]; folder
   );
 }
 
+function renderMailBody(text: string, navigate: (url: string) => void) {
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
+  return parts.map((part, i) => {
+    if (/^https?:\/\//.test(part)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          style={{ textDecoration: "underline", color: "#2f6fe0", cursor: "pointer", fontWeight: "bold" }}
+          onClick={(e) => {
+            e.preventDefault();
+            navigate(part);
+          }}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
+function AmazingSignIn({ mail }: { mail: Mail }) {
+  const [signedIn, setSignedIn] = useState(() => questStore.get().amazingSignedIn);
+  const [user, setUser] = useState(PROFILE.email);
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState("");
+
+  if (signedIn) {
+    return (
+      <div
+        style={{
+          background: "#fff8e1",
+          border: "4px solid #f7a800",
+          padding: 12,
+          marginTop: 10,
+          fontFamily: "var(--font-body)",
+          fontSize: 18,
+        }}
+      >
+        ✅ You are now signed in to Amazing. Your gift card confirmation has been sent to your inbox!
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        background: "#fff8e1",
+        border: "4px solid #f7a800",
+        padding: 14,
+        marginTop: 10,
+      }}
+    >
+      <div
+        style={{
+          fontFamily: "var(--font-sans)",
+          fontSize: 9,
+          color: "#b34700",
+          marginBottom: 10,
+          letterSpacing: 1,
+        }}
+      >
+        🛒 AMAZING — Sign in to claim your $100 Gift Card
+      </div>
+      <form
+        style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 300 }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          const ok =
+            user.trim().toLowerCase() === PROFILE.email && pw === PROFILE.mailPassword;
+          if (!ok) {
+            setErr("Incorrect email or password. Please try again.");
+            return;
+          }
+          // Mark done so we can't fire twice
+          questStore.set((s: QuestFlags) => ({ ...s, amazingSignedIn: true }));
+          setSignedIn(true);
+
+          // 1) FriendSpace login alert (arrives quickly)
+          setTimeout(
+            () =>
+              receiveMail({
+                fromName: "FriendSpace Security",
+                from: "security@friendspace.com",
+                subject: "New sign-in to your FriendSpace account",
+                body:
+                  "Hi jamie_t,\n\n" +
+                  "We noticed a new sign-in to your FriendSpace account from an unrecognised device.\n\n" +
+                  "Date/Time: " + new Date().toLocaleString() + "\n" +
+                  "Location:  Unknown\n" +
+                  "Device:    Unknown Browser\n\n" +
+                  "If this was you, no action is needed.\n" +
+                  "If you don't recognise this activity, please change your password immediately.\n\n" +
+                  "— The FriendSpace Team",
+              }),
+            3_000,
+          );
+
+          // 2) HotPost login alert (arrives a bit later)
+          setTimeout(
+            () =>
+              receiveMail({
+                fromName: "HotPost Security Team",
+                from: "security@hotpost.com",
+                subject: "Alert: New sign-in detected on your HotPost account",
+                body:
+                  "Dear jamie.taylor,\n\n" +
+                  "A new sign-in to your HotPost Mail account was detected.\n\n" +
+                  "Date/Time: " + new Date().toLocaleString() + "\n" +
+                  "IP Address: 94.102.49.190\n" +
+                  "Location:  Unknown\n\n" +
+                  "If this was you, you can ignore this message.\n" +
+                  "If you did NOT sign in, your password may be compromised. " +
+                  "We recommend changing it right away.\n\n" +
+                  "— HotPost Security",
+              }),
+            7_000,
+          );
+
+          // 3) Amazing gift card confirmation (arrives last)
+          setTimeout(
+            () =>
+              receiveMail({
+                fromName: "Amazing Rewards Team",
+                from: "rewards@amazing-shop.com",
+                subject: "🎁 Your $100 Amazing Gift Card — Order Confirmed!",
+                body:
+                  "Thank you for signing in, Jamie!\n\n" +
+                  "Your $100 Amazing Gift Card has been confirmed and is now active.\n\n" +
+                  "Gift Card Code:  AMZN-2004-GIFT-X9K2\n" +
+                  "Value:           $100.00\n" +
+                  "Expires:         Never\n\n" +
+                  "Redeem at checkout on amazing-shop.com.\n\n" +
+                  "Enjoy your reward!\n\n" +
+                  "— The Amazing Rewards Team",
+              }),
+            12_000,
+          );
+
+          // 4) Marcus has had a call from Emma — the money conversation has to play out before
+          // the next email. QuestFlow sends the VideoVault trial offer once it ends.
+          setTimeout(() => startConversation("marcus"), 16_000);
+        }}
+      >
+        <label style={{ fontFamily: "var(--font-sans)", fontSize: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+          Email address
+          <input
+            className="nes-input"
+            type="email"
+            value={user}
+            onChange={(e) => setUser(e.target.value)}
+            autoComplete="off"
+          />
+        </label>
+        <label style={{ fontFamily: "var(--font-sans)", fontSize: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+          Password
+          <input
+            className="nes-input"
+            type="password"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
+          />
+        </label>
+        {err && <p className="form-error">{err}</p>}
+        <button className="nes-btn is-warning" type="submit">
+          Sign In to Amazing
+        </button>
+      </form>
+    </div>
+  );
+}
+
 function ReadMail({ mail }: { mail: Mail | undefined }) {
   const { navigate } = useBrowser();
   if (!mail) return <p className="hp-empty">This message could not be found.</p>;
+
+  const isAmazingPhish = mail.from === "rewards@amazing-shop.com" &&
+    mail.subject.includes("FREE $100");
+
   return (
     <div className="hp-read">
       <div className="hp-read-head">
@@ -99,8 +278,19 @@ function ReadMail({ mail }: { mail: Mail | undefined }) {
           <b>Date:</b> {mail.date}
         </p>
       </div>
-      <pre className="hp-body">{personalize(mail.body)}</pre>
-      {mail.from !== PROFILE.email && (
+      <pre className="hp-body">{renderMailBody(mail.body, navigate)}</pre>
+      {mail.body.includes("http://www.adrewards.com/watch") && (
+        <div style={{ marginBottom: 12 }}>
+          <button
+            className="nes-btn is-success is-small"
+            onClick={() => navigate("http://www.adrewards.com/watch")}
+          >
+            ▶ Watch 5-Minute Ad ($5.00 Payout)
+          </button>
+        </div>
+      )}
+      {isAmazingPhish && <AmazingSignIn mail={mail} />}
+      {mail.from !== PROFILE.email && !isAmazingPhish && (
         <button
           className="nes-btn is-primary"
           onClick={() =>
