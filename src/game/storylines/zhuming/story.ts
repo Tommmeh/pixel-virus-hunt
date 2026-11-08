@@ -5,7 +5,7 @@
 // 4. PaneGuard finds the app; removing it ends the story        → "cleaned"
 // 5. Or: big trades wake J-Reyes, Kevin panics, and the app empties both accounts → "wiped"
 // Never warn the player at the moment of the mistake: the ad reads like a column and the app looks
-// like every other trading app. The lessons unlock silently in Achievements.
+// like every other trading app. The lessons unlock silently in Quests.
 import {
   chatKey,
   chatStore,
@@ -219,10 +219,10 @@ export function clean() {
   if (threatStore.get().threats.some((t) => t.id === THREAT_ID)) removeThreat(THREAT_ID);
   unlockScam(ZHUMING_CARD_IDS.cleaned);
   notify({
-    title: "PaneGuard Antivirus",
-    text: "StockLadder.Trade removed. Your PC is clean. New lessons are waiting in Achievements.",
+    title: "Antivirus",
+    text: "StockLadder.Trade removed. Your PC is clean. Click here to see what it taught you.",
     icon: "shield",
-    open: { app: "achievements" },
+    open: { app: "quests", args: { line: "stocks" } },
   });
   emit({ type: "story.complete", story: STORY });
 }

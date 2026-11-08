@@ -15,7 +15,8 @@ import { ScamPopup } from "./misc/ScamPopup";
 import { Notepad } from "./notepad/Notepad";
 import { Settings } from "./settings/Settings";
 import { TaskManager } from "./taskmgr/TaskManager";
-import { Achievements } from "../scams/Achievements";
+import { Quests } from "../scams/Quests";
+import { AchievementsApp } from "../achievements/AchievementsApp";
 import { WebVoyager } from "./webvoyager/WebVoyager";
 import { StockApp } from "../storylines/zhuming/StockApp";
 
@@ -78,7 +79,7 @@ export const APPS: AppDef[] = [
   {
     id: "phone",
     title: "Phone",
-    icon: "☎",
+    icon: "phone",
     process: "phone.exe",
     memK: 900,
     w: 360,
@@ -145,19 +146,28 @@ export const APPS: AppDef[] = [
     component: RecycleBin,
   },
   {
+    id: "quests",
+    title: "Quests",
+    icon: "trophy",
+    process: null,
+    w: 640,
+    h: 540,
+    component: Quests,
+  },
+  {
     id: "achievements",
     title: "Achievements",
     icon: "medal",
     process: null,
-    w: 640,
-    h: 540,
-    component: Achievements,
+    w: 560,
+    h: 480,
+    component: AchievementsApp,
   },
   {
     id: "antivirus",
-    title: "PaneGuard Antivirus",
+    title: "Antivirus",
     icon: "shield",
-    process: "paneguard.exe",
+    process: "antivirus.exe",
     memK: 7_420,
     w: 520,
     h: 420,

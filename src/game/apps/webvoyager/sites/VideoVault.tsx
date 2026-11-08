@@ -178,7 +178,7 @@ function Login() {
 
   function signIn() {
     questStore.set((s: QuestFlags) => ({ ...s, videoVaultSignedIn: true }));
-    unlockScam(ANISH_CARD_IDS.paidTrial); // silent: the lesson waits in Achievements
+    unlockScam(ANISH_CARD_IDS.paidTrial); // silent: the lesson waits in Quests
     setSignedIn(true);
     deposit({ account: "chk", amount: BONUS, desc: "VIDEOVAULT SIGN-UP BONUS" });
     sendBankAlert();

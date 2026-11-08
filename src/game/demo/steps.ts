@@ -1,6 +1,8 @@
-// Scout's guided demo script: Aaron's PhotoWorm, start to finish, with the red flags pointed out.
+// The tutorial: Scout walks the player through their first virus (Aaron's PhotoWorm) start to finish,
+// explains the VIRUSES CAUGHT bar, points out the red flags, and ends with "Back to main menu".
 // Unlike the full game (where nobody warns you at the moment of a mistake), here Scout tells you up front
-// that you're playing the victim on purpose — it's a demo of how the scam works.
+// that you're playing the victim on purpose.
+import { VIRUS_TOTAL } from "../scams/questlines";
 import { aaronStore, openPopupKeys, PHISH_HOST, post, STORY } from "../storylines/aaron/story";
 import { wm } from "../system/windows";
 import type { TutorialStep } from "../tutorial/steps";
@@ -16,7 +18,7 @@ export const DEMO_STEPS: TutorialStep[] = [
     title: "Hi, I'm Scout!",
     text: [
       "This is VirusHuntOS, a pretend PC from 2004. Nothing here is real, so it's safe to break.",
-      "Today we're going to catch a virus together, on purpose.",
+      `Your goal: catch all ${VIRUS_TOTAL} viruses hiding on this PC. I'll walk you through the first one.`,
     ],
   },
   {
@@ -26,6 +28,15 @@ export const DEMO_STEPS: TutorialStep[] = [
       "You'll do what a lot of real people do: click a friend's link and install what it asks for.",
       "I'll point out every clue you could have spotted, then we'll clean up the mess.",
     ],
+  },
+  {
+    id: "demo-score",
+    title: "Your score",
+    text: [
+      `This bar is your score: VIRUSES CAUGHT. Each slot is one of the ${VIRUS_TOTAL} viruses on this PC, and it lights up when you fall for it.`,
+      "Stuck later on? Click a dark slot and it takes you to where that virus is hiding.",
+    ],
+    target: "virus-hud",
   },
   {
     id: "demo-browser",
@@ -80,11 +91,12 @@ export const DEMO_STEPS: TutorialStep[] = [
   },
   {
     id: "demo-infected",
-    title: "Clue #2: a link that wanted a program",
+    title: `Caught one! 1/${VIRUS_TOTAL}`,
     text: [
-      "Photos open in your browser. A friend's link that makes you install something first is a trap.",
-      "'Could not be loaded'? It loaded fine... for the hacker. You're infected. Watch the screen...",
+      "Look at the top: your first virus. 'Could not be loaded'? It loaded fine... for the hacker.",
+      "Clue #2: photos open in your browser. A link that makes you install something first is a trap. Now watch the screen...",
     ],
+    target: "virus-hud",
     waitFor: (e) => e.type === "app.open" && e.app === "worm-popup",
     hint: "Wait for it...",
     skipIf: () => openPopupKeys().length > 0 || stageIs("swarm", "cleaned"),
@@ -105,11 +117,11 @@ export const DEMO_STEPS: TutorialStep[] = [
     title: "It's a worm!",
     text: [
       "Every pop-up you close comes back as two: it's copying itself. Closing windows won't fix this.",
-      "You need real antivirus. Open PaneGuard from the desktop (or the START menu if it's buried).",
+      "You need a real antivirus. Open the Antivirus from the desktop (or the START menu if it's buried).",
     ],
-    target: "icon-paneguard",
+    target: "icon-antivirus",
     waitFor: (e) => e.type === "app.open" && e.app === "antivirus",
-    hint: "Double-click PaneGuard",
+    hint: "Double-click Antivirus",
     skipIf: () => wm.isOpen("antivirus") || stageIs("cleaned"),
   },
   {
@@ -121,6 +133,13 @@ export const DEMO_STEPS: TutorialStep[] = [
     target: ["pg-remove", "pg-scan"],
     waitFor: (e) => e.type === "story.complete" && e.story === STORY,
     hint: "Full Scan, then Remove threats",
+    after: {
+      title: "Virus cleaned! Tutorial complete",
+      text: [
+        "What gave it away: a link to a site that wasn't FriendSpace (and only http), a 'viewer' you had to install, and pop-ups that multiplied.",
+        `That's 1 of ${VIRUS_TOTAL}. The other ${VIRUS_TOTAL - 1} are hiding in the full game, and nobody will warn you. Good luck!`,
+      ],
+    },
   },
 ];
 

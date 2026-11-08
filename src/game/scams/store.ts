@@ -45,7 +45,7 @@ export function resetThread(personaId: string) {
   });
 }
 
-/** Trophies the player has already opened in Achievements (drives the "NEW!" tag). */
+/** Trophies the player has already opened in Quests (drives the "NEW!" tag). */
 export const trophySeenStore = createStore<{ seen: Record<string, true> }>("vh-trophies-seen", {
   seen: {},
 });

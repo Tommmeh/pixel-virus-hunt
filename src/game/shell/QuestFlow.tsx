@@ -188,7 +188,7 @@ export function QuestFlow() {
         if (Date.now() >= callAt.current) {
           callAt.current = null;
           questStore.set((s: QuestFlags) => ({ ...s, callStarted: true }));
-          wm.open("phone", undefined, { title: "☎ Copperleaf Bank" });
+          wm.open("phone", undefined, { title: "Phone - Copperleaf Bank" });
           startBankCall();
         }
       }

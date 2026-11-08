@@ -9,6 +9,7 @@ import { useIsSlow } from "../system/health";
 import { logIn, setPhase, usePhase } from "../system/session";
 import { updateSettings, useSettings } from "../system/settings";
 import { resetStory } from "./startOver";
+import { VIRUS_TOTAL } from "../scams/questlines";
 import { CrashScreen } from "../storylines/usb/CrashScreen";
 import {
   nextSponsorIndex,
@@ -140,7 +141,7 @@ function Welcome() {
       <SponsorEgg />
       <div className="welcome-mid" data-sponsor={sponsor?.id}>
         <Logo />
-        <p className="welcome-tagline">A SAFE PC FOR PRACTISING AGAINST SCAMS &amp; MALWARE</p>
+        <p className="welcome-tagline">CATCH ALL {VIRUS_TOTAL} VIRUSES, SAFELY</p>
         <div className="welcome-stack">
           {/* 1. What to click — first thing on screen. */}
           <section className="welcome-panel welcome-actions">
@@ -154,10 +155,10 @@ function Welcome() {
                   startDemo();
                 }}
               >
-                ▶ Guided demo
+                ▶ Tutorial
               </button>
               <p className="welcome-demo-cap">
-                3 minutes. Scout walks you through catching (and cleaning) one virus.
+                3 minutes. Scout walks you through catching (and cleaning) your first virus.
               </p>
             </div>
             <p className="welcome-or">OR PLAY THE FULL GAME</p>

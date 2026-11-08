@@ -328,7 +328,7 @@ body { font-family: var(--font-sans); background: #000; }
 /* ---------- Windows: 4px pixel frame with notched corners ---------- */
 .os-win { position: absolute; display: flex; flex-direction: column; background: var(--face); color: var(--text);
   box-shadow: 0 -4px 0 0 var(--border), 0 4px 0 0 var(--border), -4px 0 0 0 var(--border), 4px 0 0 0 var(--border), 10px 10px 0 0 var(--shadow); }
-.os-win.is-max { inset: 4px; width: auto; height: auto; }
+.os-win.is-max { inset: 64px 4px 4px; width: auto; height: auto; } /* top: clear of the virus counter */
 .os-win.is-shaking { animation: nudge 0.12s steps(2) 5; }
 @keyframes nudge { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-8px, 4px); } 50% { transform: translate(8px, -4px); } 75% { transform: translate(-4px, -4px); } }
 .os-title { flex: none; height: 28px; display: flex; align-items: center; gap: 8px; padding: 0 4px 0 8px; background: var(--title-a); color: var(--title-text); border-bottom: 4px solid var(--border); font: 9px var(--font-sans); cursor: grab; touch-action: none; }
@@ -721,7 +721,7 @@ body { font-family: var(--font-sans); background: #000; }
 .welcome-mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; padding: 16px;
   background: repeating-linear-gradient(0deg, #209cee 0 8px, #1d91dd 8px 16px); }
 .welcome-mid { overflow-y: auto; gap: 20px; justify-content: safe center; }
-.welcome-tagline { margin: 0; font-size: 9px; line-height: 1.8; text-align: center; color: #f7d51d; text-shadow: 2px 2px 0 #000; }
+.welcome-tagline { margin: 0; font-size: 11px; line-height: 1.8; text-align: center; color: #f7d51d; text-shadow: 2px 2px 0 #000; }
 /* Pixel panel: white 4px border with stepped corners + drop shadow (box-shadows, no border-image). */
 .welcome-panel { position: relative; margin: 8px; padding: 26px 20px 18px; color: #fff; background: #212529;
   box-shadow: 0 -4px #fff, 0 4px #fff, -4px 0 #fff, 4px 0 #fff, 0 12px 0 -4px rgb(0 0 0 / 0.35); }
@@ -989,16 +989,6 @@ body { font-family: var(--font-sans); background: #000; }
 .welcome-actions .welcome-demo-cap { margin: 0; font: 17px/1.2 var(--font-body); opacity: 0.85; text-align: center; }
 .welcome-or { display: flex; align-items: center; gap: 10px; margin: 14px 0 12px; font: 8px var(--font-sans); color: #adafbc; }
 .welcome-or::before, .welcome-or::after { content: ""; flex: 1; border-top: 4px dotted #6c7a89; }
-.demo-end { position: fixed; inset: 0; z-index: 9999; overflow: auto; background: #000; color: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 32px 16px; text-align: center; }
-.demo-end-title { margin: 0; font: 24px var(--font-sans); letter-spacing: 4px; color: #92cc41; }
-.demo-end-sub { margin: 0; font: 11px var(--font-sans); letter-spacing: 2px; color: #f7d51d; }
-.demo-end-cols { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; max-width: 900px; text-align: left; font: 20px/1.35 var(--font-body); color: #c9c9c9; }
-.demo-end-cols section { flex: 1 1 340px; }
-.demo-end-cols ol, .demo-end-cols ul { margin: 0; padding-left: 24px; }
-.demo-end-cols li { margin-bottom: 6px; }
-.demo-end-head { margin: 0 0 10px; font: 10px var(--font-sans); color: #fff; }
-.demo-end-note { margin: 0; max-width: 620px; font: 18px var(--font-body); color: #9a9a9a; }
-.demo-end-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 
 /* ---------- Achievements: trophy shelf ---------- */
 /* The window body clips its content; the app scrolls itself (the lesson view is much taller than the window). */
@@ -1075,3 +1065,34 @@ body { font-family: var(--font-sans); background: #000; }
 /* On sponsor backgrounds, text that sits straight on the pattern gets a dark backing so it stays readable. */
 .welcome-mid[data-sponsor] .welcome-tagline, .welcome-mid[data-sponsor] .welcome-credits { padding: 6px 12px; background: rgb(33 37 41 / 85%); box-shadow: 0 0 0 3px rgb(33 37 41 / 85%); }
 @media (max-width: 700px) { .sponsor-caption { display: none; } .sponsor-mark { font-size: 28px; } }
+
+/* ---------- The score: VIRUSES CAUGHT (top-centre HUD on the desktop) ---------- */
+.virus-hud { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 4900; display: flex; align-items: center; gap: 12px;
+  padding: 6px 14px; border: 0; color: #fff; background: #212529;
+  box-shadow: 0 0 0 4px #f7d51d, 0 0 0 8px #212529, 6px 10px 0 0 rgb(0 0 0 / 35%); font: 10px/1 var(--font-sans); }
+.virus-hud-label { color: #f7d51d; letter-spacing: 1px; }
+.virus-hud-count { font: 14px/1 var(--font-sans); color: #fff; }
+.virus-hud-count b { font-weight: normal; color: #92cc41; font-size: 20px; }
+.virus-hud-slots { display: flex; gap: 4px; }
+.virus-slot { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; cursor: pointer; background: #3a3f47; box-shadow: inset 0 0 0 2px #555c66; }
+.virus-slot:hover { background: #4b5563; box-shadow: inset 0 0 0 2px #fff; transform: translateY(-2px); }
+.virus-slot.is-caught:hover { box-shadow: inset 0 0 0 2px #fff; }
+.virus-slot:disabled { cursor: default; transform: none; }
+.virus-slot .pixel-icon, .virus-slot svg { filter: brightness(0) invert(0.35); }
+.virus-slot.is-caught { background: #e76e55; box-shadow: inset 0 0 0 2px #f7d51d; }
+.virus-slot.is-caught .pixel-icon, .virus-slot.is-caught svg { filter: none; }
+.virus-hud.is-bump { animation: hud-bump 0.9s steps(6); }
+@keyframes hud-bump { 20% { transform: translateX(-50%) scale(1.18); } 40% { transform: translateX(-50%) scale(0.96); } 60% { transform: translateX(-50%) scale(1.08); } }
+.virus-hud.is-all { box-shadow: 0 0 0 4px #92cc41, 0 0 0 8px #212529, 6px 10px 0 0 rgb(0 0 0 / 35%); }
+@media (max-width: 700px) { .virus-hud-label { display: none; } .virus-hud-slots { display: none; } }
+
+/* ---------- Achievements (badges) ---------- */
+.badge-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.badge { display: flex; align-items: center; gap: 12px; padding: 8px 10px; background: var(--pane-bg); color: var(--text); box-shadow: 0 0 0 3px var(--border); }
+.badge-icon { flex: none; display: grid; place-items: center; width: 44px; height: 44px; background: #fff; box-shadow: 0 0 0 2px #212529; }
+.badge-text { flex: 1; display: flex; flex-direction: column; gap: 4px; font: 18px/1.1 var(--font-body); }
+.badge-text b { font: 9px/1.4 var(--font-sans); font-weight: normal; }
+.badge-mark { flex: none; width: 24px; font: 16px var(--font-sans); color: #4aa52e; text-align: center; }
+.badge.is-locked { opacity: 0.6; }
+.badge.is-locked .badge-icon { filter: grayscale(1); }
+.badge.is-got { box-shadow: 0 0 0 3px #92cc41; }

@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AuthProvider } from "@/auth/AuthProvider";
-import { DemoEnd } from "@/game/demo/DemoEnd";
 import { BootScreen } from "@/game/shell/BootScreen";
 import { Desktop } from "@/game/shell/Desktop";
 import { EndGame } from "@/game/shell/EndGame";
@@ -40,6 +39,5 @@ function Game() {
   const phase = usePhase();
   if (phase === "end") return <EndGame />;
   if (phase === "goodend") return <GoodEnd />;
-  if (phase === "demo-end") return <DemoEnd />;
   return phase === "desktop" ? <Desktop /> : <BootScreen />;
 }

@@ -1,4 +1,4 @@
-// Every lesson card shown in the Achievements app: the Gemini chat scams plus each storyline's cards.
+// Every lesson card shown in the Quests app: the Gemini chat scams plus each storyline's cards.
 // To add a storyline's cards: export them from its folder and append them here.
 import { AARON_CARDS } from "../storylines/aaron/cards";
 import { ZHUMING_CARDS } from "../storylines/zhuming/cards";

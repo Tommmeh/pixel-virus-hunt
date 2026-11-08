@@ -52,18 +52,13 @@ const NOTES = `Things to remember!!
 - Dentist Tuesday 4pm
 - Return library books
 - Buy Mum a birthday card (birthday is the 14th)
+`;
 
-Passwords (don't forget!!)
+/** On the desktop, in plain sight: the same password everywhere is a deliberate hook for the scams. */
+const PASSWORDS = `Passwords (don't forget!!)
 E-mail: jamie.taylor@hotpost.com / sunflower42
 Copperleaf Bank: jamie.taylor / sunflower42
 FriendSpace: same as email
-`;
-
-const SHOPPING = `Shopping list
-- milk
-- bread
-- batteries (AA) for the camera
-- blank CDs
 `;
 
 const WIN_INI = `; for 16-bit app support
@@ -97,7 +92,7 @@ export const DRIVES: Drive[] = [
     root: folder("C:", [
       folder("Documents and Settings", [
         folder("User", [
-          folder("Desktop", [file("shopping_list.txt", "text", "1 KB", { content: SHOPPING })]),
+          folder("Desktop", [file("passwords.txt", "text", "1 KB", { content: PASSWORDS })]),
           folder("My Documents", [
             file("notes.txt", "text", "1 KB", { content: NOTES }),
             file("history_essay.doc", "doc", "48 KB"),

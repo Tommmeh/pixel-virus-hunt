@@ -1,13 +1,21 @@
-// The Achievements app: a trophy shelf with one trophy per quest line. This is where the lesson lives:
+// The Quests app: a trophy shelf with one trophy per quest line (one per virus / scam). This is where the lesson lives:
 // the player is never warned while they are being scammed, and finds out what happened only here.
 // Locked trophies are black silhouettes (no spoilers); finishing a quest line turns it gold, and
 // clicking it opens that line's lesson cards.
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { Win } from "../system/windows";
 import { askItGuy } from "../ai.functions";
 import { PixelIcon } from "../components/PixelIcon";
 import { itGuyFallback, type LessonCard } from "./ai";
 import { getLessonCard } from "./cards";
-import { getQuestLine, isComplete, progress, QUEST_LINES, type QuestLine } from "./questlines";
+import {
+  getQuestLine,
+  isCaught,
+  isComplete,
+  progress,
+  QUEST_LINES,
+  type QuestLine,
+} from "./questlines";
 import { markTrophySeen, trophySeenStore, useScams } from "./store";
 
 function CardView({ card, step }: { card: LessonCard; step: number }) {
@@ -111,8 +119,21 @@ function TrophyTile({
   );
 }
 
-function QuestDetail({ line, onBack }: { line: QuestLine; onBack: () => void }) {
-  const cards = line.cardIds.map(getLessonCard).filter((c): c is LessonCard => !!c);
+function QuestDetail({
+  line,
+  unlocked,
+  onBack,
+}: {
+  line: QuestLine;
+  unlocked: Record<string, number>;
+  onBack: () => void;
+}) {
+  const done = isComplete(line, unlocked);
+  // A finished quest shows every lesson; one still in progress shows the lessons found so far.
+  const cards = line.cardIds
+    .filter((id) => done || id in unlocked)
+    .map(getLessonCard)
+    .filter((c): c is LessonCard => !!c);
   return (
     <div className="trophy-detail">
       <button className="nes-btn is-small" onClick={onBack}>
@@ -122,7 +143,11 @@ function QuestDetail({ line, onBack }: { line: QuestLine; onBack: () => void }) 
         <Trophy line={line} size={64} />
         <div>
           <p className="trophy-detail-title">{line.name}</p>
-          <p className="trophy-detail-sub">Quest line complete. Here's what happened.</p>
+          <p className="trophy-detail-sub">
+            {done
+              ? "Virus caught and cleaned up. Here's what happened."
+              : "Caught! Clean it up to finish this quest and unlock the rest."}
+          </p>
         </div>
       </div>
       {cards.map((card, i) => (
@@ -132,16 +157,22 @@ function QuestDetail({ line, onBack }: { line: QuestLine; onBack: () => void }) 
   );
 }
 
-export function Achievements() {
+export function Quests({ win }: { win?: Win } = {}) {
   const { unlocked } = useScams();
   const { seen } = trophySeenStore.use();
-  const [openId, setOpenId] = useState<string | null>(null);
+  const wanted = win?.args?.["line"] ?? null;
+  const at = win?.args?.["at"];
+  const [openId, setOpenId] = useState<string | null>(wanted);
+  // Opened from a slot of the virus counter: jump straight to that quest's lessons.
+  useEffect(() => {
+    if (wanted) setOpenId(wanted);
+  }, [wanted, at]);
   const open = openId ? getQuestLine(openId) : undefined;
 
-  if (open && isComplete(open, unlocked)) {
+  if (open && isCaught(open, unlocked)) {
     return (
       <div className="p-2 ach-scroll">
-        <QuestDetail line={open} onBack={() => setOpenId(null)} />
+        <QuestDetail line={open} unlocked={unlocked} onBack={() => setOpenId(null)} />
       </div>
     );
   }
@@ -151,13 +182,13 @@ export function Achievements() {
     <div className="p-2 trophy-shelf ach-scroll">
       <div className="trophy-head">
         <p>
-          <b>Trophies</b> {done} / {QUEST_LINES.length}
+          <b>Quests done</b> {done} / {QUEST_LINES.length}
         </p>
         <progress
           className="nes-progress is-warning"
           value={done}
           max={QUEST_LINES.length}
-          aria-label="Trophies unlocked"
+          aria-label="Quests done"
         />
       </div>
       <div className="trophy-grid">
@@ -176,7 +207,7 @@ export function Achievements() {
       </div>
       <p className="trophy-foot">
         {done === 0
-          ? "Every quest line hides a scam or a virus. Trophies unlock after you've been caught out and seen it through: you find out afterwards, not while it's happening."
+          ? "Every quest hides a virus or a scam. Catch it, see it through, and its trophy unlocks here with the lesson behind it."
           : "Finish a quest line to turn its silhouette into a trophy."}
       </p>
     </div>

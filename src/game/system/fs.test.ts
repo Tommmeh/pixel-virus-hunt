@@ -35,8 +35,9 @@ describe("virtual file system", () => {
     expect(names.indexOf("My Music")).toBeLessThan(names.indexOf("notes.txt"));
   });
 
-  it("notes.txt holds the bank password (quest hook)", () => {
-    expect(readFile(joinPath(MY_DOCUMENTS, "notes.txt"))).toContain("sunflower42");
+  it("passwords.txt on the desktop holds the passwords (quest hook)", () => {
+    expect(readFile(joinPath(DESKTOP_DIR, "passwords.txt"))).toContain("sunflower42");
+    expect(listDir(DESKTOP_DIR).map((n) => n.name)).not.toContain("shopping_list.txt");
   });
 
   it("saves new files into My Documents and shows them in listings", () => {
@@ -46,9 +47,9 @@ describe("virtual file system", () => {
   });
 
   it("can overwrite an existing text file", () => {
-    writeFile(joinPath(DESKTOP_DIR, "shopping_list.txt"), "just milk");
-    expect(readFile(joinPath(DESKTOP_DIR, "shopping_list.txt"))).toBe("just milk");
-    expect(listDir(DESKTOP_DIR).filter((n) => n.name === "shopping_list.txt")).toHaveLength(1);
+    writeFile(joinPath(DESKTOP_DIR, "passwords.txt"), "changed them all");
+    expect(readFile(joinPath(DESKTOP_DIR, "passwords.txt"))).toBe("changed them all");
+    expect(listDir(DESKTOP_DIR).filter((n) => n.name === "passwords.txt")).toHaveLength(1);
   });
 
   it("refuses to write into system folders", () => {

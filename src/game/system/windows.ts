@@ -55,6 +55,8 @@ export type WmAction =
   | { type: "CLOSE_ALL" };
 
 export const TASKBAR_H = 40;
+/** The strip at the top kept clear for the VIRUSES CAUGHT counter (shell/VirusHud.tsx). */
+export const HUD_H = 60;
 export const MIN_W = 220;
 export const MIN_H = 140;
 
@@ -85,9 +87,10 @@ export function wmReducer(s: WmState, a: WmAction): WmState {
       }
       const n = s.seq % 8;
       const w = Math.min(a.w, Math.max(MIN_W, a.vw - 20));
-      const h = Math.min(a.h, Math.max(MIN_H, a.vh - TASKBAR_H - 20));
+      const h = Math.min(a.h, Math.max(MIN_H, a.vh - TASKBAR_H - HUD_H - 10));
       const x = Math.max(0, Math.min(120 + n * 26, a.vw - w - 10));
-      const y = Math.max(0, Math.min(30 + n * 26, a.vh - TASKBAR_H - h - 10));
+      // New windows open below the virus counter, so it never hides a title bar or address bar.
+      const y = Math.max(HUD_H, Math.min(HUD_H + n * 26, a.vh - TASKBAR_H - h - 10));
       const win: Win = {
         key: a.key,
         app: a.app,

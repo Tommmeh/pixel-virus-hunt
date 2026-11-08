@@ -63,7 +63,7 @@ describe("tutorial script", () => {
     const all = STEPS.map((s) => [s.title, ...s.text].join(" "))
       .join(" ")
       .toLowerCase();
-    for (const topic of ["fake", "trophy", "paneguard", "start", "double-click", "notes.txt"])
+    for (const topic of ["fake", "8 viruses", "antivirus", "start", "double-click", "passwords.txt"])
       expect(all, topic).toContain(topic);
   });
 
@@ -92,9 +92,9 @@ describe("tutorial flow", () => {
     expect(tutorialSession.get()).toEqual({ active: true, step: 0, script: "tour" });
     nextStep();
     nextStep();
-    expect(stepId()).toBe("paneguard");
+    expect(stepId()).toBe("antivirus");
     prevStep();
-    expect(stepId()).toBe("achievements");
+    expect(stepId()).toBe("goal");
     finishTutorial();
     expect(tutorialSession.get().active).toBe(false);
     expect(tutorialProgress.get().done).toBe(true);

@@ -4,7 +4,6 @@ import { afterLag } from "../system/health";
 import { logOff, turnOff } from "../system/session";
 import { useSettings } from "../system/settings";
 import { wm, type AppArgs } from "../system/windows";
-import { startTutorial } from "../tutorial/store";
 
 interface Item {
   label: string;
@@ -24,7 +23,7 @@ const LEFT: Item[] = [
   { label: "Achievements", icon: "medal", app: "achievements" },
   { label: "Notepad", icon: "notepad", app: "notepad" },
   { label: "Mines", icon: "mine", app: "mines" },
-  { label: "PaneGuard Antivirus", icon: "shield", app: "antivirus" },
+  { label: "Antivirus", icon: "shield", app: "antivirus" },
   { label: "Task Manager", icon: "taskmgr", app: "taskmgr" },
 ];
 const RIGHT: Item[] = [
@@ -46,7 +45,6 @@ const RIGHT: Item[] = [
 const RIGHT_2: Item[] = [
   { label: "Control Panel", icon: "gear", app: "settings" },
   { label: "Search", icon: "search", app: "webvoyager", args: { url: "http://www.searchly.com/" } },
-  { label: "Tutorial", icon: "scout", app: "", run: startTutorial },
 ];
 
 export function StartMenu({ onClose }: { onClose: () => void }) {

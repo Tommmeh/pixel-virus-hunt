@@ -47,7 +47,7 @@ export function AiChat({ contact }: { contact: string }) {
     }
 
     appendTurns(persona.id, [{ role: "scammer", text: result.reply }]);
-    // Silent on purpose. The lesson appears later on the achievements card, never here.
+    // Silent on purpose. The lesson appears later in Quests, never here.
     if (result.playerFellForIt) result.unlockedIds.forEach((id) => unlockScam(id));
     setOffline(result.usedFallback);
     setBusy(false);

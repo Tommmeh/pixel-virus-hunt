@@ -44,7 +44,8 @@ function markReviewMailOpened() {
 function Login({ reviewRef }: { reviewRef: boolean }) {
   const { navigate } = useBrowser();
   const [user, setUser] = useState(PROFILE.bankUser);
-  const [pw, setPw] = useState("");
+  // Saved by the browser: the player only has to click Log in.
+  const [pw, setPw] = useState(PROFILE.bankPassword);
   const [err, setErr] = useState("");
   return (
     <div className="cl-home">
@@ -72,7 +73,7 @@ function Login({ reviewRef }: { reviewRef: boolean }) {
           Password
           <input
             className="nes-input"
-            type="password"
+            type="text" // prefilled and shown in plain text
             value={pw}
             onChange={(e) => setPw(e.target.value)}
           />

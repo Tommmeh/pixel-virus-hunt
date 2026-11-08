@@ -1,4 +1,4 @@
-// USB storyline — lesson cards for the Achievements app (same format as every other storyline).
+// USB storyline — lesson cards for the Quests app (same format as every other storyline).
 // They unlock silently at each step: the player is never told off while it is happening.
 import type { LessonCard } from "../../scams/ai";
 
@@ -42,7 +42,7 @@ export const USB_CARDS: LessonCard[] = [
     name: "USB Clean-Up",
     type: "Malware removal",
     whatHappened:
-      "PaneGuard scanned every drive, found the backdoor on the USB stick with its copies, and removed it. Start-up, dragging windows and opening programs went back to normal.",
+      "The antivirus scanned every drive, found the backdoor on the USB stick with its copies, and removed it. Start-up, dragging windows and opening programs went back to normal.",
     redFlags: [
       "The antivirus found the threat at the exact path you launched",
       "The same file had made copies across the drive",

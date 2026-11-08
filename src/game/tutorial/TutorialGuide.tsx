@@ -102,6 +102,13 @@ function obstacles(vw: number, vh: number): Obstacle[] {
           ? WEIGHT.active
           : WEIGHT.window,
     }));
+  // The virus counter: Scout shouldn't hide the score.
+  const hud = document.querySelector(".virus-hud")?.getBoundingClientRect();
+  if (hud && hud.height > 0)
+    list.push({
+      rect: { x: hud.left, y: hud.top, w: hud.width, h: hud.height },
+      weight: WEIGHT.balloon,
+    });
   const balloons = document.querySelector(".balloons")?.getBoundingClientRect();
   if (balloons && balloons.height > 0)
     list.push({
@@ -190,6 +197,9 @@ interface GuideProps {
   onSkip?: () => void;
   /** Show a Back button on read-only steps. */
   allowBack?: boolean;
+  /** The last card's button (e.g. "Back to main menu") and what happens after it. */
+  finishLabel?: string;
+  onFinish?: () => void;
 }
 
 export function TutorialGuide({
@@ -197,6 +207,8 @@ export function TutorialGuide({
   skipLabel = "Skip tutorial",
   onSkip = skipTutorial,
   allowBack = true,
+  finishLabel = "Let's go!",
+  onFinish,
 }: GuideProps = {}) {
   const session = tutorialSession.use();
   const name = useSettings().userName; // re-render when the player's name changes
@@ -318,9 +330,16 @@ export function TutorialGuide({
             {!waiting && (
               <button
                 className={`nes-btn is-small ${last ? "is-success" : "is-primary"}`}
-                onClick={last ? finishTutorial : nextStep}
+                onClick={
+                  last
+                    ? () => {
+                        finishTutorial();
+                        onFinish?.();
+                      }
+                    : nextStep
+                }
               >
-                {last ? "Let's go!" : "Next"}
+                {last ? finishLabel : "Next"}
               </button>
             )}
           </div>
