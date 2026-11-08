@@ -1,23 +1,28 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { chatStore, choose } from "../../apps/messenger/store";
 import { getScript } from "../../apps/messenger/scripts";
+import { bankStore } from "../../apps/webvoyager/sites/copperleaf/store";
 import { scamStore } from "../../scams/store";
 import { onEvent, type SystemEvent } from "../../system/events";
+import { questStore, type QuestFlags } from "../../system/quests";
 import { threatStore } from "../../system/threats";
 import { initialWm, windowStore } from "../../system/windows";
+import { bankTotal } from "./bank";
 import { ZHUMING_CARD_IDS } from "./cards";
-import { ZHUMING_CONTACT } from "./contact";
+import { FRANK_CONTACT, ZHUMING_CONTACT } from "./contact";
 import { RAM_TICKER } from "./market";
 import {
   addContact,
   APP_ID,
   clean,
+  frankTip,
   install,
   nudgeAfterBuy,
   post,
   postInstallLink,
   read,
   THREAT_ID,
+  wipe,
   zhumingStore,
 } from "./story";
 
@@ -26,6 +31,8 @@ beforeEach(() => {
   chatStore.reset();
   threatStore.reset();
   scamStore.reset();
+  questStore.reset();
+  bankStore.reset();
   windowStore.set(initialWm);
 });
 
@@ -66,6 +73,50 @@ describe("Zhuming — the RAM Capital storyline", () => {
     expect(threatStore.get().threats).toHaveLength(1);
   });
 
+  it("lets RBC stop the all-in: nothing leaves and the good ending starts", () => {
+    post();
+    addContact();
+    install();
+    const before = bankTotal();
+    expect(before).toBeGreaterThan(0);
+    questStore.set((s: QuestFlags) => ({ ...s, rbcInstalled: true }));
+
+    wipe();
+
+    const s = zhumingStore.get();
+    expect(s.stage).toBe("saved");
+    expect(s.wipedAt).toBe(0); // no bad ending queued
+    expect(bankTotal()).toBe(before); // not a penny moved, and no margin call on top
+    expect(s.keptAmount).toBe(before);
+    expect(appOpen()).toBe(false); // the app is shut down by the hold
+    expect(unlocked()).toContain(ZHUMING_CARD_IDS.saved);
+    expect(bankStore.get().tx.some((t) => t.desc.includes("MARGIN"))).toBe(false);
+  });
+
+  it("still empties everything when RBC is not installed", () => {
+    post();
+    addContact();
+    install();
+    wipe();
+    expect(zhumingStore.get().stage).toBe("wiped");
+    expect(bankTotal()).toBe(0); // savings gone, chequing left overdrawn
+  });
+
+  it("has Frank send the RBC link once, after J-Reyes has spoken", () => {
+    post();
+    addContact();
+    install();
+    frankTip();
+    const t = chatStore.get().threads[FRANK_CONTACT];
+    expect(t?.node).toBe("tip");
+    expect(t?.msgs.map((m) => m.text).join(" ")).toContain("rbc.com/switch");
+    // He posts the address; the browser doesn't open itself.
+    expect(windowStore.get().wins.some((w) => w.app === "webvoyager")).toBe(false);
+    const count = t?.msgs.length ?? 0;
+    frankTip(); // once only
+    expect(chatStore.get().threads[FRANK_CONTACT]?.msgs).toHaveLength(count);
+  });
+
   it("ends the story when PaneGuard removes the app", () => {
     const events: SystemEvent[] = [];
     const off = onEvent((e) => events.push(e));
@@ -77,7 +128,15 @@ describe("Zhuming — the RAM Capital storyline", () => {
     expect(zhumingStore.get().stage).toBe("cleaned");
     expect(threatStore.get().threats).toHaveLength(0);
     expect(appOpen()).toBe(false);
-    expect(unlocked()).toEqual(Object.values(ZHUMING_CARD_IDS).sort());
+    // This path's cards only: the RBC ending card belongs to the other way out of the story.
+    expect(unlocked()).toEqual(
+      [
+        ZHUMING_CARD_IDS.advertorial,
+        ZHUMING_CARD_IDS.dm,
+        ZHUMING_CARD_IDS.app,
+        ZHUMING_CARD_IDS.cleaned,
+      ].sort(),
+    );
     expect(events.some((e) => e.type === "story.complete" && e.story === "zhuming")).toBe(true);
     off();
   });

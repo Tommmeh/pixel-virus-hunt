@@ -5,6 +5,7 @@ import { useSystemEvent } from "../../system/events";
 import { wm } from "../../system/windows";
 import { ZHUMING_CONTACT } from "./contact";
 import { StockEndGame } from "./StockEndGame";
+import { StockGoodEnd } from "./StockGoodEnd";
 import {
   ARTICLE_URL,
   BANK_CHECK_MS,
@@ -14,6 +15,8 @@ import {
   EMERGENCY_AFTER_MS,
   endStockStory,
   FOLLOW_UP_MS,
+  FRANK_AFTER_MS,
+  frankTip,
   followUp,
   JORDAN_CONTACT,
   LINK_AFTER_MS,
@@ -31,7 +34,7 @@ import {
 } from "./story";
 
 export function ZhumingService() {
-  const { stage, emergencyAt, wipedAt, endingAt } = zhumingStore.use();
+  const { stage, emergencyAt, wipedAt, endingAt, savedAt } = zhumingStore.use();
   /** The browser is on Copperleaf, but the player may still be looking at the login form. */
   const [onBankHost, setOnBankHost] = useState(false);
   const signedIn = bankSession.use().signedIn;
@@ -55,8 +58,10 @@ export function ZhumingService() {
       // Whether the player declined, stalled or agreed, the link follows once the chat winds down.
       setTimeout(() => postInstallLink(), LINK_AFTER_MS);
     }
-    // 2. The moment the player has answered J-Reyes, Kevin's "emergency" is on its way.
+    // 2. The moment the player has answered J-Reyes, Kevin's "emergency" is on its way — and Frank,
+    // who heard the same thing, sends the bank that holds a payment before it leaves.
     if (e.type === "chat.reply" && e.contact === JORDAN_CONTACT && e.node === "stock") {
+      setTimeout(() => frankTip(), FRANK_AFTER_MS);
       setTimeout(() => emergency(), EMERGENCY_AFTER_MS);
     }
     if (e.type === "threat.removed" && e.id === THREAT_ID) clean();
@@ -93,5 +98,6 @@ export function ZhumingService() {
     return () => clearTimeout(t);
   }, [wipedAt, endingAt, onAccounts]);
 
-  return endingAt ? <StockEndGame /> : null;
+  if (endingAt) return <StockEndGame />;
+  return savedAt ? <StockGoodEnd /> : null;
 }
