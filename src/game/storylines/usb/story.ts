@@ -94,7 +94,7 @@ export function clean() {
     title: "Antivirus",
     text: `${THREAT_NAME} removed. Your PC is running normally again.`,
     icon: "shield",
-    open: { app: "quests" },
+    open: { app: "quests", args: { line: "usb" } },
   });
   emit({ type: "story.complete", story: STORY });
 }

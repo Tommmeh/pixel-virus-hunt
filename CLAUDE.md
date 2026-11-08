@@ -108,26 +108,25 @@ pages/windows. Shared files only get small additive registrations (app registry,
   drive, log into e-mail, log into the bank...). Each is one `when(event)` callback over the system event bus;
   `AchievementService` (desktop, off in the guided demo) awards them with a tray toast. Add one = one array entry.
 
-### Tutorial — Scout (`src/game/tutorial/`)
+### Tutorial = the guided demo (`src/game/demo/` + Scout in `src/game/tutorial/`)
 
-An original pixel magnifying-glass detective who auto-starts on first login (`vh-tutorial`), can be skipped, and is
-replayed from Start → Tutorial or the "Scout's Tips" desktop icon. Story text can use `{name}` → the player's name
-(`personalize()` in `system/profile.ts`). The script is data in `steps.ts`: each step can spotlight a `data-tour="..."`
-element (add the attribute in the UI and the id to `TOUR_TARGETS`) and/or wait for a system event (`waitFor`).
-It explains the layout and purpose, then walks the player into the HotPost inbox — the start of Anish's bank
-storyline — and leaves before any scam (never warn at the moment of the mistake). The intro is 7 cards; the last hands-on
-step uses `after` for the send-off. Scout picks his own screen corner (`tutorial/placement.ts`): never over the
-spotlighted target, avoiding pop-ups, the active window and notifications, nearest the target otherwise. Worm pop-ups
-also avoid spawning under him.
+The **only** tutorial is the guided demo: Welcome → "▶ Tutorial" (no sign-in needed). The full game has no tutorial
+(no auto-start, no Scout's Tips icon or Start-menu entry). Scout, an original pixel magnifying-glass detective, walks
+the player through their **first virus — Aaron's PhotoWorm** — start to finish: what the game is, the **VIRUSES
+CAUGHT** bar (spotlighted, and again at "Caught one! 1/8"), each red flag (incl. the `http` in the address bar), the
+pop-ups, the Antivirus clean-up. The last card ("Virus cleaned! Tutorial complete") has **Back to main menu**
+(`exitDemo()`: resets the story, returns to Welcome).
 
-### Guided demo (`src/game/demo/`)
-
-For judges / first-time visitors: Welcome → "Guided demo" (no sign-in needed) runs **only Aaron's PhotoWorm** with
-Scout narrating every step and pointing out the red flags (incl. a spotlight on the `http` in the address bar).
-`demoStore` (session-only) turns off MessengerService, QuestFlow and ScamPopups and speeds the worm up (AaronService).
-The script is `demo/steps.ts`, registered with Scout via `registerScript` (Scout can run several scripts; steps can
-have several targets and an `onEnter`). Removing the worm → `demo-end` phase (`DemoEnd.tsx`) → "Try the full
-experience" resets the story and returns to Welcome. This is the only place Scout talks around a mistake.
+- `demoStore` (session-only) turns off MessengerService, QuestFlow, ScamPopups, ZhumingService and achievements,
+  speeds the worm up (AaronService), and disables the virus-counter slots (Scout is driving).
+- The script is data in `demo/steps.ts`, registered with Scout's engine via `registerScript`. A step can spotlight a
+  `data-tour="..."` element (add the attribute in the UI and the id to `TOUR_TARGETS` in `tutorial/steps.ts`), wait for
+  a system event (`waitFor`), skip itself (`skipIf`), step back if the player undoes something (`undoIf`), run
+  something on entry (`onEnter`), and show an `after` message once done.
+- Scout picks his own screen corner (`tutorial/placement.ts`): never over the spotlighted target, avoiding pop-ups, the
+  active window, notifications and the virus counter. Worm pop-ups also avoid spawning under him.
+- This is the only place Scout talks around a mistake. (`tutorial/steps.ts` still holds the old 7-card intro tour's
+  data, unused.)
 
 ## Conventions
 

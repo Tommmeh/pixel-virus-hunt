@@ -158,10 +158,10 @@ function Welcome() {
                   startDemo();
                 }}
               >
-                ▶ Guided demo
+                ▶ Tutorial
               </button>
               <p className="welcome-demo-cap">
-                3 minutes. Scout walks you through catching (and cleaning) one virus.
+                3 minutes. Scout walks you through catching (and cleaning) your first virus.
               </p>
             </div>
             <p className="welcome-or">OR PLAY THE FULL GAME</p>

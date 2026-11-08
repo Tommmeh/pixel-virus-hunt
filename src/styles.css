@@ -990,16 +990,6 @@ body { font-family: var(--font-sans); background: #000; }
 .welcome-actions .welcome-demo-cap { margin: 0; font: 17px/1.2 var(--font-body); opacity: 0.85; text-align: center; }
 .welcome-or { display: flex; align-items: center; gap: 10px; margin: 14px 0 12px; font: 8px var(--font-sans); color: #adafbc; }
 .welcome-or::before, .welcome-or::after { content: ""; flex: 1; border-top: 4px dotted #6c7a89; }
-.demo-end { position: fixed; inset: 0; z-index: 9999; overflow: auto; background: #000; color: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 32px 16px; text-align: center; }
-.demo-end-title { margin: 0; font: 24px var(--font-sans); letter-spacing: 4px; color: #92cc41; }
-.demo-end-sub { margin: 0; font: 11px var(--font-sans); letter-spacing: 2px; color: #f7d51d; }
-.demo-end-cols { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; max-width: 900px; text-align: left; font: 20px/1.35 var(--font-body); color: #c9c9c9; }
-.demo-end-cols section { flex: 1 1 340px; }
-.demo-end-cols ol, .demo-end-cols ul { margin: 0; padding-left: 24px; }
-.demo-end-cols li { margin-bottom: 6px; }
-.demo-end-head { margin: 0 0 10px; font: 10px var(--font-sans); color: #fff; }
-.demo-end-note { margin: 0; max-width: 620px; font: 18px var(--font-body); color: #9a9a9a; }
-.demo-end-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 
 /* ---------- Achievements: trophy shelf ---------- */
 /* The window body clips its content; the app scrolls itself (the lesson view is much taller than the window). */
@@ -1088,6 +1078,7 @@ body { font-family: var(--font-sans); background: #000; }
 .virus-slot { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; cursor: pointer; background: #3a3f47; box-shadow: inset 0 0 0 2px #555c66; }
 .virus-slot:hover { background: #4b5563; box-shadow: inset 0 0 0 2px #fff; transform: translateY(-2px); }
 .virus-slot.is-caught:hover { box-shadow: inset 0 0 0 2px #fff; }
+.virus-slot:disabled { cursor: default; transform: none; }
 .virus-slot .pixel-icon, .virus-slot svg { filter: brightness(0) invert(0.35); }
 .virus-slot.is-caught { background: #e76e55; box-shadow: inset 0 0 0 2px #f7d51d; }
 .virus-slot.is-caught .pixel-icon, .virus-slot.is-caught svg { filter: none; }

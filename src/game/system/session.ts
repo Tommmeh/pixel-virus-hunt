@@ -3,7 +3,6 @@ import { emit } from "./events";
 import { createStore } from "./store";
 import { wm } from "./windows";
 
-/** "demo-end" is the guided demo's ending screen (game/demo/DemoEnd.tsx). */
 export type Phase =
   | "boot"
   | "welcome"
@@ -11,7 +10,6 @@ export type Phase =
   | "shutdown"
   | "off"
   | "end"
-  | "demo-end"
   | "goodend"
   /** Malware brought the machine down (game/storylines/usb): blue screen, then a reboot. */
   | "crash";

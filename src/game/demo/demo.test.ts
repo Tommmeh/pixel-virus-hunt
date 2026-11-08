@@ -14,7 +14,7 @@ import {
   tutorialSession,
 } from "../tutorial/store";
 import { DEMO_SCRIPT, DEMO_STEPS } from "./steps";
-import { demoStore, exitDemo, finishDemo, leaveDemoMode, startDemo } from "./store";
+import { demoStore, exitDemo, leaveDemoMode, startDemo } from "./store";
 
 const current = () => DEMO_STEPS[tutorialSession.get().step]!.id;
 
@@ -57,6 +57,8 @@ describe("demo script", () => {
     expect(current()).toBe("demo-hello");
     nextStep();
     nextStep();
+    expect(current()).toBe("demo-score"); // Scout explains the VIRUSES CAUGHT bar
+    nextStep();
     emit({ type: "app.open", app: "webvoyager" });
     expect(current()).toBe("demo-browser"); // events are handled by TutorialGuide, not the store
     nextStep(); // → FriendSpace
@@ -89,12 +91,13 @@ describe("demo mode", () => {
     expect(threatStore.get().threats).toEqual([]);
   });
 
-  it("ends on the demo ending, then 'full experience' goes home with the story reset", () => {
+  it("is the tutorial: explains the score, and the last card wraps up and goes back to the menu", () => {
+    expect(DEMO_STEPS.some((s) => s.target === "virus-hud")).toBe(true);
+    const last = DEMO_STEPS.at(-1)!;
+    expect(last.after?.title).toMatch(/Tutorial complete/);
     startDemo();
     infect();
-    finishDemo();
-    expect(sessionStore.get().phase).toBe("demo-end");
-    exitDemo();
+    exitDemo(); // what "Back to main menu" does
     expect(sessionStore.get().phase).toBe("welcome");
     expect(demoStore.get().active).toBe(false);
     expect(aaronStore.get().stage).toBe("idle");

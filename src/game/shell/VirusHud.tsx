@@ -11,6 +11,7 @@ import {
   virusesCaught,
   type QuestLine,
 } from "../scams/questlines";
+import { useDemo } from "../demo/store";
 import { useScams } from "../scams/store";
 import { post as postStockTip } from "../storylines/zhuming/story";
 import { wm } from "../system/windows";
@@ -32,6 +33,7 @@ export function openQuestLessons(line: QuestLine) {
 
 export function VirusHud() {
   const { unlocked } = useScams();
+  const demo = useDemo(); // in the tutorial, Scout drives: the slots don't jump anywhere
   const caught = virusesCaught(unlocked);
   const last = useRef(caught);
   const [bump, setBump] = useState(false);
@@ -70,6 +72,7 @@ export function VirusHud() {
                   ? `${l.name}, caught. Read the lessons.`
                   : `Uncaught virus. Go to where it starts.`
               }
+              disabled={demo}
               onClick={() => (got ? openQuestLessons(l) : goToQuestStart(l))}
             >
               <PixelIcon name={l.icon} size={16} />

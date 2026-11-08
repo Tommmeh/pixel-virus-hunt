@@ -20,13 +20,6 @@ export function startDemo() {
   logIn();
 }
 
-/** The demo is over (worm removed): show the ending screen. */
-export function finishDemo() {
-  stopTutorial();
-  wm.closeAll();
-  setPhase("demo-end");
-}
-
 /** Back to the home screen with a fresh story, ready for the full experience. */
 export function exitDemo() {
   stopTutorial();

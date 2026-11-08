@@ -15,10 +15,8 @@ import { ZhumingService } from "../storylines/zhuming/ZhumingService";
 import { useZhuming } from "../storylines/zhuming/story";
 import { DemoGuide } from "../demo/DemoGuide";
 import { useDemo } from "../demo/store";
-import { TutorialGuide } from "../tutorial/TutorialGuide";
 import { AchievementService } from "../achievements/AchievementService";
 import { VirusHud } from "./VirusHud";
-import { startTutorial } from "../tutorial/store";
 import { PixelIcon } from "../components/PixelIcon";
 import { DESKTOP_DIR, ICON_FOR_KIND, MY_DOCUMENTS, joinPath, listDir, useFs } from "../system/fs";
 import { resolveTheme, useSettings } from "../system/settings";
@@ -55,7 +53,6 @@ const SHORTCUTS: Shortcut[] = [
   { id: "phone", label: "Phone", icon: "☎", open: () => wm.open("phone") },
   { id: "mines", label: "Mines", icon: "mine", open: () => wm.open("mines") },
   { id: "antivirus", label: "Antivirus", icon: "shield", open: () => wm.open("antivirus") },
-  { id: "scout", label: "Scout's Tips", icon: "scout", open: startTutorial },
   {
     id: "achievements",
     label: "Achievements",
@@ -129,7 +126,7 @@ export function Desktop() {
     >
       <div className="desk-icons" data-tour="desktop-icons">
         {[
-          ...SHORTCUTS.filter((s) => !(demo && s.id === "scout")),
+          ...SHORTCUTS,
           ...(rbcInstalled ? [RBC_SHORTCUT] : []),
           ...storyShortcuts,
           ...desktopFiles,
@@ -176,7 +173,7 @@ export function Desktop() {
       <SlowPc />
       {!demo && <ZhumingService />}
       {!demo && <AchievementService />}
-      {demo ? <DemoGuide /> : <TutorialGuide />}
+      {demo && <DemoGuide />}
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>
   );

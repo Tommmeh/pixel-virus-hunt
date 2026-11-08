@@ -268,9 +268,9 @@ export function clean() {
   unlockScam(AARON_CARD_IDS.cleaned);
   notify({
     title: "Antivirus",
-    text: "PhotoWorm removed. Your PC is clean. New lessons are waiting in Quests.",
+    text: "PhotoWorm removed. Your PC is clean. Click here to see what it taught you.",
     icon: "shield",
-    open: { app: "quests" },
+    open: { app: "quests", args: { line: "photoworm" } },
   });
   emit({ type: "story.complete", story: STORY });
 }
