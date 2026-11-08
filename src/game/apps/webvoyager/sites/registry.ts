@@ -7,6 +7,7 @@ import { DailyByte } from "./DailyByte";
 import { FriendSpace } from "./friendspace/FriendSpace";
 import { HotPost } from "./hotpost/HotPost";
 import { Searchly } from "./Searchly";
+import { RBC } from "./RBC";
 import { VideoVault } from "./VideoVault";
 import { PhishingSite } from "../../../storylines/aaron/PhishingSite";
 
@@ -18,5 +19,6 @@ export const SITE_COMPONENTS: Record<string, ComponentType<{ url: PageUrl }>> = 
   "www.friendspace.com": FriendSpace,
   "www.dailybyte.com": DailyByte,
   "www.videovault-tv.com": VideoVault,
+  "www.rbc.com": RBC,
   "friendspace.com.photo-album.net": PhishingSite,
 };

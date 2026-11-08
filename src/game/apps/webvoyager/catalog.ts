@@ -73,6 +73,15 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "news",
     secure: true,
   },
+  // Stage 2's bank, installed from the link Marcus gives.
+  {
+    host: "www.rbc.com",
+    aliases: ["rbc.com"],
+    name: "RBC Online Banking",
+    icon: "bank",
+    secure: true,
+    favorite: true,
+  },
   // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
   {
     host: "friendspace.com.photo-album.net",
@@ -99,6 +108,13 @@ export const SEARCH_INDEX: IndexEntry[] = [
     description:
       "Online banking from Copperleaf Bank. Check your balance, view statements and transfer money.",
     keywords: ["bank", "banking", "copperleaf", "money", "account", "savings", "transfer"],
+  },
+  {
+    title: "RBC Online Banking - switch in minutes",
+    url: "https://www.rbc.com/",
+    description:
+      "RBC holds payments that don't fit your usual pattern and rings you before money leaves.",
+    keywords: ["rbc", "bank", "banking", "switch", "payments", "alerts"],
   },
   {
     title: "FriendSpace - a place for friends",

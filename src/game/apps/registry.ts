@@ -7,6 +7,7 @@ import { Messenger } from "./messenger/Messenger";
 import { WormPopup } from "../storylines/aaron/WormPopup";
 import { Antivirus } from "./antivirus/Antivirus";
 import { Mines } from "./mines/Mines";
+import { Phone } from "./phone/Phone";
 import { MessageBox, RecycleBin } from "./misc/MessageBox";
 import { ScamPopup } from "./misc/ScamPopup";
 import { Notepad } from "./notepad/Notepad";
@@ -70,6 +71,16 @@ export const APPS: AppDef[] = [
     w: 460,
     h: 420,
     component: Chat,
+  },
+  {
+    id: "phone",
+    title: "Phone",
+    icon: "☎",
+    process: "phone.exe",
+    memK: 900,
+    w: 360,
+    h: 520,
+    component: Phone,
   },
   {
     id: "taskmgr",

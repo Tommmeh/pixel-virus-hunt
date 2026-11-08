@@ -28,6 +28,8 @@ export function ScamPopups() {
   useEffect(() => {
     const tick = setInterval(() => {
       const now = Date.now();
+      // Stage 2 isn't about the adware any more — the popups stop when the story moves on.
+      if (questStore.get().stage2Started) return;
       if (!talkedAboutRent()) return;
       if (!nextAt.current) {
         nextAt.current = now + FIRST_DELAY;
