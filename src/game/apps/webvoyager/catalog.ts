@@ -72,6 +72,12 @@ export const SITE_INFO: SiteInfo[] = [
     name: "VideoVault",
     icon: "news",
     secure: true,
+  // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
+  {
+    host: "friendspace.com.photo-album.net",
+    name: "FriendSpace",
+    icon: "social",
+    secure: false,
   },
 ];
 

@@ -7,6 +7,8 @@ export interface Post {
   text: string;
   time: string;
   likes: number;
+  /** Optional link shown under the text (opens in WebVoyager). */
+  link?: string;
 }
 
 export const SEED_POSTS: Post[] = [
@@ -75,6 +77,13 @@ export function post(text: string) {
     ],
   }));
   emit({ type: "social.post", text: t });
+}
+
+/** Add a post written by someone else (e.g. by a storyline). Newest first; ignored if the id exists. */
+export function addPost(p: Post) {
+  socialStore.set((s) =>
+    s.posts.some((x) => x.id === p.id) ? s : { ...s, posts: [p, ...s.posts] },
+  );
 }
 
 export function toggleLike(id: string) {

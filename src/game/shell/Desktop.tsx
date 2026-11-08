@@ -4,6 +4,7 @@ import { openPath } from "../apps/explorer/open";
 import { MessengerService } from "../apps/messenger/MessengerService";
 import { QuestFlow } from "./QuestFlow";
 import { ScamPopups } from "./ScamPopups";
+import { AaronService } from "../storylines/aaron/AaronService";
 import { PixelIcon } from "../components/PixelIcon";
 import { DESKTOP_DIR, ICON_FOR_KIND, MY_DOCUMENTS, joinPath, listDir, useFs } from "../system/fs";
 import { resolveTheme, useSettings } from "../system/settings";
@@ -38,6 +39,13 @@ const SHORTCUTS: Shortcut[] = [
   { id: "webvoyager", label: "WebVoyager", icon: "browser", open: () => wm.open("webvoyager") },
   { id: "pingme", label: "PingMe Messenger", icon: "buddy", open: () => wm.open("messenger") },
   { id: "mines", label: "Mines", icon: "mine", open: () => wm.open("mines") },
+  { id: "paneguard", label: "PaneGuard", icon: "shield", open: () => wm.open("antivirus") },
+  {
+    id: "achievements",
+    label: "Achievements",
+    icon: "medal",
+    open: () => wm.open("achievements"),
+  },
 ];
 
 function AppView({ app, win }: { app: string; win: Win }) {
@@ -110,6 +118,7 @@ export function Desktop() {
       <MessengerService />
       <QuestFlow />
       <ScamPopups />
+      <AaronService />
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>
   );

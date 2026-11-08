@@ -19,7 +19,12 @@ export type SystemEvent =
   | { type: "drive.open"; drive: string }
   | { type: "settings.change"; key: string }
   | { type: "session.login" }
-  | { type: "session.logoff" };
+  | { type: "session.logoff" }
+  // --- Storylines (Stage 2) ---
+  | { type: "threat.detected"; id: string }
+  | { type: "threat.removed"; id: string }
+  | { type: "story.stage"; story: string; stage: string }
+  | { type: "story.complete"; story: string };
 
 type Handler = (e: SystemEvent) => void;
 const handlers = new Set<Handler>();
