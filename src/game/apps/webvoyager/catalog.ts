@@ -59,6 +59,13 @@ export const SITE_INFO: SiteInfo[] = [
     secure: false,
     favorite: true,
   },
+  // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
+  {
+    host: "friendspace.com.photo-album.net",
+    name: "FriendSpace",
+    icon: "social",
+    secure: false,
+  },
 ];
 
 export const findSiteInfo = (host: string) =>
