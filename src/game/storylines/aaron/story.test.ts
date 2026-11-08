@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { socialStore } from "../../apps/webvoyager/sites/friendspace/store";
+import { scamStore } from "../../scams/store";
 import { onEvent, type SystemEvent } from "../../system/events";
+import { AARON_CARD_IDS } from "./cards";
 import { threatStore } from "../../system/threats";
 import { initialWm, windowStore, wm } from "../../system/windows";
 import {
@@ -25,8 +27,11 @@ beforeEach(() => {
   aaronStore.reset();
   socialStore.reset();
   threatStore.reset();
+  scamStore.reset();
   windowStore.set(initialWm);
 });
+
+const unlocked = () => Object.keys(scamStore.get().unlocked).sort();
 
 describe("Aaron — PhotoWorm escalation", () => {
   it("pop-ups get faster but never faster than 4s", () => {
@@ -49,6 +54,27 @@ describe("Aaron — PhotoWorm escalation", () => {
   it("uses a classic phishing link: brand as a subdomain, plain http", () => {
     expect(PHISH_HOST.startsWith("friendspace.com.")).toBe(true);
     expect(PHISH_URL.startsWith("http://")).toBe(true);
+  });
+});
+
+describe("Aaron — lesson cards", () => {
+  it("unlock silently at each stage of the sequence", () => {
+    post();
+    expect(unlocked()).toEqual([]); // seeing the post isn't a mistake yet
+    click();
+    expect(unlocked()).toEqual([AARON_CARD_IDS.hackedFriend]);
+    infect();
+    expect(unlocked()).toContain(AARON_CARD_IDS.download);
+    for (let i = 0; i < 3; i++) spawnPopup();
+    expect(unlocked()).not.toContain(AARON_CARD_IDS.popups);
+    spawnPopup(); // 4th pop-up: the fake virus alerts begin
+    expect(unlocked()).toContain(AARON_CARD_IDS.popups);
+    expect(unlocked()).not.toContain(AARON_CARD_IDS.worm);
+    for (let i = 4; i < SWARM_AT; i++) spawnPopup();
+    expect(unlocked()).toContain(AARON_CARD_IDS.worm);
+    expect(unlocked()).not.toContain(AARON_CARD_IDS.cleaned);
+    clean();
+    expect(unlocked()).toEqual(Object.values(AARON_CARD_IDS).sort());
   });
 });
 

@@ -17,7 +17,7 @@ const LEFT_PINNED: Item[] = [
   { label: "PingMe Messenger", sub: "Chat with friends", icon: "buddy", app: "messenger" },
 ];
 const LEFT: Item[] = [
-  { label: "Achievements", icon: "info", app: "achievements" },
+  { label: "Achievements", icon: "medal", app: "achievements" },
   { label: "Notepad", icon: "notepad", app: "notepad" },
   { label: "Mines", icon: "mine", app: "mines" },
   { label: "PaneGuard Antivirus", icon: "shield", app: "antivirus" },

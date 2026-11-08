@@ -7,11 +7,13 @@
 // Never warn the player at the moment of the mistake: the lure stages show nothing suspicious.
 import { playDing, playError } from "../../components/sound";
 import { addPost } from "../../apps/webvoyager/sites/friendspace/store";
+import { unlockScam } from "../../scams/store";
 import { emit } from "../../system/events";
 import { notify } from "../../system/notify";
 import { createStore } from "../../system/store";
 import { addThreat, removeThreat, threatStore, updateThreat } from "../../system/threats";
 import { windowStore, wm } from "../../system/windows";
+import { AARON_CARD_IDS } from "./cards";
 
 export const STORY = "aaron";
 export type Stage = "idle" | "posted" | "clicked" | "infected" | "swarm" | "cleaned";
@@ -27,6 +29,8 @@ export const FIRST_POPUP_MS = 20_000; // after the infection
 export const SWARM_AT = 8; // pop-ups before they start piling up
 export const SWARM_SPAWN_MS = 3_500;
 export const MAX_POPUPS = 24; // keep the PC usable
+/** The "Pop-up Panic" lesson unlocks once the pop-ups turn into fake virus alerts. */
+export const POPUP_CARD_AT = 4;
 
 export interface AaronState {
   stage: Stage;
@@ -154,7 +158,10 @@ export function post(now = Date.now()) {
 /** Step 1b: the player opened the link. */
 export function click() {
   const { stage } = aaronStore.get();
-  if (stage === "idle" || stage === "posted") setStage("clicked");
+  if (stage === "idle" || stage === "posted") {
+    setStage("clicked");
+    unlockScam(AARON_CARD_IDS.hackedFriend);
+  }
 }
 
 /** Step 2: the player ran the "PhotoViewer" download. */
@@ -162,6 +169,9 @@ export function infect(now = Date.now()) {
   const { stage } = aaronStore.get();
   if (stage !== "idle" && stage !== "posted" && stage !== "clicked") return;
   setStage("infected", { infectedAt: now, popups: 0 });
+  // Lesson cards unlock silently — the player only finds them later in Achievements.
+  unlockScam(AARON_CARD_IDS.hackedFriend);
+  unlockScam(AARON_CARD_IDS.download);
   addThreat({
     id: THREAT_ID,
     name: "W32/PhotoWorm.A",
@@ -188,21 +198,33 @@ export function spawnPopup(vw = 1280, vh = 800): boolean {
 
   const w = 300;
   const h = 200;
+  // Keep the cure reachable: new pop-ups avoid an open (non-maximized) antivirus window.
+  const av = windowStore.get().wins.find((x) => x.app === "antivirus" && !x.min && !x.max);
+  const hitsAv = (x: number, y: number) =>
+    !!av && x < av.x + av.w && av.x < x + w && y < av.y + av.h && av.y < y + h;
+  const randomSpot = () => ({
+    x: 120 + Math.random() * Math.max(0, vw - w - 160),
+    y: 10 + Math.random() * Math.max(0, vh - h - 70),
+  });
+  let pos: { x: number; y: number };
   if (s.stage === "swarm") {
     // Pile up on top of each other, cascading down-right and wrapping around.
-    if (stackPos.x === 0 || stackPos.x + w > vw - 20 || stackPos.y + h > vh - 60) {
-      stackPos = { x: 140 + Math.random() * 120, y: 20 + Math.random() * 60 };
+    const next = { x: stackPos.x + 26, y: stackPos.y + 22 };
+    const restart =
+      stackPos.x === 0 || next.x + w > vw - 20 || next.y + h > vh - 60 || hitsAv(next.x, next.y);
+    if (restart) {
+      let start = { x: 140 + Math.random() * 120, y: 20 + Math.random() * 60 };
+      for (let i = 0; i < 12 && hitsAv(start.x, start.y); i++) start = randomSpot();
+      stackPos = start;
     } else {
-      stackPos = { x: stackPos.x + 26, y: stackPos.y + 22 };
+      stackPos = next;
     }
-    wm.move(key, stackPos.x, stackPos.y);
+    pos = stackPos;
   } else {
-    wm.move(
-      key,
-      120 + Math.random() * Math.max(0, vw - w - 160),
-      10 + Math.random() * Math.max(0, vh - h - 70),
-    );
+    pos = randomSpot();
+    for (let i = 0; i < 12 && hitsAv(pos.x, pos.y); i++) pos = randomSpot();
   }
+  wm.move(key, pos.x, pos.y);
 
   if (c.tier === "ad" || c.tier === "slow") playDing();
   else playError();
@@ -210,7 +232,11 @@ export function spawnPopup(vw = 1280, vh = 800): boolean {
   const popups = level + 1;
   aaronStore.set((st) => ({ ...st, popups }));
   updateThreat(THREAT_ID, { copies: popups });
-  if (s.stage === "infected" && isSwarm(popups)) setStage("swarm");
+  if (popups >= POPUP_CARD_AT) unlockScam(AARON_CARD_IDS.popups);
+  if (s.stage === "infected" && isSwarm(popups)) {
+    setStage("swarm");
+    unlockScam(AARON_CARD_IDS.worm);
+  }
   return true;
 }
 
@@ -228,11 +254,12 @@ export function clean() {
   setStage("cleaned");
   if (threatStore.get().threats.some((t) => t.id === THREAT_ID)) removeThreat(THREAT_ID);
   wm.closeApp(POPUP_APP);
+  unlockScam(AARON_CARD_IDS.cleaned);
   notify({
     title: "PaneGuard Antivirus",
-    text: "PhotoWorm removed. Your PC is clean.",
+    text: "PhotoWorm removed. Your PC is clean. New lessons are waiting in Achievements.",
     icon: "shield",
+    open: { app: "achievements" },
   });
-  // TODO(achievements): unlock Aaron's achievement here once the team's Achievements app is merged.
   emit({ type: "story.complete", story: STORY });
 }

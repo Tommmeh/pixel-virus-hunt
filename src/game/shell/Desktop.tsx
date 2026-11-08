@@ -38,6 +38,12 @@ const SHORTCUTS: Shortcut[] = [
   { id: "pingme", label: "PingMe Messenger", icon: "buddy", open: () => wm.open("messenger") },
   { id: "mines", label: "Mines", icon: "mine", open: () => wm.open("mines") },
   { id: "paneguard", label: "PaneGuard", icon: "shield", open: () => wm.open("antivirus") },
+  {
+    id: "achievements",
+    label: "Achievements",
+    icon: "medal",
+    open: () => wm.open("achievements"),
+  },
 ];
 
 function AppView({ app, win }: { app: string; win: Win }) {
