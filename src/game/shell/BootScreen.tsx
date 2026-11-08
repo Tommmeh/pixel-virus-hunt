@@ -8,7 +8,15 @@ import { playShutdown, playStartup } from "../components/sound";
 import { logIn, setPhase, usePhase } from "../system/session";
 import { updateSettings, useSettings } from "../system/settings";
 import { resetStory } from "./startOver";
-import { nextSponsorIndex, sponsorAt, sponsorBackground, sponsorBgStore } from "./sponsors";
+import {
+  nextSponsorIndex,
+  sponsorAt,
+  sponsorBackground,
+  sponsorBgStore,
+  WATERMARK_GAP,
+  WATERMARK_ROWS,
+  watermarkRow,
+} from "./sponsors";
 
 function Logo({ size = 48 }: { size?: number }) {
   return (
@@ -76,9 +84,7 @@ function SponsorEgg() {
         <PixelIcon name="egg" size={32} />
       </button>
       {sponsor && (
-        <span className="sponsor-caption">
-          ★ Thanks to {sponsor.name} · HackCamp 2026
-        </span>
+        <span className="sponsor-caption">★ Thanks to {sponsor.name} · HackCamp 2026</span>
       )}
     </div>
   );
@@ -86,11 +92,14 @@ function SponsorEgg() {
 
 /** The sponsor's name repeated in big pixel letters behind the panels. */
 function SponsorMark({ name, ink }: { name: string; ink: string }) {
-  const row = `${name}   `.repeat(8);
+  // Same density for every sponsor: rows long enough to cover any screen, staggered by half a name
+  // (like bricks) so the pattern looks even whether the name is "RBC" or "Google Gemini".
+  const row = watermarkRow(name);
+  const half = (name.length + WATERMARK_GAP.length) / 2;
   return (
     <div className="sponsor-mark" style={{ color: ink }} aria-hidden>
-      {Array.from({ length: 14 }, (_, i) => (
-        <span key={i} style={{ marginLeft: `${(i % 2) * -6}em` }}>
+      {Array.from({ length: WATERMARK_ROWS }, (_, i) => (
+        <span key={i} style={{ marginLeft: `${(i % 2) * -half}em` }}>
           {row}
         </span>
       ))}
@@ -118,14 +127,14 @@ function Welcome() {
         : "CLICK YOUR NAME TO START";
 
   return (
-    <div className="welcome-screen">
+    <div
+      className="welcome-screen"
+      style={sponsor ? { background: sponsorBackground(sponsor) } : undefined}
+    >
+      {/* Sponsor background + watermark sit on the fixed screen, so they cover it all, even while scrolling. */}
+      {sponsor && <SponsorMark name={sponsor.name} ink={sponsor.colors.ink} />}
       <SponsorEgg />
-      <div
-        className="welcome-mid"
-        data-sponsor={sponsor?.id}
-        style={sponsor ? { background: sponsorBackground(sponsor) } : undefined}
-      >
-        {sponsor && <SponsorMark name={sponsor.name} ink={sponsor.colors.ink} />}
+      <div className="welcome-mid" data-sponsor={sponsor?.id}>
         <Logo />
         <p className="welcome-tagline">A SAFE PC FOR PRACTISING AGAINST SCAMS &amp; MALWARE</p>
         <div className="welcome-stack">

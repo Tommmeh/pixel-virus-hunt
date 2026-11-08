@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { nextSponsorIndex, sponsorAt, sponsorBackground, SPONSORS } from "./sponsors";
+import {
+  nextSponsorIndex,
+  sponsorAt,
+  sponsorBackground,
+  SPONSORS,
+  WATERMARK_CHARS,
+  watermarkRow,
+} from "./sponsors";
 
 describe("sponsor easter egg", () => {
   it("has the HackCamp sponsors and the tools we built with, each once", () => {
@@ -40,6 +47,14 @@ describe("sponsor easter egg", () => {
     for (const s of SPONSORS) {
       expect(contrast(s.colors.ink, s.colors.a), s.id).toBeGreaterThanOrEqual(4.5);
       expect(contrast(s.colors.ink, s.colors.b), s.id).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it("watermark rows cover the screen the same for short and long names", () => {
+    for (const s of SPONSORS) {
+      const row = watermarkRow(s.name);
+      expect(row.length, s.id).toBeGreaterThanOrEqual(WATERMARK_CHARS);
+      expect(row.startsWith(s.name), s.id).toBe(true);
     }
   });
 });

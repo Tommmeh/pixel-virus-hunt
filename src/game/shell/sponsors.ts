@@ -118,3 +118,13 @@ export const nextSponsorIndex = (index: number, count = SPONSORS.length) =>
   index + 1 >= count ? -1 : index + 1;
 
 export const sponsorAt = (index: number): Sponsor | undefined => SPONSORS[index];
+
+/** Watermark rows: enough repeats of the name to cover any screen, whatever the name's length. */
+export const WATERMARK_CHARS = 140;
+export const WATERMARK_ROWS = 32;
+export const WATERMARK_GAP = "   ";
+
+export function watermarkRow(name: string, chars = WATERMARK_CHARS): string {
+  const unit = name + WATERMARK_GAP;
+  return unit.repeat(Math.ceil(chars / unit.length));
+}
