@@ -34,7 +34,7 @@ export function PixelIcon({ name, size = 32, className = "" }: Props) {
       className={`pixel-icon ${className}`}
       width={size}
       height={size}
-      viewBox="0 0 16 16"
+      viewBox={`0 0 ${grid[0]?.length ?? 16} ${grid.length}`}
       shapeRendering="crispEdges"
       aria-hidden
     >

@@ -104,7 +104,7 @@ export function Desktop() {
             onDoubleClick={s.open}
             onKeyDown={(e) => e.key === "Enter" && s.open()}
           >
-            <PixelIcon name={s.icon} size={32} />
+            <PixelIcon name={s.icon} size={40} />
             <span>{s.label}</span>
           </button>
         ))}
