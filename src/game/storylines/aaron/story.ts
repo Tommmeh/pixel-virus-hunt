@@ -135,8 +135,9 @@ export const isSwarm = (popups: number) => popups >= SWARM_AT;
 // ---------------------------------------------------------------------------
 // Stage transitions
 
-/** Step 1: Mum's account posts the "photos" link on FriendSpace. */
-export function post(now = Date.now()) {
+/** Step 1: Mum's account posts the "photos" link on FriendSpace. `announce` = also show the tray notification (not needed when the
+ * player is already looking at FriendSpace). */
+export function post(now = Date.now(), announce = true) {
   if (aaronStore.get().stage !== "idle") return;
   addPost({
     id: "aaron-mum-photos",
@@ -147,6 +148,7 @@ export function post(now = Date.now()) {
     link: PHISH_URL,
   });
   setStage("posted", { postedAt: now });
+  if (!announce) return;
   notify({
     title: "FriendSpace",
     text: "Mum posted a new photo album.",
