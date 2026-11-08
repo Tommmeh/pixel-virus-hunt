@@ -17,6 +17,7 @@ import { Settings } from "./settings/Settings";
 import { TaskManager } from "./taskmgr/TaskManager";
 import { Achievements } from "../scams/Achievements";
 import { WebVoyager } from "./webvoyager/WebVoyager";
+import { StockApp } from "../storylines/zhuming/StockApp";
 
 export interface AppProps {
   win: Win;
@@ -183,6 +184,17 @@ export const APPS: AppDef[] = [
     w: 300,
     h: 200,
     component: WormPopup,
+  },
+  {
+    // Zhuming's storyline: the "free trading app" installed from Kevin's link.
+    id: "stockladder",
+    title: "StockLadder Trade",
+    icon: "trophy",
+    process: "stockladder.exe",
+    memK: 4_180,
+    w: 540,
+    h: 500,
+    component: StockApp,
   },
   {
     id: "msgbox",

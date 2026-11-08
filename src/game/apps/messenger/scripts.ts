@@ -1,5 +1,7 @@
 // Scripted PingMe conversations: the contact says `them` lines, the player picks one of `choices`.
 // `next: null` ends the conversation. Stage 2 can add quest conversations the same way.
+import { ZHUMING_SCRIPTS } from "../../storylines/zhuming/chat";
+
 export interface ChatChoice {
   text: string;
   next: string | null;
@@ -27,53 +29,6 @@ export interface ChatScript {
 }
 
 export const SCRIPTS: ChatScript[] = [
-  {
-    contact: "alex",
-    start: "hi",
-    opensAfterMs: 25_000,
-    nodes: [
-      {
-        id: "hi",
-        them: ["hey!! u there?", "did u get my email about level 7"],
-        nudge: true,
-        choices: [
-          { text: "yeah! how did you beat the boss?", next: "boss" },
-          { text: "not yet, what's up?", next: "whatsup" },
-        ],
-      },
-      {
-        id: "boss",
-        them: ["save ur shields till the 3rd phase", "then spam the laser. ez"],
-        choices: [
-          { text: "nice, I'll try that tonight", next: "tonight" },
-          { text: "I'm still stuck on level 5 lol", next: "level5" },
-        ],
-      },
-      {
-        id: "whatsup",
-        them: ["just bored. homework is so boring", "wanna play galaxy blasters later?"],
-        choices: [
-          { text: "sure, after dinner", next: "tonight" },
-          { text: "can't, got the history essay", next: "essay" },
-        ],
-      },
-      {
-        id: "level5",
-        them: ["haha level 5 is the worst", "go left at the asteroid field, trust me"],
-        choices: [{ text: "thanks!", next: "tonight" }],
-      },
-      {
-        id: "essay",
-        them: ["ugh same. priya said she's nearly done hers", "ok gl!"],
-        choices: [{ text: "cya", next: null }],
-      },
-      {
-        id: "tonight",
-        them: ["cool cool. brb mum's calling me for dinner"],
-        choices: [{ text: "ok cya", next: null }],
-      },
-    ],
-  },
   {
     contact: "priya",
     start: "open",
@@ -496,6 +451,7 @@ export const SCRIPTS: ChatScript[] = [
   {
     contact: "jordan",
     start: "open",
+    entries: ["stock"],
     nodes: [
       {
         id: "open",
@@ -510,9 +466,46 @@ export const SCRIPTS: ChatScript[] = [
           { text: "can't this week, good luck!", next: null },
         ],
       },
+      // Started by Zhuming's storyline once the player has moved serious money (see story.noteTrade).
+      {
+        id: "stock",
+        them: [
+          "Jamie? you still on that computer?",
+          "someone sent me a link for a trading app yesterday — stockladder-trade?",
+          "I put £20 in and it's up more than my paper round already. that can't be right can it",
+          "then I saw your name in the app. how much have you made?? that's mad for a week",
+          "I'm not joking mate. be careful. my cousin lost £900 to one of these last year",
+        ],
+        nudge: true,
+        choices: [
+          { text: "It's legit, Kevin has a group at RAM Capital", next: "stockkeep" },
+          { text: "You're right to be careful. I'll look into it", next: "stockwarn" },
+          { text: "(ignore him)", next: null },
+        ],
+      },
+      {
+        id: "stockkeep",
+        them: [
+          "a group? in PingMe?",
+          "the whole thing looks like it was built in someone's bedroom",
+          "just don't put your rent in it. promise me that at least",
+        ],
+        choices: [{ text: "(leave it)", next: null }],
+      },
+      {
+        id: "stockwarn",
+        them: [
+          "good. I'm taking my £20 back out tonight",
+          "if it turns out to be one of those, we report it. yeah?",
+        ],
+        choices: [{ text: "(leave it)", next: null }],
+      },
     ],
   },
 ];
 
-export const getScript = (contact: string) => SCRIPTS.find((s) => s.contact === contact);
+/** Every scripted conversation: the base cast plus each storyline's additions. */
+export const ALL_SCRIPTS: ChatScript[] = [...SCRIPTS, ...ZHUMING_SCRIPTS];
+
+export const getScript = (contact: string) => ALL_SCRIPTS.find((s) => s.contact === contact);
 export const getNode = (script: ChatScript, id: string) => script.nodes.find((n) => n.id === id);

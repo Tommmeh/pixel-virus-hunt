@@ -5,6 +5,8 @@ import { updateSettings, useSettings, type Settings } from "../../system/setting
 import { wm } from "../../system/windows";
 import { chatKey, chatTitle, startConversation, theirVisibleCount, useChat } from "./store";
 import { AI_PERSONAS } from "../../scams/ai";
+import { ZHUMING_CONTACT, ZHUMING_PERSON } from "../../storylines/zhuming/contact";
+import { useZhuming } from "../../storylines/zhuming/story";
 
 const STATUS_LABEL: Record<Presence, string> = {
   online: "Online",
@@ -37,6 +39,11 @@ export function Messenger() {
     { label: "Online", people: PEOPLE.filter((p) => p.status !== "offline") },
     { label: "Offline", people: PEOPLE.filter((p) => p.status === "offline") },
   ];
+  // Zhuming's storyline: Kevin only shows up once the player adds him from his Daily Byte post.
+  const { stage } = useZhuming();
+  const added = stage === "added" || stage === "installed" || stage === "cleaned";
+  const storyThread = threads[ZHUMING_CONTACT];
+  const storyUnread = storyThread ? theirVisibleCount(storyThread, now) - storyThread.seen : 0;
   return (
     <div className="pingme">
       <div className="pm-me">
@@ -88,6 +95,24 @@ export function Messenger() {
             })}
           </div>
         ))}
+        {added && (
+          <div>
+            <div className="pm-group">▾ Recent (1)</div>
+            <button
+              className="pm-contact"
+              onDoubleClick={() => openChat(ZHUMING_CONTACT)}
+              onKeyDown={(e) => e.key === "Enter" && openChat(ZHUMING_CONTACT)}
+              title={`${ZHUMING_PERSON.name} <${ZHUMING_PERSON.email}>`}
+            >
+              <span className={`pm-dot is-${ZHUMING_PERSON.status}`} />
+              <span className="pm-name">
+                {ZHUMING_PERSON.screenName}{" "}
+                <small>(Online) - {ZHUMING_PERSON.personalMessage}</small>
+              </span>
+              {storyUnread > 0 && <span className="pm-badge">{storyUnread}</span>}
+            </button>
+          </div>
+        )}
         <div>
           <div className="pm-group">▾ Unknown ({AI_PERSONAS.length})</div>
           {AI_PERSONAS.map((p) => (

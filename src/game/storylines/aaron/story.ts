@@ -1,5 +1,5 @@
 // Aaron's storyline — "PhotoWorm".
-// 1. Mum's (hacked) FriendSpace account posts a lookalike link   → stage "posted"
+// 1. Mum's (hacked) FriendSpace account posts a "photos" link    → stage "posted"
 // 2. The player opens it and downloads the "PhotoViewer"          → "clicked" → "infected"
 // 3. Pop-ups start, slowly at first, then faster and nastier       → "infected"
 // 4. They pile up on top of each other; closing one spawns two      → "swarm"
@@ -18,9 +18,9 @@ import { AARON_CARD_IDS } from "./cards";
 export const STORY = "aaron";
 export type Stage = "idle" | "posted" | "clicked" | "infected" | "swarm" | "cleaned";
 
-/** Brand name used as a subdomain of someone else's site, over plain http — a classic phishing link. */
-export const PHISH_HOST = "friendspace.com.photo-album.net";
-export const PHISH_URL = `http://${PHISH_HOST}/p/jamie_t`;
+/** Mum's "photos" link: straight to a shady "PhotoViewer" download site, over plain http — not FriendSpace at all. */
+export const PHISH_HOST = "get-photoviewer.net";
+export const PHISH_URL = `http://${PHISH_HOST}/album/jamie_t`;
 export const THREAT_ID = "aaron-photoworm";
 export const POPUP_APP = "worm-popup";
 
@@ -135,8 +135,9 @@ export const isSwarm = (popups: number) => popups >= SWARM_AT;
 // ---------------------------------------------------------------------------
 // Stage transitions
 
-/** Step 1: Mum's account posts the lookalike link on FriendSpace. */
-export function post(now = Date.now()) {
+/** Step 1: Mum's account posts the "photos" link on FriendSpace. `announce` = also show the tray notification (not needed when the
+ * player is already looking at FriendSpace). */
+export function post(now = Date.now(), announce = true) {
   if (aaronStore.get().stage !== "idle") return;
   addPost({
     id: "aaron-mum-photos",
@@ -147,6 +148,7 @@ export function post(now = Date.now()) {
     link: PHISH_URL,
   });
   setStage("posted", { postedAt: now });
+  if (!announce) return;
   notify({
     title: "FriendSpace",
     text: "Mum posted a new photo album.",
