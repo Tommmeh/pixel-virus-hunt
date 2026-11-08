@@ -126,7 +126,7 @@ export function Desktop() {
         {[
           ...SHORTCUTS.filter((s) => !(demo && s.id === "scout")),
           ...(rbcInstalled ? [RBC_SHORTCUT] : []),
-         ...storyShortcuts,
+          ...storyShortcuts,
           ...desktopFiles,
         ].map((s) => (
           <button
