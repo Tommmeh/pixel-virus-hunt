@@ -2,7 +2,7 @@
 // The "app" node is the one that points at the download page — story.ts listens for that reply and
 // opens the site. The "installed" node is a second beat, started once the app is on the PC.
 import type { ChatScript } from "../../apps/messenger/scripts";
-import { ZHUMING_CONTACT } from "./contact";
+import { FRANK_CONTACT, ZHUMING_CONTACT } from "./contact";
 
 export const ZHUMING_SCRIPTS: ChatScript[] = [
   {
@@ -212,6 +212,42 @@ export const ZHUMING_SCRIPTS: ChatScript[] = [
           "last call before Tuesday",
         ],
         choices: [{ text: "thinking about it", next: null }],
+      },
+    ],
+  },
+  // Frank: the good-ending route. J-Reyes has told him about the app, and he happens to bank with
+  // the one bank that holds a payment before it leaves. Pushed by story.frankTip().
+  {
+    contact: FRANK_CONTACT,
+    start: "tip",
+    entries: ["tip"],
+    nodes: [
+      {
+        id: "tip",
+        them: [
+          "jamie — jordan says you've got money in some trading app off a chat",
+          "not going to tell you what to do. but i bank with RBC and they held a payment of mine last month and rang me before it left",
+          "install it before you move anything else: www.rbc.com/switch",
+          "five minutes. if the app's straight, you've lost nothing",
+        ],
+        nudge: true,
+        choices: [
+          { text: "Sorting it now", next: "sorting" },
+          { text: "It's fine, I know what I'm doing", next: "fine" },
+        ],
+      },
+      {
+        id: "sorting",
+        them: [
+          "good. do it now, not tonight",
+          "and if that app asks for your bank password again, you've got your answer",
+        ],
+        choices: [{ text: "(close the conversation)", next: null }],
+      },
+      {
+        id: "fine",
+        them: ["your call mate", "just don't put the savings in. i mean it"],
+        choices: [{ text: "(close the conversation)", next: null }],
       },
     ],
   },

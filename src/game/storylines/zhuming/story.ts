@@ -17,19 +17,20 @@ import { receiveMail } from "../../apps/webvoyager/sites/hotpost/store";
 import { formatMoney } from "../../components/ui";
 import { unlockScam } from "../../scams/store";
 import { emit } from "../../system/events";
+import { questStore } from "../../system/quests";
 import { notify } from "../../system/notify";
 import { createStore } from "../../system/store";
 import { addThreat, removeThreat, threatStore } from "../../system/threats";
 import { wm } from "../../system/windows";
 import { ZHUMING_ARTICLE } from "./article";
-import { chargeChequing, chequingBalance, drainEverything } from "./bank";
+import { bankTotal, chargeChequing, chequingBalance, drainEverything } from "./bank";
 import { ZHUMING_CARD_IDS } from "./cards";
-import { ZHUMING_CONTACT, ZHUMING_PERSON } from "./contact";
+import { FRANK_CONTACT, ZHUMING_CONTACT, ZHUMING_PERSON } from "./contact";
 import { allIn, crash, RAM_TICKER } from "./market";
 import { marketStore } from "./store";
 
 export const STORY = "zhuming";
-export type Stage = "idle" | "posted" | "added" | "installed" | "cleaned" | "wiped";
+export type Stage = "idle" | "posted" | "added" | "installed" | "cleaned" | "wiped" | "saved";
 
 /** J-Reyes, the friend who hears about the app once the player starts moving real money. */
 export const JORDAN_CONTACT = "jordan";
@@ -49,11 +50,13 @@ export const POST_AFTER_MS = 60_000; // after logging in
 export const FOLLOW_UP_MS = 20_000;
 /** How long after his first conversation ends before he sends the download link anyway. */
 export const LINK_AFTER_MS = 6_000;
+/** Frank's warning lands this soon after the player answers J-Reyes — before Kevin's emergency. */
+export const FRANK_AFTER_MS = 1_500;
 /** Trading this much — or banking this much — is enough for a friend to notice. */
 export const ALERT_SPEND = 200;
 export const ALERT_EARN = 250;
 /** Kevin's emergency lands this long after the player has answered J-Reyes. */
-export const EMERGENCY_AFTER_MS = 5_000;
+export const EMERGENCY_AFTER_MS = 30_000;
 /** Emma's email arrives this long after the app has emptied the accounts. */
 export const WIFE_MAIL_AFTER_MS = 20_000;
 /** Seconds spent looking at the overdrawn account before the ending lands. */
@@ -78,8 +81,14 @@ export interface ZhumingState {
   linkPosted: boolean;
   /** When Kevin's "emergency" arrived. 0 until it does. */
   emergencyAt: number;
+  /** Frank has sent the RBC link. One shot. */
+  frankMessaged: boolean;
   /** When the app emptied both accounts. 0 until it does. */
   wipedAt: number;
+  /** When the bank held the all-in instead: the good ending. 0 until it does. */
+  savedAt: number;
+  /** What the bank kept in the accounts when it stopped the payment. */
+  keptAmount: number;
   /** Emma's "why is the account overdrawn" mail. Null until it has been sent. */
   wifeMailId: string | null;
   /** When the ending screen took over. 0 until the player has seen the account. */
@@ -95,8 +104,11 @@ export const INITIAL: ZhumingState = {
   earned: 0,
   jordanAlerted: false,
   linkPosted: false,
+  frankMessaged: false,
   emergencyAt: 0,
   wipedAt: 0,
+  savedAt: 0,
+  keptAmount: 0,
   wifeMailId: null,
   endingAt: 0,
 };
@@ -150,7 +162,14 @@ export function read() {
 /** Step 2: "Add ram_capital_kevin on PingMe" at the bottom of the article. */
 export function addContact() {
   const { stage } = zhumingStore.get();
-  if (stage === "idle" || stage === "installed" || stage === "cleaned" || stage === "wiped") return;
+  if (
+    stage === "idle" ||
+    stage === "installed" ||
+    stage === "cleaned" ||
+    stage === "wiped" ||
+    stage === "saved"
+  )
+    return;
   if (stage === "added") {
     openThread();
     return;
@@ -169,7 +188,8 @@ export function addContact() {
 /** Step 3: the player ran StockLadder_Setup.exe from the download page. */
 export function install(now = Date.now()) {
   const { stage } = zhumingStore.get();
-  if (stage === "installed" || stage === "cleaned" || stage === "wiped") return;
+  if (stage === "installed" || stage === "cleaned" || stage === "wiped" || stage === "saved")
+    return;
   // Someone who found the download page on their own still hears from him afterwards.
   if (stage !== "added") startConversation(ZHUMING_CONTACT);
   setStage("installed", { installedAt: now });
@@ -266,17 +286,62 @@ export function emergency() {
 }
 
 /**
+ * Step 3b2: J-Reyes has told Frank about the app too, and Frank banks with the one bank that holds a
+ * payment before it leaves. The only route to the good ending. Called by ZhumingService.
+ */
+export function frankTip() {
+  const s = zhumingStore.get();
+  if (s.stage !== "installed" || s.frankMessaged) return;
+  zhumingStore.set((x) => ({ ...x, frankMessaged: true }));
+  continueConversation(FRANK_CONTACT, "tip");
+  // Only the chat opens: the address is in his message, and the player types it into the browser.
+  wm.open(
+    "chat",
+    { contact: FRANK_CONTACT },
+    { key: chatKey(FRANK_CONTACT), title: chatTitle(FRANK_CONTACT) },
+  );
+}
+
+/**
  * Step 3e: the app emptied every Copperleaf account into RAMH, leveraged nine times over, and the
  * price collapsed. Emma hears about it a little later — see sendWifeMail().
+ *
+ * Unless RBC is installed: then the transfer is held and nothing leaves — see holdAllIn().
  */
 export function wipe() {
   const s = zhumingStore.get();
   if (s.stage !== "installed" || s.wipedAt) return;
+  // A payment this size to a company this new never fits the pattern, so the bank stops it.
+  if (questStore.get().rbcInstalled) {
+    holdAllIn();
+    return;
+  }
   const total = drainEverything(`STOCKLADDER TRADE ${RAM_TICKER}`);
   marketStore.set((m) => crash(allIn(m, total)));
   const owed = round2(total * MARGIN_MULTIPLE);
   chargeChequing(owed, "STOCKLADDER MARGIN CALL");
   setStage("wiped", { wipedAt: Date.now() });
+}
+
+/**
+ * The good ending: RBC holds the all-in before it reaches the broker. The stock collapses anyway — the
+ * tip was worthless all along — but the money never leaves the accounts and there is no margin call.
+ */
+export function holdAllIn() {
+  const s = zhumingStore.get();
+  if (s.stage !== "installed" || s.wipedAt || s.savedAt) return;
+  const kept = bankTotal();
+  marketStore.set((m) => crash(m));
+  setStage("saved", { savedAt: Date.now(), keptAmount: kept });
+  wm.closeApp(APP_ID);
+  unlockScam(ZHUMING_CARD_IDS.saved);
+  notify({
+    title: "RBC Online Banking",
+    text: `Payment held: STOCKLADDER TRADE. ${formatMoney(kept)} is still in your account — we'll call you.`,
+    icon: "shield",
+    open: { app: "rbc" },
+  });
+  emit({ type: "story.complete", story: STORY });
 }
 
 /** Step 3f: Emma writes once the statement settles, and points him at the bank. */
