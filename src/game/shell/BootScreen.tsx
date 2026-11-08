@@ -154,8 +154,8 @@ function Welcome() {
             {confirmingReset && (
               <div className="mt-3">
                 <p className="welcome-fine">
-                  Reset the whole story? Mail, chats, bank balance and rewards all start again — $5
-                  ad, then the Amazing gift card, then the free trial.
+                  Reset the whole story? Mail, chats, bank balance, trophies and Scout&apos;s tour all
+                  start again.
                 </p>
                 <div className="flex gap-2 mt-2 justify-center">
                   <button

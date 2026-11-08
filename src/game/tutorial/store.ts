@@ -58,6 +58,16 @@ export function prevStep() {
   go(s.script, Math.max(0, i));
 }
 
+/** Go back one step because the player undid what it set up (closed the browser, browsed away...). */
+export function stepBack() {
+  const s = tutorialSession.get();
+  if (!s.active || s.step === 0) return;
+  const steps = stepsFor(s.script);
+  let i = s.step - 1;
+  while (i > 0 && steps[i]!.skipIf?.()) i--;
+  go(s.script, i);
+}
+
 /** End the current script. Only the intro tour remembers that it's been done. */
 export function finishTutorial() {
   const { script } = tutorialSession.get();
