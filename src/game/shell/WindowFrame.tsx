@@ -10,7 +10,7 @@ interface Props {
   children: ReactNode;
 }
 
-/** PaneOS window chrome: title bar, min/max/close, drag, double-click maximize, resize grip. */
+/** VirusHuntOS window chrome: title bar, min/max/close, drag, double-click maximize, resize grip. */
 export function WindowFrame({ win, active, dialog, children }: Props) {
   const [shaking, setShaking] = useState(false);
   const firstShake = useRef(win.shake);

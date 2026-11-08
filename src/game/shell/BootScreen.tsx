@@ -12,7 +12,7 @@ function Logo({ size = 48 }: { size?: number }) {
     <div className="os-logo">
       <PixelIcon name="logo" size={size} />
       <span className="os-logo-text">
-        PANE<b>OS</b>
+        VIRUSHUNT<b>OS</b>
       </span>
     </div>
   );
@@ -43,6 +43,13 @@ function Boot() {
   );
 }
 
+const TOOLS = [
+  { name: "Lovable", role: "app builder & hosting" },
+  { name: "Auth0", role: "sign-in" },
+  { name: "Freebuff", role: "AI coding assistant" },
+  { name: "Google Gemini", role: "AI chatbot" },
+];
+
 function Welcome() {
   const s = useSettings();
   // Without Auth0 configured there's no provider: useAuth0() returns defaults and we ignore it.
@@ -63,28 +70,65 @@ function Welcome() {
     <div className="welcome-screen">
       <div className="welcome-mid">
         <Logo />
-        <div className="nes-container is-dark is-rounded with-title welcome-box">
-          <p className="title">WELCOME</p>
-          <p className="welcome-hint">{hint}</p>
-          <button
-            className="user-tile"
-            disabled={loading}
-            onClick={() => {
-              if (needsSignIn) {
-                void loginWithRedirect();
-                return;
-              }
-              if (authEnabled && authName) updateSettings({ userName: authName });
-              playStartup();
-              logIn();
-            }}
-          >
-            <span className="user-tile-pic">{s.avatar}</span>
-            <span className="user-tile-name">
-              {needsSignIn ? "Sign in" : authEnabled && authName ? authName : s.userName}
-            </span>
-            <span className="user-tile-arrow">▶</span>
-          </button>
+        <p className="welcome-tagline">A SAFE PC FOR PRACTISING AGAINST SCAMS &amp; MALWARE</p>
+        <div className="welcome-grid">
+          <section className="welcome-panel welcome-about">
+            <p className="welcome-panel-title">ABOUT</p>
+            <p>
+              Scammers and viruses only need you to slip once — and on a real computer, one wrong
+              click can cost you your money, your accounts or your files.
+            </p>
+            <p>
+              <b>VirusHuntOS</b> is a pretend 2004 PC where you can make those mistakes safely.
+              Browse the web, read your email, chat with friends, check your bank — just like you
+              would at home.
+            </p>
+            <ul className="welcome-list">
+              <li>Use the computer the way you normally would.</li>
+              <li>Some of what you meet won't be what it seems.</li>
+              <li>Afterwards, find out what happened and how to spot it next time.</li>
+            </ul>
+            <p className="welcome-fine">
+              Everything here is fictional: no real websites, money, people or viruses. Nothing
+              leaves your browser.
+            </p>
+          </section>
+          <div className="welcome-side">
+            <div className="welcome-panel welcome-box">
+              <p className="welcome-panel-title">LOG IN</p>
+              <p className="welcome-hint">{hint}</p>
+              <button
+                className="user-tile"
+                disabled={loading}
+                onClick={() => {
+                  if (needsSignIn) {
+                    void loginWithRedirect();
+                    return;
+                  }
+                  if (authEnabled && authName) updateSettings({ userName: authName });
+                  playStartup();
+                  logIn();
+                }}
+              >
+                <span className="user-tile-pic">{s.avatar}</span>
+                <span className="user-tile-name">
+                  {needsSignIn ? "Sign in" : authEnabled && authName ? authName : s.userName}
+                </span>
+                <span className="user-tile-arrow">▶</span>
+              </button>
+            </div>
+            <div className="welcome-panel welcome-tools">
+              <p className="welcome-panel-title">BUILT WITH</p>
+              <ul>
+                {TOOLS.map((t) => (
+                  <li key={t.name}>
+                    <b>{t.name}</b>
+                    <span>{t.role}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       <div className="welcome-bottom">
@@ -107,7 +151,7 @@ function Welcome() {
             </button>
           )}
         </div>
-        <span className="welcome-note">Virus Hunt — a safe practice PC. Nothing here is real.</span>
+        <span className="welcome-note">VirusHuntOS · HackCamp 2026 · Nothing here is real.</span>
       </div>
     </div>
   );

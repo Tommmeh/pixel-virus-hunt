@@ -3,7 +3,7 @@ import { PixelIcon } from "../../components/PixelIcon";
 import { playDing, playError } from "../../components/sound";
 import { wm, type Win } from "../../system/windows";
 
-/** PaneOS message box — opened with wm.alert({ title, text, icon }). */
+/** VirusHuntOS message box — opened with wm.alert({ title, text, icon }). */
 export function MessageBox({ win }: { win: Win }) {
   const icon = win.args?.["icon"] ?? "info";
   useEffect(() => {

@@ -119,7 +119,7 @@ export function Notepad({ win }: { win: Win }) {
                   item("About Notepad", () =>
                     wm.alert({
                       title: "About Notepad",
-                      text: "PaneOS Notepad\nVersion 5.1",
+                      text: "VirusHuntOS Notepad\nVersion 5.1",
                       icon: "info",
                     }),
                   )}

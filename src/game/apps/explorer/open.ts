@@ -7,7 +7,7 @@ export function openPath(path: string) {
   const p = normalizePath(path);
   const node = getNode(p);
   if (!node) {
-    wm.alert({ title: baseName(p), text: `PaneOS cannot find '${p}'.`, icon: "error" });
+    wm.alert({ title: baseName(p), text: `VirusHuntOS cannot find '${p}'.`, icon: "error" });
     return;
   }
   if (node.type === "folder") {
@@ -27,7 +27,7 @@ export function openPath(path: string) {
       return;
     case "image":
       wm.alert({
-        title: "PaneOS Picture Viewer",
+        title: "VirusHuntOS Picture Viewer",
         text: `The picture '${node.name}' can't be shown because the viewer isn't installed yet.`,
         icon: "info",
       });
@@ -41,8 +41,8 @@ export function openPath(path: string) {
       return;
     case "doc":
       wm.alert({
-        title: "PaneOS",
-        text: `PaneOS cannot open this file:\n\n${node.name}\n\nTo open this file, PaneOS needs to know what program created it.`,
+        title: "VirusHuntOS",
+        text: `VirusHuntOS cannot open this file:\n\n${node.name}\n\nTo open this file, VirusHuntOS needs to know what program created it.`,
         icon: "warning",
       });
   }

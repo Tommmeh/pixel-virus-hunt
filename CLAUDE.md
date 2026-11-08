@@ -2,7 +2,7 @@
 
 @AGENTS.md
 
-HackCamp 2026 project (team of 4). A browser game that simulates a retro 2004-style PC ("PaneOS": a Windows-style desktop drawn in NES.css pixel style)
+HackCamp 2026 project (team of 4). A browser game that simulates a retro 2004-style PC ("VirusHuntOS": a Windows-style desktop drawn in NES.css pixel style)
 so people can **experience scams and malware safely instead of on their real machine**.
 
 ## Roadmap (4 stages)
@@ -83,7 +83,7 @@ session-only. Settings → Reset clears everything (`resetAllStores()`).
 
 ## Conventions
 
-- **Fictional brands only:** PaneOS, WebVoyager, PingMe, Searchly, HotPost, Copperleaf Bank, FriendSpace, The
+- **Fictional brands only:** VirusHuntOS, WebVoyager, PingMe, Searchly, HotPost, Copperleaf Bank, FriendSpace, The
   Daily Byte. No real companies, logos, phone numbers or links that leave the game. Nothing is ever fetched.
 - **Look = NES.css** (https://nostalgic-css.github.io/NES.css/). Use its classes for controls: `nes-btn`
   (+ `is-small`, `is-primary`/`is-success`/`is-warning`/`is-error`), `nes-input`, `nes-textarea`,

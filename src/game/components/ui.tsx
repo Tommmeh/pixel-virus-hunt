@@ -1,4 +1,4 @@
-// Small PaneOS UI helpers built on NES.css classes. Styling: src/styles.css (themed per .os[data-theme]).
+// Small VirusHuntOS UI helpers built on NES.css classes. Styling: src/styles.css (themed per .os[data-theme]).
 import { useEffect, useState, type ReactNode, type SelectHTMLAttributes } from "react";
 
 /** A row of NES buttons acting as tabs; the active one is `is-primary`. */
