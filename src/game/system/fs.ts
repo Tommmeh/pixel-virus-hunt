@@ -54,7 +54,7 @@ const NOTES = `Things to remember!!
 - Buy Mum a birthday card (birthday is the 14th)
 
 Passwords (don't forget!!)
-HotPost email: jamie.taylor@hotpost.com / sunflower42
+E-mail: jamie.taylor@hotpost.com / sunflower42
 Copperleaf Bank: jamie.taylor / sunflower42
 FriendSpace: same as email
 `;

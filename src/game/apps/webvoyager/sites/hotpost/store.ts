@@ -63,7 +63,7 @@ export function receiveMail(mail: Omit<Mail, "id" | "date" | "to">) {
   mailStore.set((s) => ({ ...s, inbox: [m, ...s.inbox] }));
   playDing();
   notify({
-    title: "HotPost Mail",
+    title: "E-mail",
     text: `New message from ${m.fromName}: ${m.subject}`,
     icon: "mail",
     open: { app: "webvoyager", args: { url: "https://mail.hotpost.com/" } },
@@ -99,7 +99,7 @@ export function sendMail(to: string, subject: string, body: string) {
     setTimeout(
       () =>
         receiveMail({
-          fromName: "HotPost Mail Delivery",
+          fromName: "E-mail Delivery",
           from: "postmaster@hotpost.com",
           subject: `Undeliverable: ${m.subject}`,
           body:
@@ -108,7 +108,7 @@ export function sendMail(to: string, subject: string, body: string) {
             `Subject: ${m.subject}\n\n` +
             "This mailbox is not accepting new messages at the moment. Your email was not delivered and has not been read.\n\n" +
             "Please try again later, or contact this person another way.\n\n" +
-            "This is an automated message from HotPost Mail. Please do not reply to it.",
+            "This is an automated message from E-mail. Please do not reply to it.",
         }),
       2500,
     );

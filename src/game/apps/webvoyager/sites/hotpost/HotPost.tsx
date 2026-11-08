@@ -20,7 +20,7 @@ function SignIn() {
     <div className="hp-signin">
       <div className="hp-brand">
         <span className="hp-logo">
-          Hot<b>Post</b>
+          E-<b>mail</b>
         </span>
         <span>Free web-based email</span>
       </div>
@@ -34,7 +34,7 @@ function SignIn() {
           else setErr("The e-mail address or password is incorrect. Please try again.");
         }}
       >
-        <b>Sign in to HotPost Mail</b>
+        <b>Sign in to E-mail</b>
         <label>
           E-mail address
           <input className="nes-input" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -195,7 +195,7 @@ function AmazingSignIn({ mail }: { mail: Mail }) {
                 subject: "Alert: New sign-in detected on your HotPost account",
                 body:
                   "Dear jamie.taylor,\n\n" +
-                  "A new sign-in to your HotPost Mail account was detected.\n\n" +
+                  "A new sign-in to your e-mail account was detected.\n\n" +
                   "Date/Time: " + new Date().toLocaleString() + "\n" +
                   "IP Address: 94.102.49.190\n" +
                   "Location:  Unknown\n\n" +
@@ -392,7 +392,7 @@ export function HotPost({ url }: { url: PageUrl }) {
       <ReadMarker mail={reading} />
       <div className="hp-header">
         <span className="hp-logo">
-          Hot<b>Post</b> Mail
+          E-<b>mail</b>
         </span>
         <span className="hp-user">
           {PROFILE.email} · <A href={`${BASE}/signout`}>Sign out</A>

@@ -144,11 +144,12 @@ export function WebVoyager({ win }: { win: Win }) {
         {SITE_INFO.filter((s) => s.favorite).map((s) => (
           <button
             key={s.host}
-            className="wv-fav"
+            className={`wv-fav ${info?.host === s.host ? "is-current" : ""}`}
             data-tour={`fav-${s.host}`}
+            aria-current={info?.host === s.host ? "page" : undefined}
             onClick={() => navigate(`${s.secure ? "https" : "http"}://${s.host}/`)}
           >
-            <PixelIcon name={s.icon} size={14} /> {s.name}
+            <PixelIcon name={s.icon} size={16} /> {s.name}
           </button>
         ))}
       </div>
