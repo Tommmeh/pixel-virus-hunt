@@ -73,6 +73,15 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "news",
     secure: true,
   },
+  // Zhuming's storyline: the "free trading app" download page Kevin sends over PingMe.
+  // Plain http, not a favourite, not in the search index.
+  {
+    host: "www.stockladder-trade.com",
+    aliases: ["stockladder-trade.com"],
+    name: "StockLadder Trade",
+    icon: "trophy",
+    secure: false,
+  },
   // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
   {
     host: "friendspace.com.photo-album.net",

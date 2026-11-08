@@ -5,6 +5,8 @@ import { MessengerService } from "../apps/messenger/MessengerService";
 import { QuestFlow } from "./QuestFlow";
 import { ScamPopups } from "./ScamPopups";
 import { AaronService } from "../storylines/aaron/AaronService";
+import { ZhumingService } from "../storylines/zhuming/ZhumingService";
+import { useZhuming } from "../storylines/zhuming/story";
 import { TutorialGuide } from "../tutorial/TutorialGuide";
 import { startTutorial } from "../tutorial/store";
 import { PixelIcon } from "../components/PixelIcon";
@@ -51,6 +53,14 @@ const SHORTCUTS: Shortcut[] = [
   },
 ];
 
+/** Zhuming's storyline: StockLadder only gets a desktop icon once it has been installed. */
+const STORY_SHORTCUT: Shortcut = {
+  id: "stockladder",
+  label: "StockLadder",
+  icon: "trophy",
+  open: () => wm.open("stockladder"),
+};
+
 function AppView({ app, win }: { app: string; win: Win }) {
   const def = getApp(app);
   if (!def) return <p className="p-3">This program cannot be found.</p>;
@@ -65,6 +75,7 @@ export function Desktop() {
   const active = activeKey(wmState);
   const [startOpen, setStartOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const { stage: storyStage } = useZhuming();
 
   const desktopFiles: Shortcut[] = listDir(DESKTOP_DIR, files).map((n) => {
     const path = joinPath(DESKTOP_DIR, n.name);
@@ -75,6 +86,8 @@ export function Desktop() {
       open: () => openPath(path),
     };
   });
+
+  const storyShortcuts = storyStage === "installed" ? [STORY_SHORTCUT] : [];
 
   return (
     <div
@@ -88,7 +101,7 @@ export function Desktop() {
       }}
     >
       <div className="desk-icons" data-tour="desktop-icons">
-        {[...SHORTCUTS, ...desktopFiles].map((s) => (
+        {[...SHORTCUTS, ...storyShortcuts, ...desktopFiles].map((s) => (
           <button
             key={s.id}
             data-tour={`icon-${s.id}`}
@@ -123,6 +136,7 @@ export function Desktop() {
       <QuestFlow />
       <ScamPopups />
       <AaronService />
+      <ZhumingService />
       <TutorialGuide />
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>

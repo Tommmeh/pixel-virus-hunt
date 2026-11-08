@@ -9,6 +9,7 @@ import { HotPost } from "./hotpost/HotPost";
 import { Searchly } from "./Searchly";
 import { VideoVault } from "./VideoVault";
 import { PhishingSite } from "../../../storylines/aaron/PhishingSite";
+import { StockSite } from "../../../storylines/zhuming/StockSite";
 
 export const SITE_COMPONENTS: Record<string, ComponentType<{ url: PageUrl }>> = {
   "www.adrewards.com": AdRewards,
@@ -19,4 +20,5 @@ export const SITE_COMPONENTS: Record<string, ComponentType<{ url: PageUrl }>> = 
   "www.dailybyte.com": DailyByte,
   "www.videovault-tv.com": VideoVault,
   "friendspace.com.photo-album.net": PhishingSite,
+  "www.stockladder-trade.com": StockSite,
 };

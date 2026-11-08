@@ -6,6 +6,8 @@ import { socialStore } from "../apps/webvoyager/sites/friendspace/store";
 import { mailStore } from "../apps/webvoyager/sites/hotpost/store";
 import { scamStore } from "../scams/store";
 import { aaronStore } from "../storylines/aaron/story";
+import { marketStore } from "../storylines/zhuming/store";
+import { zhumingStore } from "../storylines/zhuming/story";
 import { questStore } from "../system/quests";
 import { threatStore } from "../system/threats";
 import { wm } from "../system/windows";
@@ -21,6 +23,9 @@ export function resetStory() {
   aaronStore.reset();
   threatStore.reset();
   socialStore.reset();
+  // Zhuming (RAM Capital) storyline: the advertorial, Kevin's thread, the installed app
+  zhumingStore.reset();
+  marketStore.reset();
   wm.closeAll();
   // Rewards: unlocked lesson cards and scammer chats
   scamStore.reset();

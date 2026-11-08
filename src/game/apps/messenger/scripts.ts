@@ -1,5 +1,7 @@
 // Scripted PingMe conversations: the contact says `them` lines, the player picks one of `choices`.
 // `next: null` ends the conversation. Stage 2 can add quest conversations the same way.
+import { ZHUMING_SCRIPTS } from "../../storylines/zhuming/chat";
+
 export interface ChatChoice {
   text: string;
   next: string | null;
@@ -414,6 +416,7 @@ export const SCRIPTS: ChatScript[] = [
   {
     contact: "jordan",
     start: "open",
+    entries: ["stock"],
     nodes: [
       {
         id: "open",
@@ -428,9 +431,46 @@ export const SCRIPTS: ChatScript[] = [
           { text: "can't this week, good luck!", next: null },
         ],
       },
+      // Started by Zhuming's storyline once the player has moved serious money (see story.noteTrade).
+      {
+        id: "stock",
+        them: [
+          "Jamie? you still on that computer?",
+          "someone sent me a link for a trading app yesterday — stockladder-trade?",
+          "I put £20 in and it's up more than my paper round already. that can't be right can it",
+          "then I saw your name in the app. how much have you made?? that's mad for a week",
+          "I'm not joking mate. be careful. my cousin lost £900 to one of these last year",
+        ],
+        nudge: true,
+        choices: [
+          { text: "It's legit, Kevin has a group at RAM Capital", next: "stockkeep" },
+          { text: "You're right to be careful. I'll look into it", next: "stockwarn" },
+          { text: "(ignore him)", next: null },
+        ],
+      },
+      {
+        id: "stockkeep",
+        them: [
+          "a group? in PingMe?",
+          "the whole thing looks like it was built in someone's bedroom",
+          "just don't put your rent in it. promise me that at least",
+        ],
+        choices: [{ text: "(leave it)", next: null }],
+      },
+      {
+        id: "stockwarn",
+        them: [
+          "good. I'm taking my £20 back out tonight",
+          "if it turns out to be one of those, we report it. yeah?",
+        ],
+        choices: [{ text: "(leave it)", next: null }],
+      },
     ],
   },
 ];
 
-export const getScript = (contact: string) => SCRIPTS.find((s) => s.contact === contact);
+/** Every scripted conversation: the base cast plus each storyline's additions. */
+export const ALL_SCRIPTS: ChatScript[] = [...SCRIPTS, ...ZHUMING_SCRIPTS];
+
+export const getScript = (contact: string) => ALL_SCRIPTS.find((s) => s.contact === contact);
 export const getNode = (script: ChatScript, id: string) => script.nodes.find((n) => n.id === id);
