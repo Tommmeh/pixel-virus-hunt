@@ -6,11 +6,11 @@ import { ANISH_CARDS } from "../storylines/anish/cards";
 import { AI_SCAMS } from "./ai";
 import { LESSON_CARDS } from "./cards";
 
-const STORYLINE_CARDS = [...AARON_CARDS, ...ZHUMING_CARDS];
+const STORYLINE_CARDS = [...AARON_CARDS, ...ANISH_CARDS, ...ZHUMING_CARDS];
 
 describe("lesson cards", () => {
   it("include the chat scams and every storyline", () => {
-    expect(LESSON_CARDS).toHaveLength(AI_SCAMS.length + AARON_CARDS.length + ANISH_CARDS.length + STORYLINE_CARDS.length);
+    expect(LESSON_CARDS).toHaveLength(AI_SCAMS.length + STORYLINE_CARDS.length);
   });
 
   it("have unique ids", () => {

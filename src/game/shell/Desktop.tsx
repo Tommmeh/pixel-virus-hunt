@@ -65,7 +65,7 @@ const STORY_SHORTCUT: Shortcut = {
   label: "StockLadder",
   icon: "trophy",
   open: () => wm.open("stockladder"),
-}；
+};
 
 const RBC_SHORTCUT: Shortcut = {
   id: "rbc",
@@ -165,7 +165,7 @@ export function Desktop() {
       {!demo && <ScamPopups />}
       <ThreeDaysLater />
       <AaronService />
-      <ZhumingService />
+      {!demo && <ZhumingService />}
       {demo ? <DemoGuide /> : <TutorialGuide />}
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>

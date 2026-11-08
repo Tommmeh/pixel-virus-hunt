@@ -68,6 +68,7 @@ export function receiveMail(mail: Omit<Mail, "id" | "date" | "to">) {
     icon: "mail",
     open: { app: "webvoyager", args: { url: "https://mail.hotpost.com/" } },
   });
+  return m;
 }
 
 export function sendMail(to: string, subject: string, body: string) {

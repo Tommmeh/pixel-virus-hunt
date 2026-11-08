@@ -4,6 +4,7 @@
 // To add a quest line: write its LessonCards, add them to LESSON_CARDS (./cards.ts), then add an entry here.
 import { AARON_CARDS, AARON_CARD_IDS } from "../storylines/aaron/cards";
 import { ANISH_CARDS, ANISH_CARD_IDS } from "../storylines/anish/cards";
+import { ZHUMING_CARDS, ZHUMING_CARD_IDS } from "../storylines/zhuming/cards";
 import { AI_PERSONAS } from "./ai";
 
 export interface QuestLine {
@@ -50,6 +51,14 @@ export const QUEST_LINES: QuestLine[] = [
     teaser: "Money's tight this month. Check your inbox...",
     cardIds: ANISH_CARDS.map((c) => c.id),
     completeWhen: ANISH_CARD_IDS.aftermath,
+  },
+  {
+    id: "stocks",
+    name: "The Hot Stock Tip",
+    icon: "taskmgr",
+    teaser: "A stock that's about to go to the moon...",
+    cardIds: ZHUMING_CARDS.map((c) => c.id),
+    completeWhen: ZHUMING_CARD_IDS.cleaned,
   },
   ...AI_PERSONAS.map((p) => ({
     id: p.id,

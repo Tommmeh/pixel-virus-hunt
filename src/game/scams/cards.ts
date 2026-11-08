@@ -5,6 +5,11 @@ import { ZHUMING_CARDS } from "../storylines/zhuming/cards";
 import { ANISH_CARDS } from "../storylines/anish/cards";
 import { AI_SCAMS, type LessonCard } from "./ai";
 
-export const LESSON_CARDS: LessonCard[] = [...AI_SCAMS, ...AARON_CARDS, ...ANISH_CARDS，...ZHUMING_CARDS];
+export const LESSON_CARDS: LessonCard[] = [
+  ...AI_SCAMS,
+  ...AARON_CARDS,
+  ...ANISH_CARDS,
+  ...ZHUMING_CARDS,
+];
 
 export const getLessonCard = (id: string) => LESSON_CARDS.find((c) => c.id === id);

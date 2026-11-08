@@ -5,10 +5,11 @@ import { LESSON_CARDS } from "./cards";
 import { getQuestLine, isComplete, progress, QUEST_LINES } from "./questlines";
 
 describe("quest lines (trophies)", () => {
-  it("has one trophy each for PhotoWorm, the bank line and every chat scammer", () => {
+  it("has one trophy each for PhotoWorm, the bank line, the stock scam and every chat scammer", () => {
     expect(QUEST_LINES.map((l) => l.id)).toEqual([
       "photoworm",
       "bank",
+      "stocks",
       "ai-techsupport",
       "ai-friend-abroad",
       "ai-romance",
