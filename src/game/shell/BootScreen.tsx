@@ -122,6 +122,7 @@ function Welcome() {
       <SponsorEgg />
       <div
         className="welcome-mid"
+        data-sponsor={sponsor?.id}
         style={sponsor ? { background: sponsorBackground(sponsor) } : undefined}
       >
         {sponsor && <SponsorMark name={sponsor.name} ink={sponsor.colors.ink} />}

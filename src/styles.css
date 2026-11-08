@@ -991,6 +991,8 @@ body { font-family: var(--font-sans); background: #000; }
 @keyframes egg-shake { 33% { transform: translateX(-3px) rotate(-12deg); } 66% { transform: translateX(3px) rotate(12deg); } }
 .sponsor-caption { padding: 4px 8px; font: 8px/1.6 var(--font-sans); color: #fff; background: rgb(33 37 41 / 85%); box-shadow: 0 0 0 3px #fff; white-space: nowrap; }
 .sponsor-mark { position: absolute; inset: -20%; z-index: 0; display: flex; flex-direction: column; justify-content: center; gap: 0.6em; overflow: hidden;
-  font: 44px/1 var(--font-sans); white-space: nowrap; opacity: 0.14; transform: rotate(-12deg); pointer-events: none; user-select: none; }
+  font: 44px/1 var(--font-sans); white-space: nowrap; opacity: 0.32; transform: rotate(-12deg); pointer-events: none; user-select: none; }
 .welcome-mid:has(.sponsor-mark) { overflow-x: hidden; }
+/* On sponsor backgrounds, text that sits straight on the pattern gets a dark backing so it stays readable. */
+.welcome-mid[data-sponsor] .welcome-tagline, .welcome-mid[data-sponsor] .welcome-credits { padding: 6px 12px; background: rgb(33 37 41 / 85%); box-shadow: 0 0 0 3px rgb(33 37 41 / 85%); }
 @media (max-width: 700px) { .sponsor-caption { display: none; } .sponsor-mark { font-size: 28px; } }

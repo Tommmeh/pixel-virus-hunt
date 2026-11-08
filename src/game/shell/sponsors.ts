@@ -9,7 +9,10 @@ export type Pattern = "stripes" | "checker" | "dots" | "diagonal" | "grid" | "st
 export interface Sponsor {
   id: string;
   name: string;
-  /** a/b = the two pattern colours, ink = the wordmark colour. */
+  /**
+   * a/b = the two pattern colours (kept close, so the pattern is texture, not noise);
+   * ink = the wordmark colour, which must stand out clearly against `a` (checked in sponsors.test.ts).
+   */
   colors: { a: string; b: string; ink: string };
   pattern: Pattern;
 }
@@ -24,31 +27,31 @@ export const SPONSORS: Sponsor[] = [
   {
     id: "lovable",
     name: "Lovable",
-    colors: { a: "#ff5fa2", b: "#ff8a3d", ink: "#fff4e8" },
+    colors: { a: "#ff6fa8", b: "#f4609c", ink: "#4a0b26" },
     pattern: "checker",
   },
   {
     id: "auth0",
     name: "Auth0",
-    colors: { a: "#1b1b1f", b: "#2b2b31", ink: "#eb5424" },
+    colors: { a: "#1b1b1f", b: "#2b2b31", ink: "#ff7a4d" },
     pattern: "grid",
   },
   {
     id: "n8n",
     name: "n8n",
-    colors: { a: "#ea4b71", b: "#c93a5d", ink: "#fff1f4" },
+    colors: { a: "#ee5a7d", b: "#e24f73", ink: "#2a0410" },
     pattern: "diagonal",
   },
   {
     id: "freebuff",
     name: "Freebuff",
-    colors: { a: "#2fbf71", b: "#22995a", ink: "#f2fff6" },
+    colors: { a: "#34c27a", b: "#2cb46f", ink: "#08321b" },
     pattern: "dots",
   },
   {
     id: "databricks",
     name: "Databricks",
-    colors: { a: "#ff3621", b: "#d92b18", ink: "#fff3ef" },
+    colors: { a: "#ff5a45", b: "#f74e39", ink: "#2a0502" },
     pattern: "stripes",
   },
   {
@@ -66,7 +69,7 @@ export const SPONSORS: Sponsor[] = [
   {
     id: "figma",
     name: "Figma@UBC",
-    colors: { a: "#a259ff", b: "#1abcfe", ink: "#ffffff" },
+    colors: { a: "#b479ff", b: "#a86df9", ink: "#1a0533" },
     pattern: "checker",
   },
   {
@@ -84,7 +87,7 @@ export const SPONSORS: Sponsor[] = [
   {
     id: "gemini",
     name: "Google Gemini",
-    colors: { a: "#4f6bed", b: "#8a5cf6", ink: "#ffffff" },
+    colors: { a: "#3f58d6", b: "#5b49d6", ink: "#ffffff" },
     pattern: "dots",
   },
 ];
