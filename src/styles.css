@@ -701,3 +701,46 @@ body { font-family: var(--font-sans); background: #000; }
   .os .task-btn { flex-basis: 44px; }
   .task-btn-text { display: none; }
 }
+
+/* ---------- Storyline: Aaron (PhotoWorm) ---------- */
+.fs-link { display: inline-block; margin-top: 2px; word-break: break-all; }
+.worm-popup { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; padding: 10px; }
+.worm-popup.is-ad { background: #fff8d6; color: #212529; }
+.worm-popup.is-slow { background: #e7f3fd; color: #212529; }
+.worm-popup.is-virus { background: #ffe3dd; color: #8c2022; }
+.worm-popup.is-error { background: var(--face); color: var(--text); }
+.worm-body { display: flex; gap: 10px; align-items: flex-start; }
+.worm-body p { margin: 0; white-space: pre-line; font: 19px/1.1 var(--font-body); }
+.worm-popup.is-virus .worm-body p { animation: blink 1s steps(1) infinite; }
+.worm-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.phish { position: relative; }
+.phish .fs-header nav span { cursor: pointer; }
+.phish-album { max-width: 620px; margin: 16px auto; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; background: #fff;
+  box-shadow: 0 -3px 0 0 #212529, 0 3px 0 0 #212529, -3px 0 0 0 #212529, 3px 0 0 0 #212529; }
+.phish-album h2 { font-size: 10px; color: #6b4bb0; }
+.phish-album p { margin: 0; }
+.phish-thumbs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; width: 100%; }
+.phish-thumb { aspect-ratio: 1; display: grid; place-items: center; font-size: 18px; background: repeating-conic-gradient(#d8cff0 0 25%, #c4b6e8 0 50%) 0 0 / 8px 8px; box-shadow: 0 0 0 2px #212529; filter: blur(0.5px); }
+.phish-install { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.phish-install .nes-progress { height: 18px; margin: 0; }
+.phish-error { color: #8c2022; }
+.dl-overlay { position: absolute; inset: 0; display: grid; place-items: center; background: rgb(0 0 0 / 25%); }
+.dl-box { width: 360px; max-width: calc(100% - 20px); background: #fff; color: #212529;
+  box-shadow: 0 -4px 0 0 #212529, 0 4px 0 0 #212529, -4px 0 0 0 #212529, 4px 0 0 0 #212529, 8px 8px 0 0 rgb(0 0 0 / 35%); }
+.dl-title { padding: 6px 8px; background: #209cee; color: #fff; font: 9px var(--font-sans); border-bottom: 4px solid #212529; }
+.dl-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.dl-body p { margin: 0; }
+.dl-body td:first-child { padding-right: 12px; font: 8px var(--font-sans); }
+.dl-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.paneguard { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.pg-head { display: flex; gap: 12px; align-items: center; padding: 10px; border-bottom: 4px solid var(--border); background: var(--pane-bg); }
+.pg-head b { font-weight: normal; font-size: 9px; }
+.pg-head p { margin: 4px 0 0; font: 17px var(--font-body); }
+.pg-main { flex: 1; min-height: 0; overflow: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; font: 19px/1.1 var(--font-body); }
+.pg-main p { margin: 0; }
+.pg-main .nes-progress { height: 18px; }
+.pg-table { overflow: auto; }
+.pg-table td { white-space: normal; font: 16px var(--font-body); }
+.pg-ok { color: #4aa52e; }
+.pg-bad { color: #ce372b; font: 9px var(--font-sans); }
+.pg-actions { display: flex; justify-content: flex-end; padding: 8px 10px; border-top: 4px solid var(--border); }

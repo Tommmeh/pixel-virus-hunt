@@ -19,6 +19,7 @@ const LEFT_PINNED: Item[] = [
 const LEFT: Item[] = [
   { label: "Notepad", icon: "notepad", app: "notepad" },
   { label: "Mines", icon: "mine", app: "mines" },
+  { label: "PaneGuard Antivirus", icon: "shield", app: "antivirus" },
   { label: "Task Manager", icon: "taskmgr", app: "taskmgr" },
 ];
 const RIGHT: Item[] = [

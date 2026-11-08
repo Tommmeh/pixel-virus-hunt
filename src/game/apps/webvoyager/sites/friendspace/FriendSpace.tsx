@@ -17,6 +17,11 @@ function PostCard({ p, liked }: { p: Post; liked: boolean }) {
       <div className="fs-post-body">
         <b>{person ? person.name : `${s.userName} Taylor`}</b>
         <p>{p.text}</p>
+        {p.link && (
+          <A href={p.link} className="fs-link">
+            {p.link.replace(/^https?:\/\//, "")}
+          </A>
+        )}
         <span className="fs-meta">
           {p.time} ·{" "}
           <button className="link-btn" onClick={() => toggleLike(p.id)}>
@@ -59,6 +64,7 @@ export function FriendSpace({ url }: { url: PageUrl }) {
   const s = useSettings();
   const visibleSeed = SEED_POSTS.filter((p) => social.friends.includes(p.author));
   const feed = [...social.posts, ...visibleSeed];
+  const myPosts = social.posts.filter((p) => p.author === "me");
 
   let main;
   if (url.path === "/profile") {
@@ -74,10 +80,10 @@ export function FriendSpace({ url }: { url: PageUrl }) {
           </div>
         </div>
         <h3>My posts</h3>
-        {social.posts.length === 0 ? (
+        {myPosts.length === 0 ? (
           <p className="fs-empty">You haven't posted anything yet.</p>
         ) : (
-          social.posts.map((p) => <PostCard key={p.id} p={p} liked={social.liked.includes(p.id)} />)
+          myPosts.map((p) => <PostCard key={p.id} p={p} liked={social.liked.includes(p.id)} />)
         )}
       </>
     );

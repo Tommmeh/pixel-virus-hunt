@@ -103,7 +103,7 @@ export function Searchly({ url }: { url: PageUrl }) {
       <button
         className="nes-btn"
         onClick={() => {
-          const sites = SITE_INFO.filter((s) => s.host !== "www.searchly.com");
+          const sites = SITE_INFO.filter((s) => s.favorite && s.host !== "www.searchly.com");
           const s = sites[Math.floor(Math.random() * sites.length)]!;
           navigate(`${s.secure ? "https" : "http"}://${s.host}/`);
         }}
@@ -112,7 +112,7 @@ export function Searchly({ url }: { url: PageUrl }) {
       </button>
       <p className="searchly-popular">
         Popular:{" "}
-        {SITE_INFO.filter((s) => s.host !== "www.searchly.com").map((s, i) => (
+        {SITE_INFO.filter((s) => s.favorite && s.host !== "www.searchly.com").map((s, i) => (
           <span key={s.host}>
             {i > 0 && " · "}
             <A href={`${s.secure ? "https" : "http"}://${s.host}/`}>{s.name}</A>
