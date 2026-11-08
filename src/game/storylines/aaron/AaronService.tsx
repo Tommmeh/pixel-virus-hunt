@@ -1,5 +1,6 @@
 // Runs Aaron's storyline while the desktop is up (mounted in shell/Desktop.tsx).
 import { useEffect } from "react";
+import { useDemo } from "../../demo/store";
 import { useSystemEvent } from "../../system/events";
 import { windowStore } from "../../system/windows";
 import {
@@ -19,15 +20,20 @@ import {
 
 const spawn = () => spawnPopup(window.innerWidth, window.innerHeight);
 
+/** The guided demo runs the same story, just quicker (Scout posts the link himself). */
+const DEMO_FIRST_POPUP_MS = 4_000;
+const DEMO_SPEED = 0.4;
+
 export function AaronService() {
   const { stage, popups, infectedAt } = aaronStore.use();
+  const demo = useDemo();
 
   // 1. Mum's post appears a while after logging in.
   useEffect(() => {
-    if (stage !== "idle") return;
+    if (stage !== "idle" || demo) return;
     const t = setTimeout(() => post(), POST_AFTER_MS);
     return () => clearTimeout(t);
-  }, [stage]);
+  }, [stage, demo]);
 
   // 1b + 5. React to what the player does.
   useSystemEvent((e) => {
@@ -38,11 +44,14 @@ export function AaronService() {
   // 3. Pop-ups: the first one a while after the infection, then faster and faster.
   useEffect(() => {
     if (stage !== "infected") return;
+    const first = demo ? DEMO_FIRST_POPUP_MS : FIRST_POPUP_MS;
     const wait =
-      popups === 0 ? Math.max(0, infectedAt + FIRST_POPUP_MS - Date.now()) : popupDelay(popups);
+      popups === 0
+        ? Math.max(0, infectedAt + first - Date.now())
+        : popupDelay(popups) * (demo ? DEMO_SPEED : 1);
     const t = setTimeout(spawn, wait);
     return () => clearTimeout(t);
-  }, [stage, popups, infectedAt]);
+  }, [stage, popups, infectedAt, demo]);
 
   // 4. Swarm: pop-ups pile up, and every one the player closes comes back as two.
   useEffect(() => {

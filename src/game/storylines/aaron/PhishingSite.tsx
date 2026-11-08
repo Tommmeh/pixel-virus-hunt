@@ -60,7 +60,11 @@ export function PhishingSite() {
         ) : (
           <>
             <p>These photos are private. Install the free FriendSpace PhotoViewer to see them.</p>
-            <button className="nes-btn is-primary" onClick={() => setPhase("dialog")}>
+            <button
+              className="nes-btn is-primary"
+              data-tour="phish-download"
+              onClick={() => setPhase("dialog")}
+            >
               Download PhotoViewer
             </button>
           </>
@@ -92,6 +96,7 @@ export function PhishingSite() {
               <div className="dl-actions">
                 <button
                   className="nes-btn is-small is-primary"
+                  data-tour="phish-open"
                   onClick={() => {
                     setPct(0);
                     setPhase("installing");

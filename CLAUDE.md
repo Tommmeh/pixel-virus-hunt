@@ -103,6 +103,15 @@ element (add the attribute in the UI and the id to `TOUR_TARGETS`) and/or wait f
 It explains the layout and purpose, then walks the player into the HotPost inbox — the start of Anish's bank
 storyline — and leaves before any scam (never warn at the moment of the mistake).
 
+### Guided demo (`src/game/demo/`)
+
+For judges / first-time visitors: Welcome → "Guided demo" (no sign-in needed) runs **only Aaron's PhotoWorm** with
+Scout narrating every step and pointing out the red flags (incl. a spotlight on the `http` in the address bar).
+`demoStore` (session-only) turns off MessengerService, QuestFlow and ScamPopups and speeds the worm up (AaronService).
+The script is `demo/steps.ts`, registered with Scout via `registerScript` (Scout can run several scripts; steps can
+have several targets and an `onEnter`). Removing the worm → `demo-end` phase (`DemoEnd.tsx`) → "Try the full
+experience" resets the story and returns to Welcome. This is the only place Scout talks around a mistake.
+
 ## Conventions
 
 - **Fictional brands only:** VirusHuntOS, WebVoyager, PingMe, Searchly, HotPost, Copperleaf Bank, FriendSpace, The
