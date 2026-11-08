@@ -6,7 +6,7 @@ import { openPath } from "../apps/explorer/open";
 import { mailStore } from "../apps/webvoyager/sites/hotpost/store";
 import type { SystemEvent } from "../system/events";
 import { MY_DOCUMENTS } from "../system/fs";
-import { wm } from "../system/windows";
+import { windowStore, wm } from "../system/windows";
 import type { Corner } from "./placement";
 
 /** Open notes.txt in a small Notepad in the top-right corner, clear of the sign-in form. */
@@ -61,6 +61,11 @@ export interface TutorialStep {
   after?: { title: string; text: string[] };
   /** The hands-on part is already done (e.g. already signed in): go straight to `after`. */
   doneIf?: () => boolean;
+  /**
+   * What this step relies on has gone (e.g. the browser was closed, or the player browsed away from the
+   * sign-in page): Scout steps back to the step that sets it up, instead of pointing at nothing.
+   */
+  undoIf?: () => boolean;
   /** Pin Scout to a corner for this step (normally he picks one himself; see placement.ts). */
   placement?: Corner;
 }
@@ -114,6 +119,7 @@ export const STEPS: TutorialStep[] = [
     target: "fav-mail.hotpost.com",
     waitFor: (e) => e.type === "site.visit" && e.host === "mail.hotpost.com",
     hint: "Click 'HotPost Mail' under Favorites",
+    undoIf: () => !wm.isOpen("webvoyager"),
   },
   {
     id: "sign-in",
@@ -126,6 +132,12 @@ export const STEPS: TutorialStep[] = [
     waitFor: (e) => e.type === "mail.signin" && e.ok,
     hint: "Type the password and click Sign In",
     doneIf: () => mailStore.get().signedIn,
+    undoIf: () => {
+      const browser = windowStore.get().wins.find((w) => w.key === "webvoyager");
+      if (!browser) return true; // browser closed
+      if (browser.min || typeof document === "undefined") return false; // just tucked away
+      return !document.querySelector('[data-tour="mail-password"]'); // browsed away from the sign-in page
+    },
     action: { label: "Show me", run: showNotes },
     after: {
       title: "You've got mail!",

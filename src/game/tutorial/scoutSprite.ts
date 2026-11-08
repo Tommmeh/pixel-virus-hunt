@@ -1,5 +1,5 @@
-// "Scout" — the tutorial mascot: an original pixel magnifying-glass detective with a deerstalker hat.
-// Drawn from simple shapes (lens circle, gold rim, handle, hat, face) into a 24×24 character grid.
+// "Scout" — the tutorial mascot: an original pixel magnifying-glass detective.
+// Drawn from simple shapes (lens circle, gold rim, handle, face) into a 24×24 character grid.
 export const SIZE = 24;
 
 export const SCOUT_PALETTE: Record<string, string> = {
@@ -9,8 +9,6 @@ export const SCOUT_PALETTE: Record<string, string> = {
   C: "#9fd6f5", // lens shade
   y: "#ffd23f", // gold rim
   Y: "#d08a10", // gold rim shade
-  h: "#a8743c", // hat
-  H: "#7a5126", // hat check / brim
   p: "#f6a5b5", // cheeks
   r: "#c4302b", // handle
   R: "#8c2022", // handle shade
@@ -50,22 +48,6 @@ function build(frame: ScoutFrame): string[] {
     set(17 + i, 17 + i, "k");
     set(14 + i, 18 + i, "k");
   }
-
-  // Deerstalker hat sitting on top of the lens.
-  for (let x = 7; x <= 12; x++) set(x, 0, "k");
-  set(6, 1, "k");
-  set(13, 1, "k");
-  for (let x = 7; x <= 12; x++) set(x, 1, x % 2 ? "h" : "H");
-  set(5, 2, "k");
-  set(14, 2, "k");
-  for (let x = 6; x <= 13; x++) set(x, 2, (x + 2) % 2 ? "H" : "h");
-  set(4, 3, "k");
-  set(15, 3, "k");
-  for (let x = 5; x <= 14; x++) set(x, 3, x % 2 ? "h" : "H");
-  for (let x = 2; x <= 17; x++) set(x, 4, "H"); // brim
-  set(1, 4, "k");
-  set(18, 4, "k");
-  for (let x = 2; x <= 17; x++) set(x, 5, "k");
 
   // Face.
   if (frame === "blink") {

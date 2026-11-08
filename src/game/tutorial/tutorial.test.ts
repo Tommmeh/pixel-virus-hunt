@@ -9,6 +9,7 @@ import {
   prevStep,
   skipTutorial,
   startTutorial,
+  stepBack,
   tutorialProgress,
   tutorialSession,
 } from "./store";
@@ -106,6 +107,17 @@ describe("tutorial flow", () => {
     expect(tutorialProgress.get().done).toBe(true);
     startTutorial();
     expect(tutorialSession.get().step).toBe(0);
+  });
+
+  it("steps back with the player when they undo a step (e.g. close the browser)", () => {
+    windowStore.set({ ...initialWm, wins: [{ ...fakeWin, key: "webvoyager", app: "webvoyager" }] });
+    startTutorial();
+    goTo("open-mail");
+    expect(STEPS.find((s) => s.id === "open-mail")!.undoIf?.()).toBe(false);
+    windowStore.set(initialWm); // browser closed
+    expect(STEPS.find((s) => s.id === "open-mail")!.undoIf?.()).toBe(true);
+    stepBack();
+    expect(stepId()).toBe("open-browser");
   });
 
   it("skips the browser step if it's already open, and knows when sign-in is already done", () => {

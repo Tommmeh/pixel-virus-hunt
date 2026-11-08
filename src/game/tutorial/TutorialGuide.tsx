@@ -14,6 +14,7 @@ import {
   nextStep,
   prevStep,
   skipTutorial,
+  stepBack,
   startTutorial,
   stepsFor,
   tutorialProgress,
@@ -217,6 +218,18 @@ export function TutorialGuide({
     step?.placement,
     !!step?.target && dismissedStep !== step.id && !showAfter,
   );
+
+  // If what the step relies on goes away (browser closed, browsed off the page), step back with the player.
+  // It has to stay gone for two checks in a row, so a page that's still loading doesn't count.
+  useEffect(() => {
+    if (!step?.undoIf || showAfter) return;
+    let misses = 0;
+    const t = setInterval(() => {
+      misses = step.undoIf!() ? misses + 1 : 0;
+      if (misses >= 2) stepBack();
+    }, 400);
+    return () => clearInterval(t);
+  }, [step, showAfter]);
 
   // A replay starts clean.
   useEffect(() => {
