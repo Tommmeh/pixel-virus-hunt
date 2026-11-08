@@ -140,7 +140,7 @@ export function Achievements() {
 
   if (open && isComplete(open, unlocked)) {
     return (
-      <div className="p-2">
+      <div className="p-2 ach-scroll">
         <QuestDetail line={open} onBack={() => setOpenId(null)} />
       </div>
     );
@@ -148,7 +148,7 @@ export function Achievements() {
 
   const done = QUEST_LINES.filter((l) => isComplete(l, unlocked)).length;
   return (
-    <div className="p-2 trophy-shelf">
+    <div className="p-2 trophy-shelf ach-scroll">
       <div className="trophy-head">
         <p>
           <b>Trophies</b> {done} / {QUEST_LINES.length}
