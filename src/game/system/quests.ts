@@ -14,6 +14,8 @@ export interface QuestFlags {
   wifeAngryEmailSent: boolean;
   /** The bank's follow-up asking Jamie to review his balance history. */
   balanceReviewSent: boolean;
+  /** Signed in from that follow-up's link (?ref=review) — the only route to the ending. */
+  reviewLinkOpened: boolean;
   /** What the scammers actually took, so the goodwill refund can be worked out from it. */
   stolenAmount: number;
   /** Stage 2 (three days later): the recovery story after the bad ending. */
@@ -49,6 +51,7 @@ export const questStore = createStore<QuestFlags>(null, {
   bankDrained: false,
   wifeAngryEmailSent: false,
   balanceReviewSent: false,
+  reviewLinkOpened: false,
   stolenAmount: 0,
   stage2Started: false,
   stage2CaptionSeen: false,

@@ -73,14 +73,13 @@ export const SITE_INFO: SiteInfo[] = [
     icon: "news",
     secure: true,
   },
-  // Stage 2's bank, installed from the link Marcus gives.
+  // Stage 2's bank. Reached from the link Marcus gives, never from the bookmarks bar.
   {
     host: "www.rbc.com",
     aliases: ["rbc.com"],
     name: "RBC Online Banking",
     icon: "bank",
     secure: true,
-    favorite: true,
   },
   // Aaron's storyline: phishing lookalike (brand as a subdomain, plain http). Not a favourite, not searchable.
   {

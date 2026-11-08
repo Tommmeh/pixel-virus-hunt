@@ -477,6 +477,7 @@ export const SCRIPTS: ChatScript[] = [
         id: "install",
         them: [
           "good. do it before you talk yourself out of it",
+          "once it's installed it sits on your desktop — open it and sign in with the same details as before",
           "and next time you're short on rent, just ask me. that's all i've been trying to say",
         ],
         choices: [{ text: "I will. Thanks mate", next: null }],

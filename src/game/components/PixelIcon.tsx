@@ -9,6 +9,20 @@ interface Props {
 
 /** Crisp pixel-art icon. Falls back to rendering `name` as text so emoji still work. */
 export function PixelIcon({ name, size = 32, className = "" }: Props) {
+  // A file path or URL is rendered as a real image, so logos still work as icons.
+  const isImage =
+    name.startsWith("/") || name.startsWith("http") || name.startsWith("data:");
+  if (isImage) {
+    return (
+      <img
+        src={name}
+        alt=""
+        className={`pixel-icon ${className}`}
+        style={{ width: size, height: size, objectFit: "contain" }}
+        aria-hidden
+      />
+    );
+  }
   const grid = ICONS[name];
   if (!grid) {
     return (

@@ -1,6 +1,6 @@
 // The Copperleaf disputes phone call. Deliberately tedious: queues, holds, a transfer, and an
 // offer that only comes after the review team has had a very long look at it.
-import { deposit } from "../apps/webvoyager/sites/copperleaf/store";
+import { bankStore, deposit } from "../apps/webvoyager/sites/copperleaf/store";
 import { receiveMail } from "../apps/webvoyager/sites/hotpost/store";
 import { questStore, type QuestFlags } from "../system/quests";
 
@@ -189,9 +189,18 @@ const money = (n: number) =>
   `£${n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 /** Runs when the call ends: the goodwill payment lands, and the confirmation email goes out. */
+/** What actually left the account: summed from the scammer's own outgoing payments. */
+const takenByScam = () =>
+  bankStore
+    .get()
+    .tx.filter((t) => t.amount < 0 && t.desc.startsWith("TO VIDEOVAULT"))
+    .reduce((sum, t) => sum - t.amount, 0);
+
 export function finishBankCall() {
   const q = questStore.get();
-  const stolen = q.stolenAmount > 0 ? q.stolenAmount : FALLBACK_STOLEN;
+  if (q.refundPaid) return; // the case is closed: never pay the goodwill twice
+  // Trust the transactions over the flag: a stale or partial flag must never shrink the refund.
+  const stolen = Math.max(takenByScam(), q.stolenAmount || 0) || FALLBACK_STOLEN;
   const amount = Math.round(stolen * REFUND_PCT * 100) / 100;
 
   deposit({ account: "chk", amount, desc: "FRAUD RECOVERY - GOODWILL REFUND" });

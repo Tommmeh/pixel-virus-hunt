@@ -6,6 +6,7 @@ import { QuestFlow } from "./QuestFlow";
 import { ScamPopups } from "./ScamPopups";
 import { ThreeDaysLater } from "./ThreeDaysLater";
 import { useShake } from "./shake";
+import { questStore } from "../system/quests";
 import { AaronService } from "../storylines/aaron/AaronService";
 import { DemoGuide } from "../demo/DemoGuide";
 import { useDemo } from "../demo/store";
@@ -56,6 +57,13 @@ const SHORTCUTS: Shortcut[] = [
   },
 ];
 
+const RBC_SHORTCUT: Shortcut = {
+  id: "rbc",
+  label: "RBC Online Banking",
+  icon: "/rbc-logo.svg",
+  open: () => wm.open("rbc"),
+};
+
 function AppView({ app, win }: { app: string; win: Win }) {
   const def = getApp(app);
   if (!def) return <p className="p-3">This program cannot be found.</p>;
@@ -73,6 +81,7 @@ export function Desktop() {
   const [selected, setSelected] = useState<string | null>(null);
   const quake = useShake();
   const quaking = quake > 0;
+  const rbcInstalled = questStore.use().rbcInstalled;
 
   const desktopFiles: Shortcut[] = listDir(DESKTOP_DIR, files).map((n) => {
     const path = joinPath(DESKTOP_DIR, n.name);
@@ -101,7 +110,11 @@ export function Desktop() {
       }}
     >
       <div className="desk-icons" data-tour="desktop-icons">
-        {[...SHORTCUTS.filter((s) => !(demo && s.id === "scout")), ...desktopFiles].map((s) => (
+        {[
+          ...SHORTCUTS.filter((s) => !(demo && s.id === "scout")),
+          ...(rbcInstalled ? [RBC_SHORTCUT] : []),
+          ...desktopFiles,
+        ].map((s) => (
           <button
             key={s.id}
             data-tour={`icon-${s.id}`}
@@ -136,6 +149,7 @@ export function Desktop() {
       {!demo && <MessengerService />}
       {!demo && <QuestFlow />}
       {!demo && <ScamPopups />}
+      <ThreeDaysLater />
       <AaronService />
       {demo ? <DemoGuide /> : <TutorialGuide />}
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
