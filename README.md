@@ -54,8 +54,9 @@ about what happened.
 
 ### Safety rails around the model
 
-- `LOVABLE_API_KEY` is read from the environment **inside a server function only**. It is never
-  imported by browser code and a test fails if it appears in any other non-test source file.
+- `GEMINI_API_KEY` and `LOVABLE_API_KEY` are read from the environment **inside a server function
+  only**. Neither is imported by browser code, and a test fails if either name appears in any other
+  non-test source file.
 - Replies are sanitised: links, long numbers and real brand names are stripped out, while the fake
   codes the scammer is supposed to hand over are preserved.
 - History is capped at 12 turns, player messages at 400 characters, replies at 220 output tokens.
@@ -71,13 +72,21 @@ npx tsc --noEmit     # strict type check
 npm run lint         # eslint + prettier
 ```
 
-To get live Gemini replies, put a key in `.env` (never commit it, never put it in client code):
+To get live Gemini replies, put a key in `.env` (never commit it, never put it in client code).
+Either provider works; the direct Google key wins when both are set:
 
 ```
+# direct Google AI Studio key (starts with AIza)
+GEMINI_API_KEY=...
+# or Lovable's gateway
 LOVABLE_API_KEY=...
-# optional: override the model
+# optional: override either model
+GEMINI_CHAT_MODEL=gemini-3.8-flash
 LOVABLE_CHAT_MODEL=google/gemini-3.7-flash
 ```
+
+Start the server with `npm run dev:key`, not `npm run dev` - plain Vite never reads `.env` into
+`process.env`, so the key would stay invisible and the chat would silently use scripted lines.
 
 Without a key the game still works end to end — the chat answers from its scripted lines and the
 same lesson card unlocks. That path is deliberate, not a degraded mode.

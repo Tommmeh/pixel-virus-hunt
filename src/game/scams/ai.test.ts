@@ -6,6 +6,7 @@ import {
   AI_SCAMS,
   FAKE_SECRETS,
   buildGatewayMessages,
+  buildGeminiRequest,
   buildItGuyMessages,
   fallbackReply,
   findLeakedSecrets,
@@ -13,6 +14,8 @@ import {
   getPersona,
   isScamContact,
   itGuyFallback,
+  MAX_MODEL_TOKENS,
+  parseGeminiReply,
   parseModelReply,
   playerComplied,
   resolveChatTurn,
@@ -198,6 +201,35 @@ describe("gateway request shape", () => {
     expect(parseModelReply({ nope: true })).toBeNull();
     expect(parseModelReply("text")).toBeNull();
   });
+
+  it("builds a generateContent body for Gemini", () => {
+    const messages = buildGatewayMessages(tech, [
+      { role: "scammer", text: "hello" },
+      { role: "player", text: "hi" },
+    ]);
+    const request = buildGeminiRequest(messages);
+    expect(request.systemInstruction!.parts[0]!.text).toContain(tech.screenName);
+    expect(request.contents.map((c) => c.role)).toEqual(["model", "user"]);
+    expect(request.contents[1]!.parts[0]!.text).toBe("hi");
+    expect(request.generationConfig.maxOutputTokens).toBe(MAX_MODEL_TOKENS);
+  });
+
+  it("omits systemInstruction when there is no system prompt", () => {
+    expect(buildGeminiRequest([{ role: "user", content: "hi" }]).systemInstruction).toBeUndefined();
+  });
+
+  it("parses a Gemini reply, and refuses blocked ones", () => {
+    expect(parseGeminiReply({ candidates: [{ content: { parts: [{ text: " hi " }] } }] })).toBe(
+      "hi",
+    );
+    expect(
+      parseGeminiReply({ candidates: [{ content: { parts: [{ text: "a" }, { text: "b" }] } }] }),
+    ).toBe("ab");
+    expect(parseGeminiReply({ candidates: [{ finishReason: "SAFETY" }] })).toBeNull();
+    expect(parseGeminiReply({ candidates: [] })).toBeNull();
+    expect(parseGeminiReply({ nope: true })).toBeNull();
+    expect(parseGeminiReply("text")).toBeNull();
+  });
 });
 
 describe("ask the IT guy", () => {
@@ -213,21 +245,27 @@ describe("ask the IT guy", () => {
   });
 });
 
-describe("the API key never reaches the browser", () => {
-  it("is mentioned in exactly one non-test source file", () => {
-    const walk = (dir: string): string[] =>
-      readdirSync(dir).flatMap((name) => {
-        const full = join(dir, name);
-        if (statSync(full).isDirectory()) return walk(full);
-        if (!/\.(ts|tsx)$/.test(name) || /\.test\.tsx?$/.test(name)) return [];
-        return [full];
-      });
+const walk = (dir: string): string[] =>
+  readdirSync(dir).flatMap((name) => {
+    const full = join(dir, name);
+    if (statSync(full).isDirectory()) return walk(full);
+    if (!/\.(ts|tsx)$/.test(name) || /\.test\.tsx?$/.test(name)) return [];
+    return [full];
+  });
 
-    const readers = walk(SRC)
-      .filter((f) => readFileSync(f, "utf8").includes("LOVABLE_API_KEY"))
-      .map((f) => f.slice(SRC.length + 1).replace(/\\/g, "/"));
+/** Every non-test source file naming this env var. The server module must be the only one. */
+const readersOf = (name: string): string[] =>
+  walk(SRC)
+    .filter((f) => readFileSync(f, "utf8").includes(name))
+    .map((f) => f.slice(SRC.length + 1).replace(/\\/g, "/"));
 
-    expect(readers).toEqual(["game/ai.functions.ts"]);
+describe("the API keys never reach the browser", () => {
+  it("reads LOVABLE_API_KEY in exactly one non-test source file", () => {
+    expect(readersOf("LOVABLE_API_KEY")).toEqual(["game/ai.functions.ts"]);
+  });
+
+  it("reads GEMINI_API_KEY in exactly one non-test source file", () => {
+    expect(readersOf("GEMINI_API_KEY")).toEqual(["game/ai.functions.ts"]);
   });
 
   it("keeps the gateway call in the server module", () => {

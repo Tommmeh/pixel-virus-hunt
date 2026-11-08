@@ -405,6 +405,59 @@ export function parseModelReply(payload: unknown): string | null {
 }
 
 // ---------------------------------------------------------------------------
+// Direct Google Gemini (Generative Language API)
+
+/**
+ * OpenAI-style messages -> a `generateContent` body. Gemini takes the system prompt out of the
+ * turn list and into `systemInstruction`, and calls the assistant role "model".
+ */
+export function buildGeminiRequest(messages: GatewayMessage[]): {
+  systemInstruction?: { parts: { text: string }[] };
+  contents: { role: "user" | "model"; parts: { text: string }[] }[];
+  generationConfig: { maxOutputTokens: number; temperature: number };
+} {
+  const system = messages
+    .filter((m) => m.role === "system")
+    .map((m) => m.content)
+    .join("\n\n");
+  const contents = messages
+    .filter((m) => m.role !== "system")
+    .map((m) => ({
+      role: m.role === "assistant" ? ("model" as const) : ("user" as const),
+      parts: [{ text: m.content }],
+    }));
+  return {
+    ...(system.length > 0 ? { systemInstruction: { parts: [{ text: system }] } } : {}),
+    contents,
+    generationConfig: { maxOutputTokens: MAX_MODEL_TOKENS, temperature: 0.85 },
+  };
+}
+
+/**
+ * Read the text out of a `generateContent` response. A blocked or truncated answer has a
+ * `finishReason` and no parts, which returns null so the caller uses the scripted line.
+ */
+export function parseGeminiReply(payload: unknown): string | null {
+  if (payload === null || typeof payload !== "object") return null;
+  const candidates = (payload as { candidates?: unknown }).candidates;
+  if (!Array.isArray(candidates) || candidates.length === 0) return null;
+  const first = candidates[0];
+  if (first === null || typeof first !== "object") return null;
+  const content = (first as { content?: unknown }).content;
+  if (content === null || typeof content !== "object") return null;
+  const parts = (content as { parts?: unknown }).parts;
+  if (!Array.isArray(parts)) return null;
+  const text = parts
+    .map((part) =>
+      part !== null && typeof part === "object" ? (part as { text?: unknown }).text : undefined,
+    )
+    .filter((value): value is string => typeof value === "string")
+    .join("")
+    .trim();
+  return text.length > 0 ? text : null;
+}
+
+// ---------------------------------------------------------------------------
 // Stretch: "Ask the IT guy" on an unlocked card
 
 export function buildItGuyMessages(card: LessonCard, question: string): GatewayMessage[] {

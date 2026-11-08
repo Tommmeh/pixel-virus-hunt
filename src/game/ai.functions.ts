@@ -5,17 +5,20 @@
 // browser has to import these createServerFn stubs. The handlers themselves are compiled into
 // server RPCs and stripped from the client bundle.
 //
-// LOVABLE_API_KEY is read from the environment on the server only. Nothing here returns the key,
-// logs it, or echoes a request body back to the browser.
+// Two providers, both server-only. GEMINI_API_KEY calls Google's Generative Language API directly;
+// LOVABLE_API_KEY goes through Lovable's gateway. No key is a normal state: the game stays playable
+// on the scripted lines. Nothing here returns a key, logs one, or echoes a body to the browser.
 import { createServerFn } from "@tanstack/react-start";
 import {
   buildGatewayMessages,
+  buildGeminiRequest,
   buildItGuyMessages,
   getCard,
   getPersona,
   itGuyFallback,
   MAX_MODEL_TOKENS,
   MAX_PLAYER_CHARS,
+  parseGeminiReply,
   parseModelReply,
   resolveChatTurn,
   sanitizeReply,
@@ -30,6 +33,10 @@ const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 /** Gemini chat model on the gateway: this is the gateway's own documented chat default.
  * Set LOVABLE_CHAT_MODEL (e.g. google/gemini-3.8-flash) to move to a newer one. */
 const DEFAULT_MODEL = "google/gemini-3.7-flash";
+/** Google's Generative Language API. Called directly when GEMINI_API_KEY is set. */
+const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
+/** Set GEMINI_CHAT_MODEL to move this without touching code. */
+const DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
 const REQUEST_TIMEOUT_MS = 12_000;
 
 function readEnv(name: string): string | undefined {
@@ -38,24 +45,50 @@ function readEnv(name: string): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
+type Provider =
+  { kind: "gemini"; key: string; model: string } | { kind: "gateway"; key: string; model: string };
+
+/**
+ * Which provider to use. GEMINI_API_KEY (direct Google) wins when both are present, then the
+ * gateway. Returning null is expected during development and keeps every screen playable.
+ */
+function resolveProvider(): Provider | null {
+  const geminiKey = readEnv("GEMINI_API_KEY");
+  if (geminiKey !== undefined) {
+    return {
+      kind: "gemini",
+      key: geminiKey,
+      model: readEnv("GEMINI_CHAT_MODEL") ?? DEFAULT_GEMINI_MODEL,
+    };
+  }
+  const lovableKey = readEnv("LOVABLE_API_KEY");
+  if (lovableKey !== undefined) {
+    return {
+      kind: "gateway",
+      key: lovableKey,
+      model: readEnv("LOVABLE_CHAT_MODEL") ?? DEFAULT_MODEL,
+    };
+  }
+  return null;
+}
+
 /**
  * One gateway call. Returns null for every failure mode (no key, timeout, non-2xx, odd body) so
  * callers fall back to the scripted persona lines and the demo never breaks.
  */
-async function callGateway(messages: GatewayMessage[]): Promise<string | null> {
-  const apiKey = readEnv("LOVABLE_API_KEY");
-  if (apiKey === undefined) return null;
-  const model = readEnv("LOVABLE_CHAT_MODEL") ?? DEFAULT_MODEL;
-
+async function callGateway(
+  provider: Extract<Provider, { kind: "gateway" }>,
+  messages: GatewayMessage[],
+): Promise<string | null> {
   try {
     const response = await fetch(GATEWAY_URL, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${provider.key}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model,
+        model: provider.model,
         messages,
         max_tokens: MAX_MODEL_TOKENS,
         temperature: 0.85,
@@ -74,6 +107,45 @@ async function callGateway(messages: GatewayMessage[]): Promise<string | null> {
     console.warn(`[ai] gateway call failed (${reason})`);
     return null;
   }
+}
+
+/** Direct Google Gemini call. Same contract as callGateway: text, or null on any problem. */
+async function callGemini(
+  provider: Extract<Provider, { kind: "gemini" }>,
+  messages: GatewayMessage[],
+): Promise<string | null> {
+  const url = `${GEMINI_BASE}/${encodeURIComponent(provider.model)}:generateContent`;
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "x-goog-api-key": provider.key,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(buildGeminiRequest(messages)),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+
+    if (!response.ok) {
+      // Status only: the body can echo the prompt.
+      console.warn(`[ai] gemini returned ${response.status}`);
+      return null;
+    }
+    return parseGeminiReply(await response.json());
+  } catch (error) {
+    const reason = error instanceof Error ? error.name : "unknown";
+    console.warn(`[ai] gemini call failed (${reason})`);
+    return null;
+  }
+}
+
+/** One model call, whichever provider the environment configured. */
+async function callModel(messages: GatewayMessage[]): Promise<string | null> {
+  const provider = resolveProvider();
+  if (provider === null) return null;
+  return provider.kind === "gemini"
+    ? callGemini(provider, messages)
+    : callGateway(provider, messages);
 }
 
 function parseChatInput(input: unknown): { personaId: string; history: ChatTurn[] } {
@@ -111,7 +183,7 @@ export const sendChatMessage = createServerFn({ method: "POST" })
         unlockedIds: [],
       };
     }
-    const modelReply = await callGateway(buildGatewayMessages(persona, data.history));
+    const modelReply = await callModel(buildGatewayMessages(persona, data.history));
     return resolveChatTurn({ personaId: persona.id, history: data.history, modelReply });
   });
 
@@ -158,7 +230,7 @@ export const askItGuy = createServerFn({ method: "POST" })
     };
     // Prefer the game's own copy if this is one of ours, so the model cannot be fed a fake card.
     const known = getCard(card.id) ?? card;
-    const raw = await callGateway(buildItGuyMessages(known, data.question));
+    const raw = await callModel(buildItGuyMessages(known, data.question));
     const answer = raw === null ? "" : sanitizeReply(raw);
     if (answer.length === 0) return { answer: itGuyFallback(known), usedFallback: true };
     return { answer, usedFallback: false };
