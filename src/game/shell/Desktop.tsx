@@ -65,7 +65,7 @@ const STORY_SHORTCUT: Shortcut = {
   label: "StockLadder",
   icon: "trophy",
   open: () => wm.open("stockladder"),
-}；
+};
 
 const RBC_SHORTCUT: Shortcut = {
   id: "rbc",
@@ -126,7 +126,7 @@ export function Desktop() {
         {[
           ...SHORTCUTS.filter((s) => !(demo && s.id === "scout")),
           ...(rbcInstalled ? [RBC_SHORTCUT] : []),
-         ...storyShortcuts,
+          ...storyShortcuts,
           ...desktopFiles,
         ].map((s) => (
           <button
