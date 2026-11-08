@@ -44,7 +44,7 @@ function SignIn() {
           Password
           <input
             className="nes-input"
-            type="password"
+            type="text" // prefilled and shown in plain text, so the player sees what's being used
             data-tour="mail-password"
             value={pw}
             onChange={(e) => setPw(e.target.value)}

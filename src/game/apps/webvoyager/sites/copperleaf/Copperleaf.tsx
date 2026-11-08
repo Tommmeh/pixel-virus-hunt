@@ -73,7 +73,7 @@ function Login({ reviewRef }: { reviewRef: boolean }) {
           Password
           <input
             className="nes-input"
-            type="password"
+            type="text" // prefilled and shown in plain text
             value={pw}
             onChange={(e) => setPw(e.target.value)}
           />
