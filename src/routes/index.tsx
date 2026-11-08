@@ -4,6 +4,7 @@ import { DemoEnd } from "@/game/demo/DemoEnd";
 import { BootScreen } from "@/game/shell/BootScreen";
 import { Desktop } from "@/game/shell/Desktop";
 import { EndGame } from "@/game/shell/EndGame";
+import { GoodEnd } from "@/game/shell/GoodEnd";
 import { usePhase } from "@/game/system/session";
 
 export const Route = createFileRoute("/")({
@@ -38,6 +39,7 @@ function Index() {
 function Game() {
   const phase = usePhase();
   if (phase === "end") return <EndGame />;
+  if (phase === "goodend") return <GoodEnd />;
   if (phase === "demo-end") return <DemoEnd />;
   return phase === "desktop" ? <Desktop /> : <BootScreen />;
 }

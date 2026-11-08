@@ -234,10 +234,9 @@ function Prize() {
   }
 
   function enterDraw() {
-    questStore.set((s: QuestFlags) => ({ ...s, bankDrained: true }));
-    unlockScam(ANISH_CARD_IDS.prize);
+    const stolen = drainAccounts();
+    questStore.set((s: QuestFlags) => ({ ...s, bankDrained: true, stolenAmount: stolen }));
     setEntered(true);
-    drainAccounts();
     sendInsufficientFundsAlert();
   }
 

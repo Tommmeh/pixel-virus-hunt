@@ -804,6 +804,80 @@ body { font-family: var(--font-sans); background: #000; }
 .pg-bad { color: #ce372b; font: 9px var(--font-sans); }
 .pg-actions { display: flex; justify-content: flex-end; padding: 8px 10px; border-top: 4px solid var(--border); }
 
+/* Ending quake. --quake runs 0 (still) -> 1 (full), scaling both how far and how fast it shakes. */
+@keyframes vh-quake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  10% {
+    transform: translate3d(calc(var(--quake, 0) * -1.6px), calc(var(--quake, 0) * 1.1px), 0)
+      rotate(calc(var(--quake, 0) * -0.12deg));
+  }
+  20% {
+    transform: translate3d(calc(var(--quake, 0) * 1.9px), calc(var(--quake, 0) * -1.4px), 0)
+      rotate(calc(var(--quake, 0) * 0.14deg));
+  }
+  30% {
+    transform: translate3d(calc(var(--quake, 0) * -2.3px), calc(var(--quake, 0) * 1.7px), 0)
+      rotate(calc(var(--quake, 0) * -0.18deg));
+  }
+  40% {
+    transform: translate3d(calc(var(--quake, 0) * 2.1px), calc(var(--quake, 0) * 1.2px), 0)
+      rotate(calc(var(--quake, 0) * 0.16deg));
+  }
+  50% {
+    transform: translate3d(calc(var(--quake, 0) * -2.6px), calc(var(--quake, 0) * -1.9px), 0)
+      rotate(calc(var(--quake, 0) * 0.2deg));
+  }
+  60% {
+    transform: translate3d(calc(var(--quake, 0) * 2.4px), calc(var(--quake, 0) * 1.6px), 0)
+      rotate(calc(var(--quake, 0) * -0.16deg));
+  }
+  70% {
+    transform: translate3d(calc(var(--quake, 0) * -2px), calc(var(--quake, 0) * -1.3px), 0)
+      rotate(calc(var(--quake, 0) * 0.13deg));
+  }
+  80% {
+    transform: translate3d(calc(var(--quake, 0) * 2.7px), calc(var(--quake, 0) * 1.9px), 0)
+      rotate(calc(var(--quake, 0) * -0.2deg));
+  }
+  90% {
+    transform: translate3d(calc(var(--quake, 0) * -2.2px), calc(var(--quake, 0) * 1.5px), 0)
+      rotate(calc(var(--quake, 0) * 0.17deg));
+  }
+}
+
+.os.desktop.is-quaking {
+  animation: vh-quake linear infinite;
+  animation-duration: calc(360ms - var(--quake, 0) * 220ms);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .os.desktop.is-quaking {
+    animation: none;
+  }
+}
+
+/* Shared fades for the two endings and the scene break between them. */
+@keyframes vh-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes vh-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
 /* ---------- Tutorial: Scout ---------- */
 .tour-spot { position: absolute; z-index: 5300; pointer-events: none; transition: left 0.2s steps(3), top 0.2s steps(3), width 0.2s steps(3), height 0.2s steps(3);
   box-shadow: 0 0 0 4px #f7d51d, 0 0 0 8px #212529, 0 0 0 9999px rgb(0 0 0 / 35%); animation: tour-pulse 1s steps(1) infinite; }

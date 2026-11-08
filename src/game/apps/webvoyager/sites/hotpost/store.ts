@@ -6,6 +6,11 @@ import { personByEmail } from "../../../../system/people";
 import { PROFILE } from "../../../../system/profile";
 import { questStore } from "../../../../system/quests";
 import { createStore } from "../../../../system/store";
+import {
+  isSupportEmail,
+  SUPPORT_REPLY_DELAY,
+  supportReplyTo,
+} from "../../../../storylines/bankSupport";
 
 export interface Mail {
   id: string;
@@ -109,7 +114,6 @@ export function markRead(id: string) {
 
 export function receiveMail(mail: Omit<Mail, "id" | "date" | "to">) {
   const m: Mail = { ...mail, id: `in-${Date.now()}-${++seq}`, to: PROFILE.email, date: stamp() };
-  // The id is returned so quest code can watch for this exact message being opened.
   mailStore.set((s) => ({ ...s, inbox: [m, ...s.inbox] }));
   playDing();
   notify({
@@ -118,7 +122,6 @@ export function receiveMail(mail: Omit<Mail, "id" | "date" | "to">) {
     icon: "mail",
     open: { app: "webvoyager", args: { url: "https://mail.hotpost.com/" } },
   });
-  return m;
 }
 
 export function sendMail(to: string, subject: string, body: string) {
@@ -133,6 +136,13 @@ export function sendMail(to: string, subject: string, body: string) {
   };
   mailStore.set((s) => ({ ...s, sent: [m, ...s.sent] }));
   emit({ type: "mail.send", to: m.to, subject: m.subject });
+
+  // Stage 2: Copperleaf support answers by case number and gets more obstructive each time.
+  const support = isSupportEmail(m.to) ? supportReplyTo(m.subject) : null;
+  if (support) {
+    setTimeout(() => receiveMail(support), SUPPORT_REPLY_DELAY);
+    return;
+  }
 
   const person = personByEmail(to);
   if (!person) return;

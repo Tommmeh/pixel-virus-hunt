@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { getApp } from "../apps/registry";
 import { openPath } from "../apps/explorer/open";
 import { MessengerService } from "../apps/messenger/MessengerService";
 import { QuestFlow } from "./QuestFlow";
 import { ScamPopups } from "./ScamPopups";
+import { ThreeDaysLater } from "./ThreeDaysLater";
+import { useShake } from "./shake";
 import { AaronService } from "../storylines/aaron/AaronService";
 import { DemoGuide } from "../demo/DemoGuide";
 import { useDemo } from "../demo/store";
@@ -42,6 +44,7 @@ const SHORTCUTS: Shortcut[] = [
   { id: "recycle", label: "Recycle Bin", icon: "bin", open: () => wm.open("recycle") },
   { id: "webvoyager", label: "WebVoyager", icon: "browser", open: () => wm.open("webvoyager") },
   { id: "pingme", label: "PingMe Messenger", icon: "buddy", open: () => wm.open("messenger") },
+  { id: "phone", label: "Phone", icon: "☎", open: () => wm.open("phone") },
   { id: "mines", label: "Mines", icon: "mine", open: () => wm.open("mines") },
   { id: "paneguard", label: "PaneGuard", icon: "shield", open: () => wm.open("antivirus") },
   { id: "scout", label: "Scout's Tips", icon: "scout", open: startTutorial },
@@ -68,6 +71,8 @@ export function Desktop() {
   const active = activeKey(wmState);
   const [startOpen, setStartOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const quake = useShake();
+  const quaking = quake > 0;
 
   const desktopFiles: Shortcut[] = listDir(DESKTOP_DIR, files).map((n) => {
     const path = joinPath(DESKTOP_DIR, n.name);
@@ -81,10 +86,15 @@ export function Desktop() {
 
   return (
     <div
-      className="os desktop"
+      className={`os desktop${quaking ? " is-quaking" : ""}`}
       data-theme={resolveTheme(settings.theme)}
       data-wallpaper={settings.wallpaper}
-      style={{ backgroundImage: wallpaperUrl(settings.wallpaper) ?? undefined }}
+      style={
+        {
+          backgroundImage: wallpaperUrl(settings.wallpaper) ?? undefined,
+          "--quake": quake,
+        } as CSSProperties
+      }
       onPointerDown={() => {
         setStartOpen(false);
         setSelected(null);

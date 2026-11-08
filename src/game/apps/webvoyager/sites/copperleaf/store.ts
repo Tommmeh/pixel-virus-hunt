@@ -121,7 +121,7 @@ export function transfer(opts: {
  * Scammer payout: everything they can reach leaves the bank, with pennies left behind.
  * Checking is left at £2.45 so the player can see exactly what happened when they log in.
  */
-export function drainAccounts(): void {
+export function drainAccounts(): number {
   const s = bankStore.get();
   const date = today();
   const out: Tx[] = [];
@@ -138,13 +138,11 @@ export function drainAccounts(): void {
     });
     return { ...a, balance: Math.round((a.balance - amount) * 100) / 100 };
   });
-  if (out.length === 0) return;
+  if (out.length === 0) return 0;
+  const total = out.reduce((sum, t) => sum - t.amount, 0);
   bankStore.set((st) => ({ accounts, tx: [...out, ...st.tx] }));
-  emit({
-    type: "bank.transfer",
-    to: "VIDEOVAULT MEDIA",
-    amount: out.reduce((sum, t) => sum - t.amount, 0),
-  });
+  emit({ type: "bank.transfer", to: "VIDEOVAULT MEDIA", amount: total });
+  return total;
 }
 
 export function deposit(opts: {

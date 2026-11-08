@@ -1,6 +1,7 @@
 // Puts every storyline back to the very start: no scam mail, no chats, no money moved, no virus.
 // Settings (name, theme…), the player's own files and the tutorial are kept — Settings → Reset wipes those.
 import { chatStore } from "../apps/messenger/store";
+import { resetPhone } from "../apps/phone/store";
 import { bankSession, bankStore } from "../apps/webvoyager/sites/copperleaf/store";
 import { socialStore } from "../apps/webvoyager/sites/friendspace/store";
 import { mailStore } from "../apps/webvoyager/sites/hotpost/store";
@@ -16,6 +17,7 @@ export function resetStory() {
   bankSession.reset();
   bankStore.reset();
   chatStore.reset();
+  resetPhone();
   questStore.reset();
   // Aaron (PhotoWorm) storyline: stage, infection, Mum's post, any leftover pop-ups
   aaronStore.reset();
