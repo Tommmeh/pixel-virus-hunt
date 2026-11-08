@@ -94,28 +94,6 @@ export function WebVoyager({ win }: { win: Win }) {
 
   return (
     <div className="webvoyager">
-      <div className="os-toolbar">
-        <button
-          className="nes-btn is-small tool-btn"
-          disabled={hist.i === 0}
-          onClick={() => setHist((h) => ({ ...h, i: h.i - 1 }))}
-        >
-          ◀ Back
-        </button>
-        <button
-          className="nes-btn is-small tool-btn"
-          disabled={hist.i >= hist.stack.length - 1}
-          onClick={() => setHist((h) => ({ ...h, i: h.i + 1 }))}
-        >
-          Forward ▶
-        </button>
-        <button className="nes-btn is-small tool-btn" onClick={() => setReloads((r) => r + 1)}>
-          ⟳ Refresh
-        </button>
-        <button className="nes-btn is-small tool-btn" onClick={() => navigate(HOME_URL)}>
-          ⌂ Home
-        </button>
-      </div>
       <form
         className="os-address"
         onSubmit={(e) => {
@@ -123,7 +101,7 @@ export function WebVoyager({ win }: { win: Win }) {
           navigate(typed);
         }}
       >
-        <span>Address</span>
+        <span>URL</span>
         <input
           ref={setAddressInput}
           className="nes-input"
@@ -135,6 +113,46 @@ export function WebVoyager({ win }: { win: Win }) {
         <button className="nes-btn is-small" type="submit">
           Go
         </button>
+        <div className="wv-nav">
+          <button
+            type="button"
+            className="nes-btn is-small wv-nav-btn"
+            title="Back"
+            aria-label="Back"
+            disabled={hist.i === 0}
+            onClick={() => setHist((h) => ({ ...h, i: h.i - 1 }))}
+          >
+            <PixelIcon name="nav-back" size={16} />
+          </button>
+          <button
+            type="button"
+            className="nes-btn is-small wv-nav-btn"
+            title="Forward"
+            aria-label="Forward"
+            disabled={hist.i >= hist.stack.length - 1}
+            onClick={() => setHist((h) => ({ ...h, i: h.i + 1 }))}
+          >
+            <PixelIcon name="nav-forward" size={16} />
+          </button>
+          <button
+            type="button"
+            className="nes-btn is-small wv-nav-btn"
+            title="Refresh"
+            aria-label="Refresh"
+            onClick={() => setReloads((r) => r + 1)}
+          >
+            <PixelIcon name="nav-refresh" size={16} />
+          </button>
+          <button
+            type="button"
+            className="nes-btn is-small wv-nav-btn"
+            title="Home"
+            aria-label="Home"
+            onClick={() => navigate(HOME_URL)}
+          >
+            <PixelIcon name="nav-home" size={16} />
+          </button>
+        </div>
         {url && !url.secure && typed.startsWith("http://") && (
           <HttpMarker input={addressInput} typed={typed} />
         )}

@@ -396,9 +396,15 @@ body { font-family: var(--font-sans); background: #000; }
 /* ---------- Shared window chrome pieces ---------- */
 .os-toolbar { flex: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border-bottom: 4px solid var(--border); }
 .os-address { flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-bottom: 4px solid var(--border); font-size: 8px; }
-.os-address .nes-input { flex: 1; }
+/* NES.css draws the input frame outside the box (border-image-outset): leave room so it never touches the buttons. */
+.os-address .nes-input { flex: 1; height: 30px; margin: 0 8px; }
+/* Every button in the address row (Go + the browser icons) shares the input's height. */
+.os .os-address .nes-btn { height: 30px; display: inline-flex; align-items: center; justify-content: center; padding-top: 0; padding-bottom: 0; }
 .os-address { position: relative; }
 .wv-http-marker { position: absolute; pointer-events: none; }
+.wv-nav { display: flex; gap: 10px; margin-left: 4px; }
+.os .os-address .wv-nav-btn { width: 30px; padding: 0; }
+.wv-nav-btn .pixel-icon { display: block; }
 .os-status { flex: none; display: flex; justify-content: space-between; gap: 10px; padding: 4px 8px; border-top: 4px solid var(--border); font-size: 8px; }
 .os-menubar { flex: none; display: flex; padding: 2px 4px; border-bottom: 4px solid var(--border); }
 .menu-root { position: relative; }
