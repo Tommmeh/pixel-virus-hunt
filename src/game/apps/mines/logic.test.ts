@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { newBoard, reveal, toggleFlag } from "./logic";
+import { LEVELS, newBoard, newBoardFor, reveal, toggleFlag } from "./logic";
 
 const seeded = (seed: number) => () => {
   seed = (seed * 9301 + 49297) % 233280;
@@ -22,6 +22,21 @@ describe("mines", () => {
     expect(reveal(b, mine).state).toBe("playing");
     b = toggleFlag(b, mine);
     expect(reveal(b, mine).state).toBe("lost");
+  });
+
+  it("the three fields get harder: 9×9/10, 12×12/25, 16×16/50", () => {
+    expect(LEVELS.map((l) => [l.w, l.h, l.mines])).toEqual([
+      [9, 9, 10],
+      [12, 12, 25],
+      [16, 16, 50],
+    ]);
+    for (let i = 0; i < LEVELS.length; i++) {
+      const b = reveal(newBoardFor(i), 0, seeded(11));
+      expect(b.state).not.toBe("lost"); // the first click is still safe on the big fields
+      expect(b.cells.filter((c) => c.mine)).toHaveLength(LEVELS[i]!.mines);
+    }
+    expect(newBoardFor(99).mines).toBe(50); // clamped to the hardest field
+    expect(newBoardFor(-3).mines).toBe(10);
   });
 
   it("revealing every safe cell wins", () => {

@@ -18,6 +18,13 @@ describe("achievements", () => {
     expect(earn({ type: "drive.open", drive: "C:" })).toEqual([]);
   });
 
+  it("Mine Pro only lands after the 50-mine field", () => {
+    const got = (level: number) => newlyEarned({ type: "mines.clear", level }, {}).map((a) => a.id);
+    expect(got(1)).toEqual([]);
+    expect(got(2)).toEqual([]);
+    expect(got(3)).toEqual(["mine-pro"]);
+  });
+
   it("covers the basics: flash drive, e-mail and bank log-ins", () => {
     const got = (e: SystemEvent) => newlyEarned(e, {}).map((a) => a.id);
     expect(got({ type: "mail.signin", ok: true })).toEqual(["inbox"]);

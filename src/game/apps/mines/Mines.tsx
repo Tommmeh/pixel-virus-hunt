@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { newBoard, reveal, toggleFlag } from "./logic";
+import { emit } from "../../system/events";
+import { wm, type Win } from "../../system/windows";
+import { LEVELS, levelIndex, newBoardFor, reveal, toggleFlag } from "./logic";
+import { minesStore } from "./store";
 
 const COLORS = [
   "",
@@ -13,10 +16,42 @@ const COLORS = [
   "#808080",
 ];
 
-export function Mines() {
-  const [b, setB] = useState(() => newBoard());
+/** The 9×9 window is 236×330; every extra column or row adds one 22px cell. */
+const sizeFor = (level: number) => {
+  const l = LEVELS[levelIndex(level)]!;
+  return { w: 236 + (l.w - 9) * 22, h: 330 + (l.h - 9) * 22 };
+};
+
+export function Mines({ win }: { win: Win }) {
+  const { cleared } = minesStore.use();
+  const [idx, setIdx] = useState(() => levelIndex(cleared));
+  const [b, setB] = useState(() => newBoardFor(cleared));
   const [pressing, setPressing] = useState(false);
   const [secs, setSecs] = useState(0);
+
+  const field = LEVELS[idx]!;
+  const last = idx === LEVELS.length - 1;
+
+  const play = (level: number) => {
+    const next = levelIndex(level);
+    setIdx(next);
+    setB(newBoardFor(next));
+    setSecs(0);
+  };
+
+  // A bigger field needs a bigger window.
+  useEffect(() => {
+    if (win.max) return;
+    const { w, h } = sizeFor(idx);
+    wm.resize(win.key, w, h);
+  }, [idx, win.key, win.max]);
+
+  // Clearing a field records it and tells the rest of the PC (the Mine Pro achievement).
+  useEffect(() => {
+    if (b.state !== "won") return;
+    emit({ type: "mines.clear", level: idx + 1 });
+    minesStore.set((s) => ({ cleared: Math.max(s.cleared, idx + 1) }));
+  }, [b.state, idx]);
 
   useEffect(() => {
     if (b.state !== "playing") return;
@@ -35,7 +70,7 @@ export function Mines() {
         <button
           className="mines-face"
           onClick={() => {
-            setB(newBoard());
+            setB(newBoardFor(idx));
             setSecs(0);
           }}
           aria-label="New game"
@@ -67,8 +102,31 @@ export function Mines() {
           </button>
         ))}
       </div>
-      {b.state === "won" && <p className="mines-msg">You cleared the field! 🎉</p>}
+      {b.state === "won" && (
+        <p className="mines-msg">
+          {last ? "Every field cleared! 🏆" : `Field cleared — ${field.mines} mines! 🎉`}
+        </p>
+      )}
       {b.state === "lost" && <p className="mines-msg">Boom! Click the face to try again.</p>}
+      {b.state === "playing" && (
+        <p className="mines-msg">
+          {field.mines} mines · {field.label}
+        </p>
+      )}
+      {b.state !== "playing" && (
+        <div className="mines-actions">
+          {b.state === "won" && !last && (
+            <button className="nes-btn is-success mines-btn" onClick={() => play(idx + 1)}>
+              Try {LEVELS[idx + 1]!.mines} mines
+            </button>
+          )}
+          {idx > 0 && (
+            <button className="nes-btn mines-btn" onClick={() => play(idx - 1)}>
+              Back to {LEVELS[idx - 1]!.mines}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 // Puts every storyline back to the very start: no scam mail, no chats, no money moved, no virus.
 // Scout's tour starts again too (a new game should always open with it, even if it was finished or skipped).
 // Settings (name, theme…) and the player's own files are kept — Settings → Reset wipes those.
+import { gta6Store } from "../apps/gta6/install";
 import { chatStore } from "../apps/messenger/store";
 import { resetPhone } from "../apps/phone/store";
 import { bankSession, bankStore } from "../apps/webvoyager/sites/copperleaf/store";
@@ -35,6 +36,8 @@ export function resetStory() {
   zhumingStore.reset();
   marketStore.reset();
   wm.closeAll();
+  // Easter egg: the GTA6 "beta" is gone again, and its shortcut with it.
+  gta6Store.reset();
   // Rewards: unlocked lesson cards and scammer chats
   scamStore.reset();
   trophySeenStore.reset();
