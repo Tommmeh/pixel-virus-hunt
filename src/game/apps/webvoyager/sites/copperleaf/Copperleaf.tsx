@@ -35,7 +35,7 @@ function Header({ signedIn }: { signedIn: boolean }) {
 
 function Login() {
   const { navigate } = useBrowser();
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(PROFILE.bankUser);
   const [pw, setPw] = useState("");
   const [err, setErr] = useState("");
   return (

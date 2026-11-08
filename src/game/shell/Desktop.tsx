@@ -2,6 +2,8 @@ import { useState } from "react";
 import { getApp } from "../apps/registry";
 import { openPath } from "../apps/explorer/open";
 import { MessengerService } from "../apps/messenger/MessengerService";
+import { QuestFlow } from "./QuestFlow";
+import { ScamPopups } from "./ScamPopups";
 import { AaronService } from "../storylines/aaron/AaronService";
 import { PixelIcon } from "../components/PixelIcon";
 import { DESKTOP_DIR, ICON_FOR_KIND, MY_DOCUMENTS, joinPath, listDir, useFs } from "../system/fs";
@@ -114,6 +116,8 @@ export function Desktop() {
       {startOpen && <StartMenu onClose={() => setStartOpen(false)} />}
       <Balloons />
       <MessengerService />
+      <QuestFlow />
+      <ScamPopups />
       <AaronService />
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>

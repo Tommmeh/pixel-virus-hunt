@@ -6,6 +6,7 @@ import { PixelIcon } from "../components/PixelIcon";
 import { playShutdown, playStartup } from "../components/sound";
 import { logIn, setPhase, usePhase } from "../system/session";
 import { updateSettings, useSettings } from "../system/settings";
+import { resetStory } from "./startOver";
 
 function Logo({ size = 48 }: { size?: number }) {
   return (
@@ -52,6 +53,8 @@ const TOOLS = [
 
 function Welcome() {
   const s = useSettings();
+  const [confirmingReset, setConfirmingReset] = useState(false);
+  const [resetDone, setResetDone] = useState(false);
   // Without Auth0 configured there's no provider: useAuth0() returns defaults and we ignore it.
   const { isLoading, isAuthenticated, user, error, loginWithRedirect, logout } = useAuth0();
   const loading = authEnabled && isLoading;
@@ -116,6 +119,42 @@ function Welcome() {
                 </span>
                 <span className="user-tile-arrow">▶</span>
               </button>
+              {resetDone && (
+                <p className="welcome-hint">STORY RESET — THE $5 AD EMAIL IS BACK IN YOUR INBOX</p>
+              )}
+              {confirmingReset ? (
+                <div className="mt-3">
+                  <p className="welcome-fine">
+                    Reset the whole story? Mail, chats, bank balance and rewards all start again —
+                    $5 ad, then the Amazing gift card, then the free trial.
+                  </p>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      className="nes-btn is-warning is-small"
+                      onClick={() => {
+                        resetStory();
+                        setConfirmingReset(false);
+                        setResetDone(true);
+                      }}
+                    >
+                      Yes, reset
+                    </button>
+                    <button className="nes-btn is-small" onClick={() => setConfirmingReset(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  className="nes-btn is-small mt-3"
+                  onClick={() => {
+                    setResetDone(false);
+                    setConfirmingReset(true);
+                  }}
+                >
+                  Start over from the beginning
+                </button>
+              )}
             </div>
             <div className="welcome-panel welcome-tools">
               <p className="welcome-panel-title">BUILT WITH</p>
