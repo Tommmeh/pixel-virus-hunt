@@ -3,7 +3,7 @@
 // Marcus finishes offering to lend money -> the VideoVault free-trial offer arrives.
 // Emma's second conversation, which starts after the VideoVault sign-in -> the $500 prize mail.
 // The account being emptied -> the bank's decline mail, then Emma, then the bank's follow-up.
-// Signing into the bank with Emma's last mail in the inbox starts the quake, and then the ending.
+// Signing in from the bank's final "review your balance" mail starts the quake, and then the ending.
 // Stage 2 runs the other way: Marcus gets back in touch, the bank refunds part of it, RBC is installed.
 import { useEffect, useRef } from "react";
 import { chatStore, continueConversation } from "../apps/messenger/store";
@@ -124,7 +124,7 @@ function sendBalanceReviewEmail() {
       "    - payments to companies you have not dealt with before\n" +
       "    - any regular payment arrangements you did not set up yourself\n\n" +
       "Sign in to review your account:\n" +
-      "https://www.copperleafbank.com/accounts\n\n" +
+      "https://www.copperleafbank.com/accounts?ref=review\n\n" +
       "If anything looks wrong, call us on 0800 555 0142 straight away and we will look into it with you. Anything that has already been paid out may not be recoverable, so please review the account as soon as you can.\n\n" +
       "Copperleaf Bank — helping you keep track of your money.",
   });
@@ -152,9 +152,16 @@ export function QuestFlow() {
         if (!q.balanceReviewSent && since >= REVIEW_DELAY) sendBalanceReviewEmail();
       }
 
-      // The only way to finish stage 1: be signed into the bank once Emma's last email is in the
-      // inbox. Signing in later works, and so does still being signed in when her mail lands.
-      if (!q.stage2Started && q.wifeAngryEmailSent && bankSession.get().signedIn) {
+      // The only way to finish stage 1: open the bank from its final "review your balance" mail
+      // (that link is the only one carrying ?ref=review) while signed in. Logging in any other
+      // way — earlier, from the site itself, while reading Emma's mail — must not end the story.
+      if (
+        !q.stage2Started &&
+        q.bankDrained &&
+        q.balanceReviewSent &&
+        q.reviewLinkOpened &&
+        bankSession.get().signedIn
+      ) {
         if (quakeAt.current === null && !ended.current) quakeAt.current = Date.now();
       }
 

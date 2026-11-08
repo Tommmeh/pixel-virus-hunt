@@ -1,10 +1,21 @@
 import { useState, type CSSProperties } from "react";
 import { questStore, type QuestFlags } from "../../../system/quests";
-import { goodEnd } from "../../../system/session";
+import { wm } from "../../../system/windows";
 import { useBrowser } from "../BrowserContext";
 import type { PageUrl } from "../url";
 
 const BASE = "https://www.rbc.com";
+
+/** The real mark, used wherever the bank's name appears. */
+function RbcMark() {
+  return (
+    <img
+      src="/rbc-logo.svg"
+      alt="RBC"
+      style={{ height: 24, width: "auto", verticalAlign: "middle", marginRight: 8 }}
+    />
+  );
+}
 
 const banner: CSSProperties = {
   background: "#0a4f9e",
@@ -14,6 +25,8 @@ const banner: CSSProperties = {
   fontSize: 10,
   letterSpacing: 1,
   marginBottom: 18,
+  display: "flex",
+  alignItems: "center",
   boxShadow: "0 4px 0 #212529",
 };
 
@@ -39,7 +52,9 @@ function Home() {
 
   return (
     <div style={page}>
-      <div style={banner}>◧ RBC — ONLINE BANKING</div>
+      <div style={banner}>
+        <RbcMark /> RBC — ONLINE BANKING
+      </div>
       <h2 style={{ fontFamily: "var(--font-sans)", fontSize: 11, marginBottom: 10 }}>
         Banking that checks before it pays
       </h2>
@@ -72,22 +87,32 @@ function Switch() {
     setInstalling(true);
     setTimeout(() => {
       questStore.set((s: QuestFlags) => ({ ...s, rbcInstalled: true }));
-      goodEnd();
+      setInstalling(false);
     }, 2_200);
   }
 
   if (installed) {
     return (
       <div style={page}>
-        <div style={banner}>◧ RBC — SET UP</div>
-        <p style={okBox}>✓ You&apos;re set up. RBC Online Banking is on this computer.</p>
+        <div style={banner}>
+          <RbcMark /> RBC — SET UP
+        </div>
+        <p style={okBox}>
+          ✓ RBC Online Banking is installed. It&apos;s on your desktop now — open it and sign in
+          with the same username and password you used before.
+        </p>
+        <button className="nes-btn is-primary" onClick={() => wm.open("rbc")}>
+          Open RBC Online Banking
+        </button>
       </div>
     );
   }
 
   return (
     <div style={page}>
-      <div style={banner}>◧ RBC — INSTALL ONLINE BANKING</div>
+      <div style={banner}>
+        <RbcMark /> RBC — INSTALL ONLINE BANKING
+      </div>
       <h2 style={{ fontFamily: "var(--font-sans)", fontSize: 11, marginBottom: 10 }}>
         Install RBC Online Banking
       </h2>
