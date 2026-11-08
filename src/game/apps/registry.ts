@@ -125,8 +125,8 @@ export const APPS: AppDef[] = [
     title: "Achievements",
     icon: "medal",
     process: null,
-    w: 540,
-    h: 470,
+    w: 640,
+    h: 540,
     component: Achievements,
   },
   {

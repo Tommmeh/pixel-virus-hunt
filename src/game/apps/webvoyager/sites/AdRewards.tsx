@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { deposit } from "./copperleaf/store";
+import { unlockScam } from "../../../scams/store";
+import { ANISH_CARD_IDS } from "../../../storylines/anish/cards";
 import { startConversation } from "../../messenger/store";
 import { useBrowser } from "../BrowserContext";
 import type { PageUrl } from "../url";
@@ -38,6 +40,7 @@ function WatchPage() {
     if (collected) return;
     setCollected(true);
     deposit({ account: "chk", amount: 5, desc: "ADREWARDS - AD PAYOUT" });
+    unlockScam(ANISH_CARD_IDS.easyMoney); // silent: the lesson waits in Achievements
 
     // The money landing is what reminds Emma how short they are this month.
     setTimeout(() => startConversation("emma"), 2_500);

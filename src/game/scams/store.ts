@@ -44,3 +44,13 @@ export function resetThread(personaId: string) {
     return { ...s, threads };
   });
 }
+
+/** Trophies the player has already opened in Achievements (drives the "NEW!" tag). */
+export const trophySeenStore = createStore<{ seen: Record<string, true> }>("vh-trophies-seen", {
+  seen: {},
+});
+
+export function markTrophySeen(questId: string) {
+  if (trophySeenStore.get().seen[questId]) return;
+  trophySeenStore.set((s) => ({ seen: { ...s.seen, [questId]: true } }));
+}

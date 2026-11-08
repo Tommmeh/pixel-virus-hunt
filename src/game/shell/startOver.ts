@@ -4,7 +4,7 @@ import { chatStore } from "../apps/messenger/store";
 import { bankSession, bankStore } from "../apps/webvoyager/sites/copperleaf/store";
 import { socialStore } from "../apps/webvoyager/sites/friendspace/store";
 import { mailStore } from "../apps/webvoyager/sites/hotpost/store";
-import { scamStore } from "../scams/store";
+import { scamStore, trophySeenStore } from "../scams/store";
 import { aaronStore } from "../storylines/aaron/story";
 import { questStore } from "../system/quests";
 import { threatStore } from "../system/threats";
@@ -24,4 +24,5 @@ export function resetStory() {
   wm.closeAll();
   // Rewards: unlocked lesson cards and scammer chats
   scamStore.reset();
+  trophySeenStore.reset();
 }
