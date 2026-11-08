@@ -168,7 +168,7 @@
 
 
 /* =====================================================================
-   PaneOS — a desktop drawn with NES.css (https://nostalgic-css.github.io/NES.css/).
+   VirusHuntOS — a desktop drawn with NES.css (https://nostalgic-css.github.io/NES.css/).
    Fonts: Press Start 2P for UI chrome, VT323 for reading text.
    Palettes are token sets on [data-theme]: classic | night | pocket | retro.
    ===================================================================== */
@@ -674,7 +674,7 @@ body { font-family: var(--font-sans); background: #000; }
 /* ---------- Boot, welcome, shutdown ---------- */
 .boot-screen, .off-screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; background: #000; color: #fff; font-family: var(--font-sans); }
 .os-logo { display: flex; align-items: center; gap: 14px; }
-.os-logo-text { font: 28px var(--font-sans); color: #fff; text-shadow: 4px 4px 0 #209cee; }
+.os-logo-text { font: clamp(16px, 5vw, 28px) var(--font-sans); color: #fff; text-shadow: 4px 4px 0 #209cee; }
 .os-logo-text b { color: #f7d51d; font-weight: normal; }
 .boot-bar { width: 260px; height: 26px; }
 .boot-blink { margin: 0; font-size: 10px; animation: blink 0.8s steps(1) infinite; }
@@ -682,7 +682,27 @@ body { font-family: var(--font-sans); background: #000; }
 .welcome-screen { position: fixed; inset: 0; display: flex; flex-direction: column; font-family: var(--font-sans); color: #fff; background: #209cee; }
 .welcome-mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; padding: 16px;
   background: repeating-linear-gradient(0deg, #209cee 0 8px, #1d91dd 8px 16px); }
-.welcome-box { width: min(440px, 100%); text-align: center; }
+.welcome-mid { overflow-y: auto; gap: 20px; justify-content: safe center; }
+.welcome-tagline { margin: 0; font-size: 9px; line-height: 1.8; text-align: center; color: #f7d51d; text-shadow: 2px 2px 0 #000; }
+/* Pixel panel: white 4px border with stepped corners + drop shadow (box-shadows, no border-image). */
+.welcome-panel { position: relative; margin: 8px; padding: 26px 20px 18px; color: #fff; background: #212529;
+  box-shadow: 0 -4px #fff, 0 4px #fff, -4px 0 #fff, 4px 0 #fff, 0 12px 0 -4px rgb(0 0 0 / 0.35); }
+.welcome-panel-title { position: absolute; top: -10px; left: 16px; margin: 0; padding: 0 8px; font: 10px/16px var(--font-sans); color: #fff; background: #212529; }
+.welcome-grid { width: min(940px, 100%); display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: start; }
+.welcome-about { font: 20px/1.25 var(--font-body); text-align: left; }
+.welcome-about p:not(.welcome-panel-title) { margin-bottom: 12px; }
+.welcome-about b { color: #f7d51d; font-weight: normal; }
+.welcome-list { margin: 0 0 12px; padding-left: 0; list-style: none; }
+.welcome-list li { margin-bottom: 6px; padding-left: 22px; position: relative; }
+.welcome-list li::before { content: "▶"; position: absolute; left: 0; color: #92cc41; font-size: 14px; }
+.welcome-fine { margin: 0 !important; color: #adafbc; font-size: 17px; }
+.welcome-box { text-align: center; }
+.welcome-side { display: flex; flex-direction: column; gap: 16px; }
+.welcome-tools ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.welcome-tools li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.welcome-tools b { font: 10px var(--font-sans); color: #f7d51d; font-weight: normal; }
+.welcome-tools span { font: 18px var(--font-body); color: #adafbc; }
+@media (max-width: 760px) { .welcome-grid { grid-template-columns: 1fr; } .welcome-side { order: -1; } }
 .welcome-hint { margin-bottom: 18px !important; font-size: 9px; animation: blink 1.2s steps(1) infinite; }
 .user-tile { width: 100%; display: flex; align-items: center; gap: 16px; padding: 10px; background: none; border: 0; color: #fff; font: 14px var(--font-sans); cursor: pointer; }
 .user-tile:hover { background: #209cee; }

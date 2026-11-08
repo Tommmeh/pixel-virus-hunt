@@ -48,7 +48,7 @@ export function Explorer({ win }: { win: Win }) {
     if (!isFolder(p)) {
       wm.alert({
         title: "Address Bar",
-        text: `PaneOS cannot find '${next}'. Check the spelling and try again.`,
+        text: `VirusHuntOS cannot find '${next}'. Check the spelling and try again.`,
         icon: "error",
       });
       setTyped(path);

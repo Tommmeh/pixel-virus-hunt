@@ -69,7 +69,7 @@ export const APPS: AppDef[] = [
   },
   {
     id: "taskmgr",
-    title: "PaneOS Task Manager",
+    title: "VirusHuntOS Task Manager",
     icon: "taskmgr",
     process: "taskmgr.exe",
     memK: 3_120,
@@ -118,7 +118,7 @@ export const APPS: AppDef[] = [
   },
   {
     id: "msgbox",
-    title: "PaneOS",
+    title: "VirusHuntOS",
     icon: "info",
     process: null,
     w: 360,

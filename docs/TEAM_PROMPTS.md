@@ -1,10 +1,10 @@
 # Team prompts — Stage 1 (a normal, working PC)
 
-Everything uses NES.css classes (nes-btn, nes-input, nes-container…) + the PaneOS palette tokens; see CLAUDE.md → Conventions.
+Everything uses NES.css classes (nes-btn, nes-input, nes-container…) + the VirusHuntOS palette tokens; see CLAUDE.md → Conventions.
 Never use NES.css's character sprites (Mario, Kirby, Pokémon, Octocat…).
 
 Paste the prompt for your track into your AI assistant (Claude, Gemini, Cursor…). Each one stands on its own.
-The Stage 1 base (PaneOS shell, apps, websites, messenger) is already built; these prompts are for polishing and
+The Stage 1 base (VirusHuntOS shell, apps, websites, messenger) is already built; these prompts are for polishing and
 extending it. **No viruses, scams or achievements in Stage 1** — those come in Stage 2.
 
 The earlier Stage 2 (scam achievement) prompts are kept in git: `git show fe51eaf:docs/TEAM_PROMPTS.md`.
@@ -15,7 +15,7 @@ The earlier Stage 2 (scam achievement) prompts are kept in git: `git show fe51ea
 
 ```
 You're helping build "Virus Hunt", a HackCamp 2026 web game (React 19 + TypeScript, TanStack Start with SSR,
-Tailwind v4, NES.css for the pixel look). It simulates a retro 2004 PC called "PaneOS" (a Windows-style desktop drawn in NES.css style) so people can later
+Tailwind v4, NES.css for the pixel look). It simulates a retro 2004 PC called "VirusHuntOS" (a Windows-style desktop drawn in NES.css style) so people can later
 practise spotting scams safely. We're in Stage 1: a normal, working PC with NO viruses, scams or achievements.
 
 First read CLAUDE.md and AGENTS.md, then src/game/system/windows.ts, src/game/shell/* and src/styles.css.
@@ -44,7 +44,7 @@ Don't edit src/routeTree.gen.ts or the plugin list in vite.config.ts.
 
 ```
 You're helping build "Virus Hunt", a HackCamp 2026 web game (React 19 + TypeScript, TanStack Start with SSR).
-It simulates a retro 2004 PC called "PaneOS" (Windows-style layout in NES.css pixel style) so people can later practise spotting scams safely.
+It simulates a retro 2004 PC called "VirusHuntOS" (Windows-style layout in NES.css pixel style) so people can later practise spotting scams safely.
 We're in Stage 1: a normal, working PC with NO viruses, scams or achievements.
 
 First read CLAUDE.md and AGENTS.md, then src/game/apps/webvoyager/sites/hotpost/* and
@@ -73,7 +73,7 @@ Rules: fictional brands, domains and people only; keep content PG. Branch `track
 
 ```
 You're helping build "Virus Hunt", a HackCamp 2026 web game (React 19 + TypeScript, TanStack Start with SSR).
-It simulates a retro 2004 PC called "PaneOS" (Windows-style layout in NES.css pixel style) so people can later practise spotting scams safely.
+It simulates a retro 2004 PC called "VirusHuntOS" (Windows-style layout in NES.css pixel style) so people can later practise spotting scams safely.
 We're in Stage 1: a normal, working PC with NO viruses, scams or achievements.
 
 First read CLAUDE.md and AGENTS.md, then src/game/apps/webvoyager/* (WebVoyager.tsx, url.ts, catalog.ts,
@@ -100,7 +100,7 @@ Rules: fictional brands and domains only, nothing ever fetched from the real int
 
 ```
 You're helping build "Virus Hunt", a HackCamp 2026 web game (React 19 + TypeScript, TanStack Start with SSR and
-server functions). It simulates a retro 2004 PC called "PaneOS" (Windows-style layout in NES.css pixel style) so people can later practise spotting
+server functions). It simulates a retro 2004 PC called "VirusHuntOS" (Windows-style layout in NES.css pixel style) so people can later practise spotting
 scams safely. We're in Stage 1: a normal, working PC with NO viruses, scams or achievements.
 
 First read CLAUDE.md and AGENTS.md, then src/game/apps/messenger/* (scripts.ts, store.ts, Messenger.tsx,
