@@ -1,4 +1,4 @@
-// PaneGuard Antivirus — scans for threats that storylines put on the PC (system/threats.ts) and removes them.
+// Antivirus — scans for threats that storylines put on the PC (system/threats.ts) and removes them.
 import { useEffect, useState } from "react";
 import { PixelIcon } from "../../components/PixelIcon";
 import { threatStore, removeThreat, type Threat } from "../../system/threats";
@@ -42,7 +42,7 @@ export function Antivirus() {
       <div className="pg-head">
         <PixelIcon name="shield" size={40} />
         <div>
-          <b>PaneGuard Antivirus 2004</b>
+          <b>Antivirus 2004</b>
           <p>Real-time protection: ON · Definitions: 09/2004</p>
           <p>Last scan: {lastScan ?? "never"}</p>
         </div>

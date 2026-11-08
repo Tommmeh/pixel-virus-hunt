@@ -91,7 +91,7 @@ export function clean() {
   repairPc();
   unlockScam(USB_CARD_IDS.cleaned);
   notify({
-    title: "PaneGuard Antivirus",
+    title: "Antivirus",
     text: `${THREAT_NAME} removed. Your PC is running normally again.`,
     icon: "shield",
     open: { app: "quests" },

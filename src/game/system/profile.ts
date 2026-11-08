@@ -1,5 +1,5 @@
 // The player's own accounts. The display name/avatar live in settings; these are fixed logins.
-// The same password everywhere (and written in notes.txt) is deliberate — a hook for later questlines.
+// The same password everywhere (and written in passwords.txt on the desktop) is deliberate — a hook for later questlines.
 import { settingsStore } from "./settings";
 
 export const PROFILE = {

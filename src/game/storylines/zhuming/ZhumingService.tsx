@@ -48,6 +48,8 @@ export function ZhumingService() {
 
   // Reading the post, getting the download link, the antivirus ending it, and the bank visit.
   useSystemEvent((e) => {
+    // Visiting The Daily Byte before the timer: the sponsored post is already on the front page.
+    if (e.type === "site.visit" && e.host === "www.dailybyte.com") post();
     if (e.type === "site.visit" && e.url.startsWith(ARTICLE_URL)) read();
     if (e.type === "site.visit") setOnBankHost(e.host === BANK_HOST);
     if (e.type === "chat.reply" && e.contact === ZHUMING_CONTACT) {

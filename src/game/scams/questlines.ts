@@ -10,6 +10,12 @@ import { USB_CARDS, USB_CARD_IDS } from "../storylines/usb/cards";
 import { ZHUMING_CARDS, ZHUMING_CARD_IDS } from "../storylines/zhuming/cards";
 import { AI_PERSONAS } from "./ai";
 
+/** Where a quest begins: the counter's slot takes the player there. */
+export type QuestStart =
+  | { kind: "site"; url: string }
+  | { kind: "folder"; path: string }
+  | { kind: "chat"; contact: string };
+
 export interface QuestLine {
   id: string;
   /** Shown once the trophy is unlocked. */
@@ -24,6 +30,8 @@ export interface QuestLine {
   caughtWhen: string;
   /** The card whose unlock completes the line (its trophy on the Quests shelf). */
   completeWhen: string;
+  /** Where it starts (the virus counter's slot jumps there until the virus is caught). */
+  start: QuestStart;
 }
 
 const AI_ICONS: Record<string, string> = {
@@ -49,6 +57,7 @@ export const QUEST_LINES: QuestLine[] = [
     cardIds: AARON_CARDS.map((c) => c.id),
     caughtWhen: AARON_CARD_IDS.download, // ran the "PhotoViewer"
     completeWhen: AARON_CARD_IDS.cleaned,
+    start: { kind: "site", url: "http://www.friendspace.com/" }, // Mum's post is waiting there
   },
   {
     id: "bank",
@@ -58,6 +67,7 @@ export const QUEST_LINES: QuestLine[] = [
     cardIds: ANISH_CARDS.map((c) => c.id),
     caughtWhen: ANISH_CARD_IDS.giftCard, // signed in on the fake gift-card page
     completeWhen: ANISH_CARD_IDS.aftermath,
+    start: { kind: "site", url: "https://mail.hotpost.com/" }, // the $5 ad e-mail
   },
   {
     id: "usb",
@@ -67,6 +77,7 @@ export const QUEST_LINES: QuestLine[] = [
     cardIds: USB_CARDS.map((c) => c.id),
     caughtWhen: USB_CARD_IDS.doubleExtension, // opened holiday_03.jpg.exe
     completeWhen: USB_CARD_IDS.cleaned,
+    start: { kind: "folder", path: "E:\\Photos" }, // the "photo" on the stick
   },
   {
     id: "stocks",
@@ -76,6 +87,7 @@ export const QUEST_LINES: QuestLine[] = [
     cardIds: ZHUMING_CARDS.map((c) => c.id),
     caughtWhen: ZHUMING_CARD_IDS.app, // installed the trading app
     completeWhen: ZHUMING_CARD_IDS.cleaned,
+    start: { kind: "site", url: "http://www.dailybyte.com/" }, // the sponsored stock post
   },
   ...AI_PERSONAS.map((p) => ({
     id: p.id,
@@ -85,6 +97,7 @@ export const QUEST_LINES: QuestLine[] = [
     cardIds: [p.card.id],
     caughtWhen: p.card.id, // went along with the scammer
     completeWhen: p.card.id,
+    start: { kind: "chat" as const, contact: p.id }, // their PingMe chat
   })),
 ];
 

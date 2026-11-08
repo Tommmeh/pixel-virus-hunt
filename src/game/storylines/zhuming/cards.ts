@@ -72,7 +72,7 @@ export const ZHUMING_CARDS: LessonCard[] = [
     name: "Stock Scam Uninstalled",
     type: "Malware removal",
     whatHappened:
-      "PaneGuard found StockLadder.Trade on the PC and removed it. Nothing was transferred, because the fake app never got the bank login it was built to collect.",
+      "The antivirus found StockLadder.Trade on the PC and removed it. Nothing was transferred, because the fake app never got the bank login it was built to collect.",
     redFlags: ["Remember where it came from: a paid article, a private chat and a link"],
     tip: "If you did enter bank details anywhere strange, change your online banking password and tell your bank straight away.",
   },

@@ -2,31 +2,20 @@
 // `target`  = the element to spotlight (a `data-tour="..."` attribute somewhere in the UI).
 // `waitFor` = the step finishes when the player does this (otherwise Scout shows a Next button).
 // Scout leaves before the player meets any scam: he never warns at the moment of a mistake.
-import { openPath } from "../apps/explorer/open";
 import { mailStore } from "../apps/webvoyager/sites/hotpost/store";
 import type { SystemEvent } from "../system/events";
-import { MY_DOCUMENTS } from "../system/fs";
 import { windowStore, wm } from "../system/windows";
 import type { Corner } from "./placement";
-
-/** Open notes.txt in a small Notepad in the top-right corner, clear of the sign-in form. */
-function showNotes() {
-  const path = `${MY_DOCUMENTS}\\notes.txt`;
-  openPath(path);
-  const key = `notepad:${path.toLowerCase()}`;
-  const vw = typeof window === "undefined" ? 1280 : window.innerWidth;
-  wm.resize(key, 440, 250);
-  wm.move(key, Math.max(0, vw - 460), 12);
-}
 
 /** Every `data-tour` id the tutorial points at. Add the attribute in the UI when adding one here. */
 export const TOUR_TARGETS = [
   "taskbar",
   "virus-hud",
-  "icon-paneguard",
+  "icon-antivirus",
   "icon-webvoyager",
   "fav-mail.hotpost.com",
   "mail-password",
+  "mail-signin",
   // Guided demo (game/demo/steps.ts)
   "fav-www.friendspace.com",
   "fs-phish-link",
@@ -84,15 +73,17 @@ export const STEPS: TutorialStep[] = [
     title: "Your score",
     text: [
       "This is how many viruses you've caught. Each slot lights up when you fall for one.",
-      "Click it any time to open Quests and see what each virus taught you.",
+      "Stuck? Click a dark slot to go where that virus is hiding. Click a lit one to see what it taught you.",
     ],
     target: "virus-hud",
   },
   {
-    id: "paneguard",
+    id: "antivirus",
     title: "Your antivirus",
-    text: ["This is PaneGuard. If your PC ever starts acting strange... remember where it is!"],
-    target: "icon-paneguard",
+    text: [
+      "This is your Antivirus. If your PC ever starts acting strange... remember where it is!",
+    ],
+    target: "icon-antivirus",
   },
   {
     id: "taskbar",
@@ -126,12 +117,12 @@ export const STEPS: TutorialStep[] = [
     id: "sign-in",
     title: "Sign in to your email",
     text: [
-      "Your email address is already filled in.",
-      "Forgot the password? {name}, you wrote it down in My Documents → notes.txt. (Is that a good idea? Hmm...)",
+      "Your e-mail and password are already saved on this PC. Just click Sign In.",
+      "(Your passwords are also in passwords.txt on the desktop, {name}. Is that a good idea? Hmm...)",
     ],
-    target: "mail-password",
+    target: "mail-signin",
     waitFor: (e) => e.type === "mail.signin" && e.ok,
-    hint: "Type the password and click Sign In",
+    hint: "Click Sign In",
     doneIf: () => mailStore.get().signedIn,
     undoIf: () => {
       const browser = windowStore.get().wins.find((w) => w.key === "webvoyager");
@@ -139,7 +130,6 @@ export const STEPS: TutorialStep[] = [
       if (browser.min || typeof document === "undefined") return false; // just tucked away
       return !document.querySelector('[data-tour="mail-password"]'); // browsed away from the sign-in page
     },
-    action: { label: "Show me", run: showNotes },
     after: {
       title: "You've got mail!",
       text: [

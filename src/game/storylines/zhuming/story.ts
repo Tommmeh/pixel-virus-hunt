@@ -219,7 +219,7 @@ export function clean() {
   if (threatStore.get().threats.some((t) => t.id === THREAT_ID)) removeThreat(THREAT_ID);
   unlockScam(ZHUMING_CARD_IDS.cleaned);
   notify({
-    title: "PaneGuard Antivirus",
+    title: "Antivirus",
     text: "StockLadder.Trade removed. Your PC is clean. New lessons are waiting in Quests.",
     icon: "shield",
     open: { app: "quests" },

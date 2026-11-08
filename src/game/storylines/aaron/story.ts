@@ -267,7 +267,7 @@ export function clean() {
   wm.closeApp(POPUP_APP);
   unlockScam(AARON_CARD_IDS.cleaned);
   notify({
-    title: "PaneGuard Antivirus",
+    title: "Antivirus",
     text: "PhotoWorm removed. Your PC is clean. New lessons are waiting in Quests.",
     icon: "shield",
     open: { app: "quests" },

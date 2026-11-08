@@ -81,7 +81,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "safety-first",
     name: "Safety First",
-    description: "Open PaneGuard Antivirus",
+    description: "Open the Antivirus",
     icon: "shield",
     when: (e) => e.type === "app.open" && e.app === "antivirus",
   },
@@ -102,7 +102,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "exterminator",
     name: "Exterminator",
-    description: "Remove a virus with PaneGuard",
+    description: "Remove a virus with the Antivirus",
     icon: "warning",
     when: (e) => e.type === "threat.removed",
   },

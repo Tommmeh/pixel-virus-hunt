@@ -66,4 +66,16 @@ describe("quest lines (trophies)", () => {
     expect(isCaught(worm, { [AARON_CARD_IDS.download]: 1 })).toBe(true);
     expect(virusesCaught({ [AARON_CARD_IDS.download]: 1, "ai-romance": 2 })).toBe(2);
   });
+
+  it("every quest says where it starts (the virus counter's slots take you there)", () => {
+    for (const l of QUEST_LINES) {
+      expect(l.start, l.id).toBeTruthy();
+      if (l.id.startsWith("ai-")) expect(l.start).toEqual({ kind: "chat", contact: l.id });
+    }
+    expect(getQuestLine("photoworm")!.start).toEqual({
+      kind: "site",
+      url: "http://www.friendspace.com/",
+    });
+    expect(getQuestLine("usb")!.start.kind).toBe("folder");
+  });
 });

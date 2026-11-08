@@ -105,11 +105,11 @@ export const DEMO_STEPS: TutorialStep[] = [
     title: "It's a worm!",
     text: [
       "Every pop-up you close comes back as two: it's copying itself. Closing windows won't fix this.",
-      "You need real antivirus. Open PaneGuard from the desktop (or the START menu if it's buried).",
+      "You need a real antivirus. Open the Antivirus from the desktop (or the START menu if it's buried).",
     ],
-    target: "icon-paneguard",
+    target: "icon-antivirus",
     waitFor: (e) => e.type === "app.open" && e.app === "antivirus",
-    hint: "Double-click PaneGuard",
+    hint: "Double-click Antivirus",
     skipIf: () => wm.isOpen("antivirus") || stageIs("cleaned"),
   },
   {

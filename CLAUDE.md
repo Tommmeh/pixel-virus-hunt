@@ -90,18 +90,20 @@ stage + transitions), a `<Name>Service.tsx` mounted in `shell/Desktop.tsx` (time
 pages/windows. Shared files only get small additive registrations (app registry, site catalog, desktop/Start menu).
 - **Aaron — PhotoWorm** (`storylines/aaron/`, `vh-aaron`): Mum's FriendSpace post links straight to the shady
   download site `get-photoviewer.net` (http) → "PhotoViewer" download → escalating pop-ups → swarm (closing one spawns two,
-  capped at 24) → cleared by PaneGuard Antivirus.
-- **Threats** (`system/threats.ts`, `vh-threats`): storylines `addThreat()` when the PC gets infected; **PaneGuard
+  capped at 24) → cleared by the Antivirus (app id `antivirus`).
+- **Threats** (`system/threats.ts`, `vh-threats`): storylines `addThreat()` when the PC gets infected; **The
   Antivirus** (`apps/antivirus/`) scans and `removeThreat()`s them, which emits `threat.removed` for the storyline.
 - **The goal: catch viruses.** Every quest line (`scams/questlines.ts`) is one virus / scam to catch. The **VIRUSES
   CAUGHT x/8** counter (`shell/VirusHud.tsx`) sits top-centre on the desktop, always visible (the top 60px — `HUD_H` in
   `system/windows.ts` — is kept clear: windows open below it). A line is *caught* when its `caughtWhen` card unlocks
-  (the moment the player falls for it) and *complete* when its `completeWhen` card does.
-- **Quests** (`scams/Quests.tsx`, app id `quests`): the trophy shelf, one trophy per quest line. Each storyline defines
+  (the moment the player falls for it) and *complete* when its `completeWhen` card does. The counter is also the
+  **guide**: each slot is a button — an uncaught one jumps to the line's `start` (a site, a folder, or a PingMe chat),
+  a caught one opens that quest's lessons.
+- **Quests** (`scams/Quests.tsx`, app id `quests`, no desktop icon — opened from the counter): one trophy per quest line. Each storyline defines
   `LessonCard`s in its folder (e.g. `storylines/aaron/cards.ts`), adds them to `scams/cards.ts`, and unlocks them
   silently with `unlockScam(id)`. Locked trophies are silhouettes with a teaser; clicking an unlocked one shows its
-  lessons. New quest line = cards + one `QUEST_LINES` entry with `caughtWhen` and `completeWhen` (each Gemini persona
-  is its own line automatically).
+  lessons. New quest line = cards + one `QUEST_LINES` entry with `caughtWhen`, `completeWhen` and `start` (each Gemini
+  persona is its own line automatically).
 - **Achievements** (`achievements/achievements.ts`, app id `achievements`): small badges for exploring (open the flash
   drive, log into e-mail, log into the bank...). Each is one `when(event)` callback over the system event bus;
   `AchievementService` (desktop, off in the guided demo) awards them with a tray toast. Add one = one array entry.

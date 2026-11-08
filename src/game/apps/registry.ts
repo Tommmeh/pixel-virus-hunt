@@ -165,9 +165,9 @@ export const APPS: AppDef[] = [
   },
   {
     id: "antivirus",
-    title: "PaneGuard Antivirus",
+    title: "Antivirus",
     icon: "shield",
-    process: "paneguard.exe",
+    process: "antivirus.exe",
     memK: 7_420,
     w: 520,
     h: 420,

@@ -54,9 +54,8 @@ const SHORTCUTS: Shortcut[] = [
   { id: "pingme", label: "PingMe Messenger", icon: "buddy", open: () => wm.open("messenger") },
   { id: "phone", label: "Phone", icon: "☎", open: () => wm.open("phone") },
   { id: "mines", label: "Mines", icon: "mine", open: () => wm.open("mines") },
-  { id: "paneguard", label: "PaneGuard", icon: "shield", open: () => wm.open("antivirus") },
+  { id: "antivirus", label: "Antivirus", icon: "shield", open: () => wm.open("antivirus") },
   { id: "scout", label: "Scout's Tips", icon: "scout", open: startTutorial },
-  { id: "quests", label: "Quests", icon: "trophy", open: () => wm.open("quests") },
   {
     id: "achievements",
     label: "Achievements",

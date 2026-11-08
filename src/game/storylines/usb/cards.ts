@@ -42,7 +42,7 @@ export const USB_CARDS: LessonCard[] = [
     name: "USB Clean-Up",
     type: "Malware removal",
     whatHappened:
-      "PaneGuard scanned every drive, found the backdoor on the USB stick with its copies, and removed it. Start-up, dragging windows and opening programs went back to normal.",
+      "The antivirus scanned every drive, found the backdoor on the USB stick with its copies, and removed it. Start-up, dragging windows and opening programs went back to normal.",
     redFlags: [
       "The antivirus found the threat at the exact path you launched",
       "The same file had made copies across the drive",

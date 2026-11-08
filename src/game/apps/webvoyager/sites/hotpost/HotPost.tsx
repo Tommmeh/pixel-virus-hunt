@@ -14,7 +14,8 @@ const BASE = "https://mail.hotpost.com";
 
 function SignIn() {
   const [email, setEmail] = useState(PROFILE.email);
-  const [pw, setPw] = useState("");
+  // Saved by the browser: the player only has to click Sign In.
+  const [pw, setPw] = useState(PROFILE.mailPassword);
   const [err, setErr] = useState("");
   return (
     <div className="hp-signin">
@@ -47,14 +48,13 @@ function SignIn() {
             data-tour="mail-password"
             value={pw}
             onChange={(e) => setPw(e.target.value)}
-            autoFocus
           />
         </label>
         {err && <p className="form-error">{err}</p>}
-        <button className="nes-btn is-warning" type="submit">
+        <button className="nes-btn is-warning" type="submit" data-tour="mail-signin" autoFocus>
           Sign In
         </button>
-        <small>Forgot your password? Check the place you keep your notes.</small>
+        <small>Your e-mail and password are saved on this computer.</small>
       </form>
     </div>
   );
@@ -94,7 +94,12 @@ function renderMailBody(text: string, navigate: (url: string) => void) {
         <a
           key={i}
           href={part}
-          style={{ textDecoration: "underline", color: "#2f6fe0", cursor: "pointer", fontWeight: "bold" }}
+          style={{
+            textDecoration: "underline",
+            color: "#2f6fe0",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
           onClick={(e) => {
             e.preventDefault();
             navigate(part);
@@ -126,7 +131,8 @@ function AmazingSignIn({ mail }: { mail: Mail }) {
           fontSize: 18,
         }}
       >
-        ✅ You are now signed in to Amazing. Your gift card confirmation has been sent to your inbox!
+        ✅ You are now signed in to Amazing. Your gift card confirmation has been sent to your
+        inbox!
       </div>
     );
   }
@@ -155,8 +161,7 @@ function AmazingSignIn({ mail }: { mail: Mail }) {
         style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 300 }}
         onSubmit={(e) => {
           e.preventDefault();
-          const ok =
-            user.trim().toLowerCase() === PROFILE.email && pw === PROFILE.mailPassword;
+          const ok = user.trim().toLowerCase() === PROFILE.email && pw === PROFILE.mailPassword;
           if (!ok) {
             setErr("Incorrect email or password. Please try again.");
             return;
@@ -176,7 +181,9 @@ function AmazingSignIn({ mail }: { mail: Mail }) {
                 body:
                   "Hi jamie_t,\n\n" +
                   "We noticed a new sign-in to your FriendSpace account from an unrecognised device.\n\n" +
-                  "Date/Time: " + new Date().toLocaleString() + "\n" +
+                  "Date/Time: " +
+                  new Date().toLocaleString() +
+                  "\n" +
                   "Location:  Unknown\n" +
                   "Device:    Unknown Browser\n\n" +
                   "If this was you, no action is needed.\n" +
@@ -196,7 +203,9 @@ function AmazingSignIn({ mail }: { mail: Mail }) {
                 body:
                   "Dear jamie.taylor,\n\n" +
                   "A new sign-in to your e-mail account was detected.\n\n" +
-                  "Date/Time: " + new Date().toLocaleString() + "\n" +
+                  "Date/Time: " +
+                  new Date().toLocaleString() +
+                  "\n" +
                   "IP Address: 94.102.49.190\n" +
                   "Location:  Unknown\n\n" +
                   "If this was you, you can ignore this message.\n" +
@@ -232,7 +241,15 @@ function AmazingSignIn({ mail }: { mail: Mail }) {
           setTimeout(() => startConversation("marcus"), 16_000);
         }}
       >
-        <label style={{ fontFamily: "var(--font-sans)", fontSize: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+        <label
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: 8,
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+          }}
+        >
           Email address
           <input
             className="nes-input"
@@ -242,7 +259,15 @@ function AmazingSignIn({ mail }: { mail: Mail }) {
             autoComplete="off"
           />
         </label>
-        <label style={{ fontFamily: "var(--font-sans)", fontSize: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+        <label
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: 8,
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+          }}
+        >
           Password
           <input
             className="nes-input"
@@ -264,8 +289,8 @@ function ReadMail({ mail }: { mail: Mail | undefined }) {
   const { navigate } = useBrowser();
   if (!mail) return <p className="hp-empty">This message could not be found.</p>;
 
-  const isAmazingPhish = mail.from === "rewards@amazing-shop.com" &&
-    mail.subject.includes("FREE $100");
+  const isAmazingPhish =
+    mail.from === "rewards@amazing-shop.com" && mail.subject.includes("FREE $100");
 
   return (
     <div className="hp-read">
