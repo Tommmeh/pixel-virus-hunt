@@ -1,4 +1,5 @@
 import { getCallStep } from "../../storylines/bankCall";
+import { PixelIcon } from "../../components/PixelIcon";
 import { chooseCallOption, usePhone } from "./store";
 
 /** The landline on the desk. During stage 2 it rings with Copperleaf's Disputes team. */
@@ -28,7 +29,7 @@ export function Phone() {
           borderBottom: "3px solid #000",
         }}
       >
-        ☎ {status}
+        <PixelIcon name="phone" size={18} /> {status}
       </div>
 
       <div

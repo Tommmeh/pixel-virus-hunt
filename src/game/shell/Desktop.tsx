@@ -50,7 +50,7 @@ const SHORTCUTS: Shortcut[] = [
   { id: "recycle", label: "Recycle Bin", icon: "bin", open: () => wm.open("recycle") },
   { id: "webvoyager", label: "WebVoyager", icon: "browser", open: () => wm.open("webvoyager") },
   { id: "pingme", label: "PingMe Messenger", icon: "buddy", open: () => wm.open("messenger") },
-  { id: "phone", label: "Phone", icon: "☎", open: () => wm.open("phone") },
+  { id: "phone", label: "Phone", icon: "phone", open: () => wm.open("phone") },
   { id: "mines", label: "Mines", icon: "mine", open: () => wm.open("mines") },
   { id: "antivirus", label: "Antivirus", icon: "shield", open: () => wm.open("antivirus") },
   {

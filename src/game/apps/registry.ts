@@ -79,7 +79,7 @@ export const APPS: AppDef[] = [
   {
     id: "phone",
     title: "Phone",
-    icon: "☎",
+    icon: "phone",
     process: "phone.exe",
     memK: 900,
     w: 360,
