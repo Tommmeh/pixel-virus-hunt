@@ -8,6 +8,7 @@ import { socialStore } from "../apps/webvoyager/sites/friendspace/store";
 import { mailStore } from "../apps/webvoyager/sites/hotpost/store";
 import { scamStore, trophySeenStore } from "../scams/store";
 import { aaronStore } from "../storylines/aaron/story";
+import { resetUsb } from "../storylines/usb/story";
 import { questStore } from "../system/quests";
 import { threatStore } from "../system/threats";
 import { stopTutorial, tutorialProgress } from "../tutorial/store";
@@ -24,6 +25,8 @@ export function resetStory() {
   // Aaron (PhotoWorm) storyline: stage, infection, Mum's post, any leftover pop-ups
   aaronStore.reset();
   threatStore.reset();
+  // USB storyline: no infection, no pending crash, PC healthy again
+  resetUsb();
   socialStore.reset();
   wm.closeAll();
   // Rewards: unlocked lesson cards and scammer chats

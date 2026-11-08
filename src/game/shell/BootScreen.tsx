@@ -5,9 +5,11 @@ import { authEnabled } from "@/auth/config";
 import { PixelIcon } from "../components/PixelIcon";
 import { leaveDemoMode, startDemo } from "../demo/store";
 import { playShutdown, playStartup } from "../components/sound";
+import { useIsSlow } from "../system/health";
 import { logIn, setPhase, usePhase } from "../system/session";
 import { updateSettings, useSettings } from "../system/settings";
 import { resetStory } from "./startOver";
+import { CrashScreen } from "../storylines/usb/CrashScreen";
 
 function Logo({ size = 48 }: { size?: number }) {
   return (
@@ -21,15 +23,17 @@ function Logo({ size = 48 }: { size?: number }) {
 }
 
 function Boot() {
+  const slow = useIsSlow();
   const [pct, setPct] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setPct((p) => Math.min(100, p + 10)), 200);
-    const done = setTimeout(() => setPhase("welcome"), 2400);
+    // An infected machine crawls through start-up: fewer percent per tick and a much longer wait.
+    const t = setInterval(() => setPct((p) => Math.min(100, p + (slow ? 4 : 10))), 200);
+    const done = setTimeout(() => setPhase("welcome"), slow ? 5_200 : 2400);
     return () => {
       clearInterval(t);
       clearTimeout(done);
     };
-  }, []);
+  }, [slow]);
   return (
     <div className="boot-screen" onClick={() => setPhase("welcome")}>
       <Logo size={64} />
@@ -39,7 +43,7 @@ function Boot() {
         max={100}
         aria-label="Loading"
       />
-      <p className="boot-blink">LOADING...</p>
+      <p className="boot-blink">{slow ? "VERIFYING SYSTEM FILES..." : "LOADING..."}</p>
       <p className="boot-foot">VIRUS HUNT · HACKCAMP 2026</p>
     </div>
   );
@@ -259,6 +263,8 @@ function Off() {
 
 export function BootScreen() {
   const phase = usePhase();
+  // The blue screen comes before the reboot: see game/storylines/usb.
+  if (phase === "crash") return <CrashScreen />;
   if (phase === "welcome") return <Welcome />;
   if (phase === "shutdown") return <ShuttingDown />;
   if (phase === "off") return <Off />;

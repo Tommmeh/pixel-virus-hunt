@@ -8,6 +8,9 @@ import { ThreeDaysLater } from "./ThreeDaysLater";
 import { useShake } from "./shake";
 import { questStore } from "../system/quests";
 import { AaronService } from "../storylines/aaron/AaronService";
+import { SlowPc } from "../storylines/usb/SlowPc";
+import { UsbService } from "../storylines/usb/UsbService";
+import { afterLag } from "../system/health";
 import { DemoGuide } from "../demo/DemoGuide";
 import { useDemo } from "../demo/store";
 import { TutorialGuide } from "../tutorial/TutorialGuide";
@@ -124,8 +127,8 @@ export function Desktop() {
               setSelected(s.id);
               setStartOpen(false);
             }}
-            onDoubleClick={s.open}
-            onKeyDown={(e) => e.key === "Enter" && s.open()}
+            onDoubleClick={() => afterLag(s.open)}
+            onKeyDown={(e) => e.key === "Enter" && afterLag(s.open)}
           >
             <PixelIcon name={s.icon} size={40} />
             <span>{s.label}</span>
@@ -151,6 +154,8 @@ export function Desktop() {
       {!demo && <ScamPopups />}
       <ThreeDaysLater />
       <AaronService />
+      <UsbService />
+      <SlowPc />
       {demo ? <DemoGuide /> : <TutorialGuide />}
       <Taskbar startOpen={startOpen} onStart={() => setStartOpen((o) => !o)} />
     </div>

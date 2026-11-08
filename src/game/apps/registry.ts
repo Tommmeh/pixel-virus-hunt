@@ -6,6 +6,7 @@ import { Chat } from "./messenger/Chat";
 import { Messenger } from "./messenger/Messenger";
 import { WormPopup } from "../storylines/aaron/WormPopup";
 import { Antivirus } from "./antivirus/Antivirus";
+import { PhotoExe } from "../storylines/usb/PhotoExe";
 import { Mines } from "./mines/Mines";
 import { Phone } from "./phone/Phone";
 import { RBCApp } from "./rbc/RBCApp";
@@ -160,6 +161,17 @@ export const APPS: AppDef[] = [
     w: 520,
     h: 420,
     component: Antivirus,
+  },
+  {
+    // USB storyline: the disguised file on E: opens a bland-looking picture viewer.
+    id: "usb-photo",
+    title: "holiday_03.jpg - Windows Picture and Fax Viewer",
+    icon: "image",
+    process: "usbphoto.exe",
+    memK: 4_100,
+    w: 380,
+    h: 300,
+    component: PhotoExe,
   },
   {
     // Aaron's storyline: a PhotoWorm pop-up (many can be open at once, keyed "worm:<n>").

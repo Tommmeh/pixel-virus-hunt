@@ -4,7 +4,17 @@ import { createStore } from "./store";
 import { wm } from "./windows";
 
 /** "demo-end" is the guided demo's ending screen (game/demo/DemoEnd.tsx). */
-export type Phase = "boot" | "welcome" | "desktop" | "shutdown" | "off" | "end" | "demo-end" | "goodend";
+export type Phase =
+  | "boot"
+  | "welcome"
+  | "desktop"
+  | "shutdown"
+  | "off"
+  | "end"
+  | "demo-end"
+  | "goodend"
+  /** Malware brought the machine down (game/storylines/usb): blue screen, then a reboot. */
+  | "crash";
 
 export const sessionStore = createStore<{ phase: Phase }>(null, { phase: "boot" });
 export const usePhase = () => sessionStore.use().phase;
