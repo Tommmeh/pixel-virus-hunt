@@ -1,112 +1,130 @@
-# Pixel Virus Hunt
+# Virus Hunt
 
-Build "Virus Hunt," a browser game that simulates a retro 2000s PC to teach cybersecurity awareness.
+A browser game that puts you in front of a fake 2004-era PC — **PaneOS** — so you can meet real
+scams somewhere it costs nothing to get them wrong.
 
-## Core concept
+Play it, get caught out, and find out what happened **afterwards**.
 
-The player uses a fake Windows 98/XP-style desktop and makes everyday choices. Some are risky. Risky choices silently infect the PC. The player then has to notice the symptoms, investigate, find and remove every piece of malware, and only then learn what they did wrong and how to prevent it.
+## The one rule
 
-Game loop: Make choices → Get infected (silently) → Notice symptoms → Investigate → Remove all malware → Debrief/lesson
+**Never warn the player at the moment of the mistake.**
 
-KEY DESIGN RULE: Never tell the player immediately that a choice was bad. No warning popups at the moment of the mistake. Consequences show up later as symptoms. The lesson comes only in the debrief.
+No red banners, no "are you sure?", no pop-up explaining that the nice support person was a
+scammer. The consequences speak for themselves and the lesson lives on an achievement card the
+player reads later, when they are actually ready to learn it.
 
-## Visual style
+## What is in the box
 
-- Use the NES.css framework (npm package "nes.css", import "nes.css/css/nes.min.css") for all UI components: buttons, containers, dialogs, progress bars, icons.
+PaneOS is a working desktop drawn in NES.css pixel style: windows you drag around, a taskbar and
+Start menu, a Control Panel with themes and wallpapers, My Computer with real folders and files,
+WebVoyager with playable fake websites, HotPost Mail, Copperleaf Bank, FriendSpace, Notepad, Mines,
+and PingMe Messenger.
 
-- Font: "Press Start 2P" (Google Fonts).
+Scams arrive where they really arrive — in chat, in email, on a website — and each one you fall for
+unlocks a lesson card.
 
-- Layout follows a Windows 98 desktop: teal or green-hills wallpaper, desktop icons on the left, a bottom taskbar with a Start button and a clock, and draggable windows with title bars and close/minimize buttons.
+## The live scammer chats (Track D)
 
-- In short: a Win98 layout drawn in NES.css pixel style. Keep it chunky and pixelated, with nothing glossy or modern.
+The Messenger has an **Unknown** group with four contacts who message you out of nowhere:
 
-## Screens
+| Contact | The scam | What they want |
+|---|---|---|
+| `SysAssist_Support` | Fake tech support | Remote access, and the code `QC-4471-882` read back to them |
+| `sarah_s_2004` | "Friend stranded abroad" | A gift card code |
+| `Alex_D_2004` | Romance | Money and personal details |
+| `HotPost_Security` | Fake fraud team | A one-time code and your password |
 
-1. Title screen: "Virus Hunt — Play. Get Infected. Stay Safe." with a Start button.
+Each conversation is written live by **Gemini** through a server function, and each one has a
+scripted fallback so the demo cannot break without a network.
 
-2. Desktop: the main play area. Icons: My Computer, Internet Explorer, Email, Recycle Bin, Task Manager, Antivirus Scanner.
+### How the "you fell for it" decision is made
 
-3. Scenario phase: a sequence of 5 choice events delivered as popups, emails, or desktop prompts.
+Not by the model. A model is a good liar and a bad judge. The verdict comes from a deterministic
+check on **your own message** in `src/game/scams/ai.ts`:
 
-4. Investigation phase: symptoms appear and the player uses the tools to hunt malware.
+- you typed one of the game's fake secrets (the support code, the gift card code, the one-time
+  code, the password that is written in your own `notes.txt`), or
+- you went along with it ("ok, I'll install it", "sure, here's the code")
 
-5. Debrief screen: lists each infection, which choice caused it, its real-world name/type, and a prevention tip.
+…unless you pushed back. A refusal always wins: "no, I won't share that" is never counted against
+you, even though it contains words the compliance pattern matches.
 
-6. Score screen: viruses found, time taken, false removals, safety rating.
+Because the rule lives in pure shared code, Gemini and the offline fallback can never disagree
+about what happened.
 
-## Scenarios (each has a safe and a risky option)
+### Safety rails around the model
 
-1. Public Wi-Fi: "CoffeeShop_FREE" (open) vs. using a phone hotspot → risky: credential stealer / man-in-the-middle
+- `GEMINI_API_KEY` and `LOVABLE_API_KEY` are read from the environment **inside a server function
+  only**. Neither is imported by browser code, and a test fails if either name appears in any other
+  non-test source file.
+- Replies are sanitised: links, long numbers and real brand names are stripped out, while the fake
+  codes the scammer is supposed to hand over are preserved.
+- History is capped at 12 turns, player messages at 400 characters, replies at 220 output tokens.
+- Every persona is PG, fictional, and has at least three scripted lines.
 
-2. Unknown USB: "Found a USB labelled 'Salaries 2004' — plug it in?" → risky: worm with autorun
+## Running it
 
-3. Forum download: "free_game_crack.exe" from a sketchy forum vs. the official site → risky: trojan dropper
+```sh
+npm install          # bun install also works; bun.lock is committed
+npm run dev          # http://localhost:8080
+npm test             # vitest
+npx tsc --noEmit     # strict type check
+npm run lint         # eslint + prettier
+```
 
-4. Fake job interview: a recruiter email asks you to run "InterviewSetup.exe" → risky: remote access trojan
+To get live Gemini replies, put a key in `.env` (never commit it, never put it in client code).
+Either provider works; the direct Google key wins when both are set:
 
-5. Password setup: choose "password123" vs. a strong passphrase → risky: account compromised later
+```
+# direct Google AI Studio key (starts with AIza)
+GEMINI_API_KEY=...
+# or Lovable's gateway
+LOVABLE_API_KEY=...
+# optional: override either model
+GEMINI_CHAT_MODEL=gemini-3.8-flash
+LOVABLE_CHAT_MODEL=google/gemini-3.7-flash
+```
 
-## Symptoms (shown after infection, never explained)
+Start the server with `npm run dev:key`, not `npm run dev` - plain Vite never reads `.env` into
+`process.env`, so the key would stay invisible and the chat would silently use scripted lines.
 
-- Desktop slows down (laggy window dragging)
+Without a key the game still works end to end — the chat answers from its scripted lines and the
+same lesson card unlocks. That path is deliberate, not a degraded mode.
 
-- Random popup ads
+## Architecture, briefly
 
-- Unknown process in Task Manager using high CPU
+```
+src/game/
+  system/     the "OS": stores, window manager, event bus, virtual file system, settings, contacts
+  shell/      boot screen, desktop, window chrome, taskbar, start menu, balloons
+  apps/       one folder per program; registry.ts lists them all
+    messenger/  PingMe: scripts.ts (scripted chats), store.ts, Chat.tsx, AiChat.tsx
+  scams/      Track D — ai.ts (personas + rules), store.ts (cards + threads), Achievements.tsx
+  ai.functions.ts   server-only Gemini calls (see note below)
+```
 
-- Browser homepage changed
+`src/game/ai.functions.ts` is not at `src/server/ai.ts` because TanStack Start's import protection
+refuses any client import that resolves inside a `server/` directory, and the browser must import
+the `createServerFn` stubs. The handlers themselves are compiled to server RPCs and stripped from
+the client bundle.
 
-- Strange files appearing on the desktop
+Fictional brands only — PaneOS, PingMe, WebVoyager, Searchly, HotPost, Copperleaf Bank,
+FriendSpace, The Daily Byte. Nothing is ever fetched from the outside world.
 
-- Fake "Your account was logged in from Russia" email
+## Docs
 
-## Investigation tools
+- `docs/pitch/slides.md` — six pitch slides
+- `docs/pitch/demo-script.md` — the two-minute demo, including the offline plan
+- `docs/content-qa.md` — read-only content review of the scam cards
+- `docs/track-a-handoff.md` — the only shared-file changes Track D needed
 
-- Task Manager: list of processes; the player can inspect and end suspicious ones. Mix in legitimate processes (explorer.exe, svchost.exe) so the player has to think.
-
-- File Explorer: browse folders (C:\Windows\Temp, Startup, Downloads) and delete suspicious files.
-
-- Antivirus Scanner: finds only SOME threats (not all), so the player can't just click "scan."
-
-- Startup Programs list: remove persistence entries.
-
-- Removing a legitimate system file costs points.
-
-## Win condition
-
-All malware removed (process killed AND file deleted AND startup entry removed where applicable) → go to the debrief.
-
-## Technical requirements
-
-- React + TypeScript; store game state in a single reducer/context: choices made, active infections, removed items, score.
-
-- Define scenarios and malware as data (a JSON/TS config array) so new ones can be added without changing components.
-
-- No backend needed for this version. Use localStorage for high scores.
-
-- Responsive enough for a laptop screen; mobile is not a priority.
-
-## Scope for this first version
-
-Build the full loop with all 5 scenarios, Task Manager, File Explorer, the scanner, and the debrief. Skip sound, window resizing, and multiplayer for now.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
+## Built with Lovable
 
 Continue developing this project in the [Lovable editor](https://lovable.dev/projects/4bafb1ff-2569-4aa3-b695-03292aea7d06).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into
+  Lovable, ready for your next prompt.
 
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+`main` syncs to Lovable — keep it working and never force-push.

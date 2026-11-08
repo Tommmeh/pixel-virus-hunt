@@ -1,15 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { GameProvider, useGame } from "@/game/state";
-import { Desktop } from "@/game/Desktop";
-import { DebriefScreen, ScoreScreen, TitleScreen } from "@/game/Screens";
+import { AuthProvider } from "@/auth/AuthProvider";
+import { BootScreen } from "@/game/shell/BootScreen";
+import { Desktop } from "@/game/shell/Desktop";
+import { usePhase } from "@/game/system/session";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Virus Hunt — Play. Get Infected. Stay Safe." },
-      { name: "description", content: "A retro 2000s PC game that teaches cybersecurity by letting you get infected and hunt the malware." },
+      { title: "Virus Hunt — a safe practice PC" },
+      {
+        name: "description",
+        content:
+          "A retro 2000s PC in your browser: browse, chat, bank and email safely. Learn to spot scams without risking your real computer.",
+      },
       { property: "og:title", content: "Virus Hunt" },
-      { property: "og:description", content: "Make choices, get infected, hunt the malware, learn to stay safe." },
+      {
+        property: "og:description",
+        content: "A retro 2000s PC in your browser for practising staying safe online.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -17,18 +25,15 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function Game() {
-  const { state } = useGame();
-  if (state.phase === "title") return <TitleScreen />;
-  if (state.phase === "debrief") return <DebriefScreen />;
-  if (state.phase === "score") return <ScoreScreen />;
-  return <Desktop />;
-}
-
 function Index() {
   return (
-    <GameProvider>
+    <AuthProvider>
       <Game />
-    </GameProvider>
+    </AuthProvider>
   );
+}
+
+function Game() {
+  const phase = usePhase();
+  return phase === "desktop" ? <Desktop /> : <BootScreen />;
 }
