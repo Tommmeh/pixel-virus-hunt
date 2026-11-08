@@ -783,12 +783,23 @@ body { font-family: var(--font-sans); background: #000; }
 .worm-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .phish { position: relative; }
 .phish .fs-header nav span { cursor: pointer; }
-.phish-album { max-width: 620px; margin: 16px auto; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; background: #fff;
-  box-shadow: 0 -3px 0 0 #212529, 0 3px 0 0 #212529, -3px 0 0 0 #212529, 3px 0 0 0 #212529; }
-.phish-album h2 { font-size: 10px; color: #6b4bb0; }
-.phish-album p { margin: 0; }
-.phish-thumbs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; width: 100%; }
-.phish-thumb { aspect-ratio: 1; display: grid; place-items: center; font-size: 18px; background: repeating-conic-gradient(#d8cff0 0 25%, #c4b6e8 0 50%) 0 0 / 8px 8px; box-shadow: 0 0 0 2px #212529; filter: blur(0.5px); }
+/* One compact column: Mum's "post", a blurred private album, and the one big ask, all above the fold. */
+.phish-page { max-width: 560px; margin: 12px auto; padding: 0 10px; display: flex; flex-direction: column; gap: 12px; }
+.phish-card small { font: 16px var(--font-body); color: #6c7a89; }
+.phish-card p { margin: 0; }
+.phish-strip { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; height: 96px; padding: 6px; background: #fff;
+  box-shadow: 0 -3px 0 0 #212529, 0 3px 0 0 #212529, -3px 0 0 0 #212529, 3px 0 0 0 #212529; overflow: hidden; }
+.phish-photo { display: grid; place-items: center; overflow: hidden; }
+.phish-photo > span { font-size: 40px; filter: blur(5px) saturate(1.2); }
+.phish-photo:not(.is-more) { filter: blur(3px); }
+.phish-photo.is-more { background: #6b4bb0; }
+.phish-photo.is-more > span { filter: none; color: #fff; font: 16px var(--font-sans); }
+.phish-private { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 6px 12px; white-space: nowrap;
+  font: 10px var(--font-sans); color: #fff; background: rgb(33 37 41 / 85%); box-shadow: 0 0 0 3px #fff; }
+.phish-ask { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.phish-ask p { margin: 0; }
+.phish-ask small { font: 16px var(--font-body); color: #6c7a89; }
+.phish-download { min-width: 280px; }
 .phish-install { width: 100%; display: flex; flex-direction: column; gap: 6px; }
 .phish-install .nes-progress { height: 18px; margin: 0; }
 .phish-error { color: #8c2022; }
